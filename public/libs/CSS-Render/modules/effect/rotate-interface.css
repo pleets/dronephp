@@ -1,0 +1,42 @@
+@charset "utf-8";
+
+/*
+ * CSS Render - Rotate effect iterface
+ * http://development.pleets.org/apps/css-render
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+ *[class^="$"][class~="rotate"] {
+  -webkit-animation: rotate 2s; 
+  -moz-animation: rotate 2s;
+  -ms-animation: rotate 2s;
+  -o-animation: rotate 2s;
+  animation: rotate 2s;
+}
+
+*[class^="$"][class~="rotate-x"] {
+  -webkit-animation: rotate-x 2s; 
+  -moz-animation: rotate-x 2s;
+  -ms-animation: rotate-x 2s;
+  -o-animation: rotate-x 2s;
+  animation: rotate-x 2s;
+}
+
+*[class^="$"][class~="rotate-y"] {
+  -webkit-animation: rotate-y 2s;
+  -moz-animation: rotate-y 2s;
+  -ms-animation: rotate-y 2s;
+  -o-animation: rotate-y 2s;
+  animation: rotate-y 2s;
+}
+
+*[class^="$"][class~="rotate-z"] {
+  -webkit-animation: rotate-z 2s; 
+  -moz-animation: rotate-z 2s;
+  -ms-animation: rotate-z 2s;
+  -o-animation: rotate-z 2s;
+  animation: rotate-z 2s;
+}

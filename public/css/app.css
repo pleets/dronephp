@@ -1,0 +1,24 @@
+body { 
+	font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+#app-loader { 
+    position: fixed; top: 50%; left: 50%; 
+    margin-left: -100px; margin-top: -100px;
+    width: 200px; z-index: 1000;
+}
+
+.dialog-icon {
+	font-size: 25px;
+	float: left;
+	margin-right: 20px;
+}
+
+.responsive-image {
+	max-width: 100%;
+}
+
+@media (max-width: 720px) {
+	.responsive-image {
+		width: 100%;
+	}
+}

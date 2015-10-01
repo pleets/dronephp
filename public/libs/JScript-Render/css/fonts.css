@@ -1,0 +1,17 @@
+@charset "utf-8";
+
+/*
+ * JScript Render - fonts
+ * http://www.pleets.org
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url('google-fonts/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff') format('woff');
+}

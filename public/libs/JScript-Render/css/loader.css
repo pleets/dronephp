@@ -1,0 +1,24 @@
+@charset "utf-8";
+
+/*
+ * JScript Render - Loader styles
+ * http://www.pleets.org
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+ 
+ /* General loader */
+.base-loader { position: fixed; top: 50%; left: 50%; z-index: 10000; }
+.base-loader-style { background: white; }
+
+/* Context loader */
+.context .base-loader { position: static; }
+
+.loader { position: fixed; top: 50%; left: 50%; margin: -175px 0 0 -175px; z-index: 10000; width: 100px; height: 50px; }
+.loader.tiny { width: 70px; height: 70px; margin: -35px 0 0 -35px; }
+.loader.small { width: 100px; height: 100px; margin: -50px 0 0 -50px; }
+.loader.medium { width: 250px; height: 250px; margin: -125px 0 0 -175px; }
+
+.loader.static { position: static; margin: 0; }

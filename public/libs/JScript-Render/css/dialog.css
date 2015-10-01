@@ -1,0 +1,32 @@
+@charset "utf-8";
+
+/*
+ * JScript Render - Dialog styles
+ * http://www.pleets.org
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+ 
+.wrapper { background: white; background: rgba(255,255,255,0.3); border-radius: 4px; padding: 5px; box-shadow: 0 0 3px rgb(20,20,20); }
+.wrapper:hover { box-shadow: 0 0 6px rgb(20,20,20); }
+.wrapper > .contents { background: white; min-height: 80px; min-width: 100px; border: solid 1px rgb(230,230,230); }
+.wrapper > .contents > * { color: rgb(60,60,60); }
+.wrapper > .contents > .header { 
+	background: rgb(240,240,240); padding: 4px; min-height: 15px; overflow: hidden; 
+	cursor: move; border-bottom: solid 1px rgb(230,230,230); 
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+/* close button */
+.wrapper > .contents > .header > button { 
+	margin: 0; margin-left: 1px; padding: 0 6px; border: solid 1px rgb(200,200,200); 
+	float: right; background: inherit; color: inherit; cursor: pointer;
+}
+.wrapper > .contents > .header > button:hover { background: rgb(200,200,200); }
+.wrapper > .contents > .main { padding: 4px; }

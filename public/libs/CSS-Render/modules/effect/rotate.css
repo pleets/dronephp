@@ -1,0 +1,125 @@
+@charset "utf-8";
+
+/*
+ * CSS Render - Rotate effect
+ * http://development.pleets.org/apps/css-render
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+@import "rotate-interface.css";
+
+/* rotate */
+
+@-webkit-keyframes rotate {
+  to {
+    -webkit-transform: rotate(360deg);
+    -webkit-transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+  }
+}
+
+@-moz-keyframes rotate {
+  to {
+    -moz-transform: rotate(360deg);
+    -moz-transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+  }
+}
+
+@-ms-keyframes rotate {
+  to {
+    -ms-transform: rotate(360deg);
+    -ms-transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+  }
+}
+
+@-o-keyframes rotate {
+  to {
+    -o-transform: rotate(360deg);
+    -o-transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+    transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
+  }
+}
+
+/* rotate-x */
+
+@-webkit-keyframes rotate-x {
+  to { -webkit-transform: rotateX(360deg); }
+}
+
+@-moz-keyframes rotate-x {
+  to { -moz-transform: rotateX(360deg); }
+}
+
+@-ms-keyframes rotate-x {
+  to { -ms-transform: rotateX(360deg); }
+}
+
+@-o-keyframes rotate-x {
+  to { -o-transform: rotateX(360deg); }
+}
+
+@keyframes rotate-x {
+  to { transform: rotateX(360deg); }
+}
+
+/* rotate-y */
+
+@-webkit-keyframes rotate-y {
+  to { -webkit-transform: rotateY(360deg); }
+}
+
+@-moz-keyframes rotate-y {
+  to { -moz-transform: rotateY(360deg); }
+}
+
+@-ms-keyframes rotate-y {
+  to { -ms-transform: rotateY(360deg); }
+}
+
+@-o-keyframes rotate-y {
+  to { -o-transform: rotateY(360deg); }
+}
+
+@keyframes rotate-y {
+  to { transform: rotateY(360deg); }
+}
+
+/* rotate-z */
+
+@keyframes rotate-z {
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
+@-webkit-keyframes rotate-z {
+  to {
+    -webkit-transform: rotateZ(360deg);
+  }
+}
+
+@-moz-keyframes rotate-z {
+  to {
+    -moz-transform: rotateZ(360deg);
+  }
+}
+
+@-o-keyframes rotate-z {
+  to {
+    -o-transform: rotateZ(360deg);
+  }
+}
+
+@-ms-keyframes rotate-z {
+  to {
+    -ms-transform: rotateZ(360deg);
+  }
+}

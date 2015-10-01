@@ -1,0 +1,35 @@
+@charset "utf-8";
+
+/*
+ * CSS Render - 3D transforms, transitions and animations
+ * http://www.pleets.org
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ *
+ * Date: 2014-07-10
+ *
+
+ * @author  Darío Rivera
+ * @email   admin@pleets.org
+
+  Release Notes
+
+  - Compatibility with Gecko, Webkit, Presto, and Trident
+  - Native transformations like rotate, translate, skew and scale are supported
+  - Many effects such as slide, fade, shadow, and others are built-in as classes
+  - Opera browser (presto) doesn't support 3D transforms (Only 2D), in this cases 
+    CSS Render get a 2D compatible animation
+  - Namespaces for modules has been added
+
+ */
+
+/* Load modules */
+@import "modules/effect/autoload.css";
+
+/* Load Basic handlers */
+@import "modules/timing.render.css";
+@import "modules/iterations.render.css";
+
+/* Namespace for styles */
+*[class~="plts-nm"], *[class~="plts-nm"] * { font: 11px Tahoma, Sans-serif; }

@@ -1,0 +1,16 @@
+RewriteEngine on
+
+# The following rule tells Apache that if the requested filename
+# exists, simply serve it.
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+
+RewriteRule ^/?$ index.php [L]
+RewriteRule ^([a-zA-Z0-9-]*)/?$ index.php?module=$1 [L]
+RewriteRule ^([a-zA-Z0-9-]*)/([a-zA-Z0-9-]*)/?$ index.php?module=$1&controller=$2 [L]
+RewriteRule ^([a-zA-Z0-9-]*)/([a-zA-Z0-9-]*)/([a-zA-Z0-9-]*[^\/])?$ index.php?module=$1&controller=$2&view=$3 [L]
+RewriteRule ^([a-zA-Z0-9-]*)/([a-zA-Z0-9-]*)/([a-zA-Z0-9-]*)/([.a-zA-Z0-9-\/]*[^\/])+$ index.php?module=$1&controller=$2&view=$3&params=$4 [L]
+RewriteRule ^([a-zA-Z0-9-]*)/([a-zA-Z0-9-]*)/([a-zA-Z0-9-]*)/([.a-zA-Z0-9-\/]*[^\/])/(.*)?$ index.php?module=$1&controller=$2&view=$3&params=$4$5 [QSA]
+RewriteRule ^([a-zA-Z0-9-]*)/([a-zA-Z0-9-]*)/([a-zA-Z0-9-]*)/(.*)?$ index.php?module=$1&controller=$2&view=$3$4 [QSA]

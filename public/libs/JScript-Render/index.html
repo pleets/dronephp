@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>JScriptRender examples</title>
+
+  <!-- JScriptRender -->
+  <script type="text/javascript" src="JScriptRender.js"></script>
+  <script type="text/javascript" src="demo.js"></script>
+  <link rel="stylesheet" href="css/JScriptRender.css" />
+  <link rel="stylesheet" href="demo.css" />
+
+</head>
+<body>
+  <div class="container" style="margin: 0 auto; max-width: 900px">
+  <div class="jumbotron">
+      <h1>JScriptRender <small>Overview</small></h1>
+  </div>
+
+    <div class="page-header">
+      <h1>Validators <small>standard validation classes</small></h1>
+    </div>
+
+    <div class="page-header">    
+      <h3>Alnum</h3>
+    </div>
+
+    <label for="alnum">Alnum</label><br />
+    <input id="alnum" type="text" class="jInput" placeholder="alnum" />
+    <span id="alnum_validator_response"></span>
+
+    <div class="page-header">    
+      <h3>StringLength</h3>
+    </div>
+    
+    <label for="stringLength">String length. Min 3, Max 8</label><br />
+    <input id="stringLength" type="text" class="jInput" placeholder="string length" />
+    <span id="stringLength_validator_response"></span>
+
+    <div class="page-header">    
+      <h3>Date</h3>
+    </div>
+
+    <label for="date">Date (Y-m-d)</label><br />
+    <input id="date" type="text" class="jInput" placeholder="yyyy-mm-dd" />
+    <span id="date_validator_response"></span>
+
+    <div class="page-header">    
+      <h3>Digits</h3>
+    </div>
+
+    <label for="digits">Digits</label><br />
+    <input id="digits" type="text" class="jInput" placeholder="digits" />
+    <span id="digits_validator_response"></span>
+
+    <div class="page-header">    
+      <h3>MathExpression</h3>
+    </div>
+
+    <label for="mathexpression_1">Unary expression</label><br />
+    <input id="mathexpression_1" type="text" class="jInput" placeholder="unary" />
+    <span id="mathexpression_validator_response_1"></span>
+    <p>
+      <em>Examples: 5, 1.25, -2.28, √2, -√2, -√5.24, -5√2</em>
+    </p>
+
+    <label for="mathexpression_2">Multiple expression</label><br />
+    <input id="mathexpression_2" type="text" class="jInput" placeholder="multiple" />
+    <span id="mathexpression_validator_response_2"></span>
+    <p>
+      <em>Examples: 5 + 8, 1.25 - 2.28, -√16*9, √2.64 + 8*9 + 10</em>
+    </p>
+
+    <label for="mathexpression_3">Simple associative expression</label><br />
+    <input id="mathexpression_3" type="text" class="jInput" placeholder="simple associative" />
+    <span id="mathexpression_validator_response_3"></span>
+    <p>
+      <em>Example: 2^(√16+2)+8+(5+4)</em>
+    </p>
+
+    <div class="page-header">
+      <h1>Utils <small>DOM</small></h1>
+    </div>
+
+    <div class="page-header">    
+      <h3>DateControl</h3>
+    </div>
+
+    <label for="dateControlYear">Select a year</label><br />
+    <select id="dateControlYear" class="jInput">
+      <option value="2015">2015</option>
+      <option value="2014">2014</option>
+    </select>
+    <select id="dateControlMonth" class="jInput">
+      <option value="1">January</option>
+      <option value="1">February</option>
+      <option value="1">March</option>
+      <option value="1">April</option>
+      <option value="1">May</option>
+      <option value="1">June</option>
+      <option value="1">July</option>
+      <option value="1">August</option>
+      <option value="1">September</option>
+      <option value="1">October</option>
+      <option value="1">November</option>
+      <option value="1">December</option>
+    </select>
+
+
+    <div class="page-header">
+      <h1>Html <small>DOM</small></h1>
+    </div>
+
+    <div class="page-header">    
+      <h3>Overlay</h3>
+    </div>
+
+    <button class="jButton" id="overlay-demo">Overlay</button>
+ 
+    <div class="page-header">    
+      <h3>Loader</h3>
+    </div>
+
+    <button class="jButton" id="body-loader">Body loader</button>
+    <button class="jButton" id="context-loader-1" data-context="context-1">Context loader</button>
+    <button class="jButton" id="context-loader-2" data-context="context-2">Context loader</button>
+
+    <br /><br />
+
+    <div class="panel-heading">Hello world</div>
+    <div class="panel-body" id="context-1">
+      ...
+    </div>
+
+    <div class="panel-heading">Hello world</div>
+    <div class="panel-body" id="context-2">
+      ...
+    </div>
+    
+    <h3>+ Popup</h3>
+
+    <button id='dialog-example' class="jButton">Popup</button>
+   
+    <h3>+ Form</h3>
+
+    <button class="jButton" id='createForm'>Create Form</button>
+    <div id='formArea'></div>
+  
+    <h3>+ Html</h3>
+
+   
+    <form action="" id="processForm">
+      <div>
+        <label for="number_form_process">String length. Min 2, Max 5 and Digits</label><br />
+        <input class="jInput" type="text" name='number_form_process' />
+        <div data-log='number_form_process'></div>
+      </div><br />
+      <div>
+        <label for="alnum_form_process">String length. Min 4, Max 8 and Alnum without <em>allowWhiteSpace</em></label><br />
+        <input class="jInput" type="text" name='alnum_form_process' />
+        <div data-log='alnum_form_process'></div>  
+      </div>
+      <button class="jButton" id='html'>Send</button>
+    </form>
+
+
+    <div class="page-header">
+      <h1>Readers <small>to process multimedia files</small></h1>
+    </div>
+
+    <div class="page-header">
+      <h3>File</h3>
+    </div>
+
+    <input type="file" id="file-reader-onchange" value="" multiple="multiple" />
+    <div id="file-reader-ondrop" class="drop" style="overflow: hidden; min-height: 200px">
+      <span style="color: #C0C0C0; font-size: 25px;">Drop files here</span>
+    </div>
+    <div id="file_reader_ondrop_response"></div>
+
+  </div>
+
+</body>
+</html>
+

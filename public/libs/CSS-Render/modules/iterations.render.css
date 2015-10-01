@@ -1,0 +1,50 @@
+@charset "utf-8";
+
+/*
+ * CSS Render - Timming
+ * http://development.pleets.org/apps/css-render
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+*[class^="$"][class~="iter-2"] {
+  -webkit-animation-iteration-count: 2;
+  -moz-animation-iteration-count: 2;
+  -ms-animation-iteration-count: 2;
+  -o-animation-iteration-count: 2;
+  animation-iteration-count: 2;
+}
+
+*[class^="$"][class~="iter-3"] {
+  -webkit-animation-iteration-count: 3;
+  -moz-animation-iteration-count: 3;
+  -ms-animation-iteration-count: 3;
+  -o-animation-iteration-count: 3;
+  animation-iteration-count: 3;
+}
+
+*[class^="$"][class~="iter-4"] {
+  -webkit-animation-iteration-count: 4;
+  -moz-animation-iteration-count: 4;
+  -ms-animation-iteration-count: 4;
+  -o-animation-iteration-count: 4;
+  animation-iteration-count: 4;
+}
+
+*[class^="$"][class~="iter-5"] {
+  -webkit-animation-iteration-count: 5;
+  -moz-animation-iteration-count: 5;
+  -ms-animation-iteration-count: 5;
+  -o-animation-iteration-count: 5;
+  animation-iteration-count: 5;
+}
+
+*[class^="$"][class~="infinite"] {
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  -ms-animation-iteration-count: infinite;
+  -o-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+}

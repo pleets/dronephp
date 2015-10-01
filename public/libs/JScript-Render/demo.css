@@ -1,0 +1,20 @@
+@charset "utf-8";
+
+/*
+ * JScript Render - demo styles
+ * http://www.pleets.org
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+ 
+/* CSS Render Updates */
+
+/* Gallery */
+
+*[class~="simple-gallery"] { background: rgb(255,255,255); overflow: hidden; }
+*[class~="simple-gallery"] [class~="item"] { width: 150px; height: 150px; overflow: hidden; margin: 2px; border: solid 3px rgb(240,240,240); float: left; }
+*[class~="simple-gallery"] [class~="item"] img { height: 100%; }
+
+*[class~="simple-gallery"][class~="tiny"] [class~="item"] { width: 50px; height: 50px; }

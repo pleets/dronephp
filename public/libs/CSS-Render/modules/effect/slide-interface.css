@@ -1,0 +1,82 @@
+@charset "utf-8";
+
+/*
+ * CSS Render - Slide effect interface
+ * http://development.pleets.org/apps/css-render
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+*[class^="$"][class~="slide"] {
+  -webkit-animation: slide 2s; 
+  -moz-animation: slide 2s;
+  -ms-animation: slide 2s;
+  -o-animation: slide 2s;
+  animation: slide 2s;
+}
+
+*[class^="$"][class~="slide-left-in"] {
+  -webkit-animation: slide-left-in 2s; 
+  -moz-animation: slide-left-in 2s;
+  -ms-animation: slide-left-in 2s;
+  -o-animation: slide-left-in 2s;
+  animation: slide-left-in 2s;
+}
+
+*[class^="$"][class~="slide-left-out"] {
+  -webkit-animation: slide-left-out 2s; 
+  -moz-animation: slide-left-out 2s;
+  -ms-animation: slide-left-out 2s;
+  -o-animation: slide-left-out 2s;
+  animation: slide-left-out 2s;
+}
+
+*[class^="$"][class~="slide-right-in"] {
+  -webkit-animation: slide-right-in 2s; 
+  -moz-animation: slide-right-in 2s;
+  -ms-animation: slide-right-in 2s;
+  -o-animation: slide-right-in 2s;
+  animation: slide-right-in 2s;
+}
+
+*[class^="$"][class~="slide-right-out"] {
+  -webkit-animation: slide-right-out 2s; 
+  -moz-animation: slide-right-out 2s;
+  -ms-animation: slide-right-out 2s;
+  -o-animation: slide-right-out 2s;
+  animation: slide-right-out 2s;
+}
+
+*[class^="$"][class~="slide-up-in"] {
+  -webkit-animation: slide-up-in 2s; 
+  -moz-animation: slide-up-in 2s;
+  -ms-animation: slide-up-in 2s;
+  -o-animation: slide-up-in 2s;
+  animation: slide-up-in 2s;
+}
+
+*[class^="$"][class~="slide-up-out"] {
+  -webkit-animation: slide-up-out 2s; 
+  -moz-animation: slide-up-out 2s;
+  -ms-animation: slide-up-out 2s;
+  -o-animation: slide-up-out 2s;
+  animation: slide-up-out 2s;
+}
+
+*[class^="$"][class~="slide-down-in"] {
+  -webkit-animation: slide-down-in 2s; 
+  -moz-animation: slide-down-in 2s;
+  -ms-animation: slide-down-in 2s;
+  -o-animation: slide-down-in 2s;
+  animation: slide-down-in 2s;
+}
+
+*[class^="$"][class~="slide-down-out"] {
+  -webkit-animation: slide-down-out 2s; 
+  -moz-animation: slide-down-out 2s;
+  -ms-animation: slide-down-out 2s;
+  -o-animation: slide-down-out 2s;
+  animation: slide-down-out 2s;
+}

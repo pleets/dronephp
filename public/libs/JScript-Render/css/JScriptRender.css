@@ -1,0 +1,21 @@
+@charset "utf-8";
+
+/*
+ * JScript Render - Stylesheet
+ * http://development.pleets.org/apps/j-render
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+ 
+/* Load components */
+@import "core.css";
+@import "html.css";
+@import "loader.css";
+@import "dialog.css";
+@import "progress-bar.css";
+@import "slider.css";
+
+/* resources */
+@import "fonts.css";

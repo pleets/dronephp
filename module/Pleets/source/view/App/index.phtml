@@ -1,0 +1,88 @@
+<?php
+	if ($this->isParam('modules')):
+		$mods = $this->param('modules');
+
+		?><ul class="collection"><?php
+		foreach ($mods as $key => $mod):
+			?>
+			<li class="collection-item avatar">
+				<i class="material-icons circle">folder</i>
+				<span class="title"><?= $key ?></span>
+				<a href="<?= $this->basePath() ?>/public/<?= $key ?>" class="waves-effect waves-light btn" target="_blank">Ver</a>
+
+				<ul class="collapsible" data-collapsible="accordion">
+					<?php if (count($mod['controller'])): ?>
+						<li>
+							<div class="collapsible-header"><i class="material-icons">whatshot</i>Controller</div>
+							<div class="collapsible-body">
+								<div class="collection">
+								<?php foreach ($mod['controller'] as $ctrl): ?>
+									<a class="collection-item" data-role="file-actions" href="<?= $this->basePath().'/public/Pleets/Files/fileActions/file/'.$ctrl['name'].'/type/controller/module/'.$key ?>"><?= $ctrl['name'] ?> <span class="badge"><?= $ctrl['lines'] ?> lines, <?= $ctrl['characters'] ?> characters</span></a>
+								<?php endforeach; ?>
+								</div>						
+							</div>
+						</li>
+					<?php endif; ?>
+					<?php if (count($mod['model'])): ?>
+						<li>
+							<div class="collapsible-header"><i class="material-icons">filter_drama</i>Model</div>
+							<div class="collapsible-body">
+								<div class="collection">
+								<?php foreach ($mod['model'] as $ctrl): ?>
+									<a class="collection-item" data-role="file-actions" href="<?= $this->basePath().'/public/Pleets/Files/fileActions/file/'.$ctrl['name'].'/type/model/module/'.$key ?>"><?= $ctrl['name'] ?> <span class="badge"><?= $ctrl['lines'] ?> lines, <?= $ctrl['characters'] ?> characters</span></a>
+								<?php endforeach; ?>
+								</div>						
+							</div>
+						</li>
+					<?php endif; ?>
+					<?php
+						$pass = false;
+						foreach ($mod['view'] as $item) 
+						{
+							if (count($item))
+								$pass = true;
+						}
+					?>
+					<?php if (count($mod['view']) && $pass): ?>
+						<li>
+							<div class="collapsible-header"><i class="material-icons">place</i>View</div>
+							<div class="collapsible-body">
+								<ul class="collapsible" data-collapsible="accordion">
+								<?php foreach ($mod['view'] as $ctrl => $views): ?>
+									<li>
+										<div class="collapsible-header"><?= $ctrl ?></div>
+										<div class="collapsible-body">
+											<div class="collection">
+											<?php foreach ($views as $view): ?>
+												<a class="collection-item" data-role="file-actions" href="<?= $this->basePath().'/public/Pleets/Files/fileActions/file/'.$view['name'].'/type/view/module/'.$key.'/controller/' . $ctrl ?>"><?= $view['name'] ?> <span class="badge"><?= $view['lines'] ?> lines, <?= $view['characters'] ?> characters</span></a>
+											<?php endforeach; ?>
+											</div>
+										</div>
+									</li>
+								<?php endforeach; ?>
+								</ul>
+							</div>
+						</li>
+					<?php endif; ?>
+				</ul>
+				<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+			</li>
+			<?php
+		endforeach;
+		?></ul>
+
+		<!-- Modal Structure -->
+		<div id="file-functions" class="modal">
+			<div class="modal-content">
+				<div class="progress">
+					<div class="indeterminate"></div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="#!" class="modal-action modal-close waves-effect btn-flat">Cancel</a>
+			</div>
+		</div>
+        
+		<?php
+	endif;
+?>

@@ -1,0 +1,36 @@
+@charset "utf-8";
+
+/*
+ * JScript Render - Html styles
+ * http://www.pleets.org
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+tr.success { background: rgba(0,255,0,0.5); }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.pointer { cursor: pointer; }
+button { cursor: pointer; }
+
+.align-down-out { position: absolute; bottom: 0; left: 0; }
+.list-box { background: white; width: 220px; padding: 2px; box-shadow: rgb(20, 20, 20) 0px 0px 3px; border-radius: 4px; }
+
+.list-box .item { border: solid 1px rgb(230, 230, 230); padding: 2px; margin: 0; font-size: inherit; color: rgb(60, 60, 60); display: block; background: white; width: 100%; 
+	-webkit-transition: 0.2s all;
+	-moz-transition: 0.2s all;
+	-ms-transition: 0.2s all;
+	-o-transition: 0.2s all;
+	transition: 0.2s all;
+}
+.list-box .item:nth-child(odd) { background: rgb(240, 240, 240); }
+.list-box .item:hover { background: rgb(50, 50, 50); color: white; }
+
+/* item borders */
+.list-box .item { border-top: none !important; }
+.list-box .item:first { border-top: solid 1px rgb(230, 230, 230); }
+
+/* Open Sans Font */
+.open-sans-font { font-family: "Open Sans", Helvetica, Arial, sans-serif; }

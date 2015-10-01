@@ -1,0 +1,18 @@
+@charset "utf-8";
+
+/*
+ * CSS Render - Skew-slide effect interaface
+ * http://development.pleets.org/apps/css-render
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+*[class^="$"][class~="sk-slide"] {
+  -webkit-animation: sk-slide 2s; 
+  -moz-animation: sk-slide 2s;
+  -ms-animation: sk-slide 2s;
+  -o-animation: sk-slide 2s;
+  animation: sk-slide 2s;
+}

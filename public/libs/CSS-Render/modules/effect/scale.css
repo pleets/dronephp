@@ -1,0 +1,88 @@
+@charset "utf-8";
+
+/*
+ * CSS Render - Scale effect
+ * http://development.pleets.org/apps/css-render
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+@import "scale-interface.css";
+
+/* scale */
+
+@-webkit-keyframes scale {
+  from, to { -webkit-transform: scale(1,1); }
+  33% { -webkit-transform: scale(2,2); }
+  66% { -webkit-transform: scale(0.5,0.5); }
+}
+
+@-moz-keyframes scale {
+  from, to { -moz-transform: scale(1,1); }
+  33% { -moz-transform: scale(2,2); }
+  66% { -moz-transform: scale(0.5,0.5); }
+}
+
+@-ms-keyframes scale {
+  from, to { -ms-transform: scale(1,1); }
+  33% { -ms-transform: scale(2,2); }
+  66% { -ms-transform: scale(0.5,0.5); }
+}
+
+@-o-keyframes scale {
+  from, to { -o-transform: scale(1,1); }
+  33% { -o-transform: scale(2,2); }
+  66% { -o-transform: scale(0.5,0.5); }
+}
+
+@keyframes scale {
+  from, to { transform: scale(1,1); }
+  33% { transform: scale(2,2); }
+  66% { transform: scale(0.5,0.5); }
+}
+
+/* scale-in */
+
+@-webkit-keyframes scale-in {
+  50% { -webkit-transform: scale(2,2); }
+}
+
+@-moz-keyframes scale-in {
+  50% { -moz-transform: scale(2,2); }
+}
+
+@-ms-keyframes scale-in {
+  50% { -ms-transform: scale(2,2); }
+}
+
+@-o-keyframes scale-in {
+  50% { -o-transform: scale(2,2); }
+}
+
+@keyframes scale-in {
+  50% { transform: scale(2,2); }
+}
+
+/* scale-out */
+
+@-webkit-keyframes scale-out {
+  50% { -webkit-transform: scale(0.5,0.5); }
+}
+
+@-moz-keyframes scale-out {
+  50% { -moz-transform: scale(0.5,0.5); }
+}
+
+@-ms-keyframes scale-out {
+  50% { -ms-transform: scale(0.5,0.5); }
+}
+
+@-o-keyframes scale-out {
+  50% { -o-transform: scale(0.5,0.5); }
+}
+
+@keyframes scale-out {
+  50% { transform: scale(0.5,0.5); }
+}

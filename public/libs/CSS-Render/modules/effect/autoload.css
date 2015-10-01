@@ -1,0 +1,26 @@
+@charset "utf-8";
+
+/*
+ * CSS Render - Effect module
+ * http://development.pleets.org/apps/css-render
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+/* Import animations */
+@import "sk-slide.css";
+@import "rotate.css";
+@import "shadow.css";
+@import "scale.css";
+@import "slide.css";
+@import "skew.css";
+@import "fade.css";
+
+@import "bounce.css";
+@import "pulse.css";
+@import "shake.css";
+@import "swing.css";
+@import "tada.css";
+@import "wobble.css";

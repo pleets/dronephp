@@ -1,0 +1,33 @@
+<?php if ($this->isParam("sql_errors")): ?>
+
+	<?php
+		$sql_errors = $this->param("sql_errors");
+		if (count($sql_errors)):
+			foreach ($sql_errors as $error):
+				?><div class="alert alert-danger"> <?= $error["message"] ?> </div><?php
+			endforeach;
+		endif;
+	?>
+
+<?php else: ?>
+
+	<?php if ($this->isParam("standard_error")): ?>
+		<?php $error = $this->param("standard_error"); ?>
+		<div class="alert alert-danger"><?= $error ?></div>
+	<?php endif; ?>
+
+	<?php
+	if ($this->isParam("datos")):
+
+		$datos = $this->param("datos");
+var_dump($datos);
+		if (count($datos)):
+			//
+		else:
+			?><div class="alert alert-warning">No existen datos para mostrar</div><?php
+		endif;
+
+	endif;
+	?>
+
+<?php endif; ?>

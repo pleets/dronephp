@@ -1,0 +1,27 @@
+body { 
+	font-family: "Open Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+
+@media (max-height: 1200px) {
+	.CodeMirror {
+		height: 850px;
+	}
+}
+
+@media (max-height: 1000px) {
+	.CodeMirror {
+		height: 650px;
+	}
+}
+
+@media (max-height: 800px) {
+	.CodeMirror {
+		height: 450px;
+	}
+}
+
+@media (max-height: 600px) {
+	.CodeMirror {
+		height: 250px;
+	}
+}

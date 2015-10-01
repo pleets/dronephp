@@ -1,0 +1,18 @@
+@charset "utf-8";
+
+/*
+ * CSS Render - Pulse effect interface
+ * http://development.pleets.org/apps/css-render
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+*[class^="$"][class~="pulse"] {
+  -webkit-animation: pulse 1s; 
+  -moz-animation: pulse 1s;
+  -ms-animation: pulse 1s;
+  -o-animation: pulse 1s;
+  animation: pulse 1s;
+}

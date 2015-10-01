@@ -1,0 +1,36 @@
+@charset "utf-8";
+
+/*
+ * JScript Render - Slider
+ * http://www.pleets.org
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+ 
+/* Slide */
+
+.jrender-slide { position: relative; z-index: 29; text-align: center; padding-bottom: 50px; overflow: hidden; }
+.jrender-slide > .item { display: block; }
+.jrender-slide > .item > * { text-align: left; }
+
+.jrender-slide > .state { display: inline-block; min-width: 40px; min-height: 40px; background: rgb(230,230,230); 
+    border-radius: 8px; color: rgb(70,70,70); font-size: 25px; padding: 10px;
+    position: absolute; top: 1px; right: 1px;
+}
+
+/* Toolbar */
+.jrender-slide > .toolbar { width: 100%; position: absolute; bottom: 0; text-align: center; }
+.jrender-slide > .toolbar > * { display: inline-block; }
+.jrender-slide > .toolbar > .button-right, .jrender-slide > .toolbar > .button-left, .jrender-slide > .toolbar > .button-down { color: rgb(70,70,70); background: rgb(180,180,180); 
+    opacity: 0.3; cursor: pointer; z-index: 29; border-radius: 15px; text-align: center;
+    -webkit-transition: opacity 1s, background 1.5s, color 0.2s;
+    -moz-transition: opacity 1s, background 1.5s, color 0.2s;
+    -ms-transition: opacity 1s, background 1.5s, color 0.2s;
+    -o-transition: opacity 1s, background 1.5s, color 0.2s;
+    transition: opacity 1s, background 1.5s, color 0.2s;
+}
+.jrender-slide > .toolbar > .button-right:hover, .jrender-slide > .toolbar > .button-left:hover, .jrender-slide > .button-down:hover {
+    opacity: 0.8; color: white; background: rgb(20,20,20); }
+.jrender-slide > .toolbar > .button-right, .jrender-slide > .toolbar > .button-left { padding: 5px; font-size: 30px; }

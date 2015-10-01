@@ -1,0 +1,264 @@
+@charset "utf-8";
+
+/*
+ * CSS Render - Slide effect interface
+ * http://development.pleets.org/apps/css-render
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+@import "slide-interface.css";
+
+/* slide */
+@-webkit-keyframes slide {
+  from { -webkit-transform: translateX(-100%); }
+  40% { -webkit-transform: translateX(0%); }
+  60% { -webkit-transform: translateX(0%); }
+  to { -webkit-transform: translateX(100%); }
+}
+
+@-moz-keyframes slide {
+  from { -moz-transform: translateX(-100%); }
+  40% { -webkit-transform: translateX(0%); }
+  60% { -webkit-transform: translateX(0%); }
+  to { -moz-transform: translateX(100%); }
+}
+
+@-ms-keyframes slide {
+  from { -ms-transform: translateX(-100%); }
+  40% { -webkit-transform: translateX(0%); }
+  60% { -webkit-transform: translateX(0%); }
+  to { -ms-transform: translateX(100%); }
+}
+
+@-o-keyframes slide {
+  from { -o-transform: translateX(-100%); }
+  40% { -webkit-transform: translateX(0%); }
+  60% { -webkit-transform: translateX(0%); }
+  to { -o-transform: translateX(100%); }
+}
+
+@keyframes slide {
+  from { transform: translateX(-100%); }
+  40% { -webkit-transform: translateX(0%); }
+  60% { -webkit-transform: translateX(0%); }
+  to { transform: translateX(100%); }
+}
+
+/* slide-left-in */
+
+@-webkit-keyframes slide-left-in {
+  from { -webkit-transform: translateX(100%); }
+  to { -webkit-transform: translateX(0%); }
+}
+
+@-moz-keyframes slide-left-in {
+  from { -moz-transform: translateX(100%); }
+  to { -moz-transform: translateX(0%); }
+}
+
+@-ms-keyframes slide-left-in {
+  from { -ms-transform: translateX(100%); }
+  to { -ms-transform: translateX(0%); }
+}
+
+@-o-keyframes slide-left-in {
+  from { -o-transform: translateX(100%); }
+  to { -o-transform: translateX(0%); }
+}
+
+@keyframes slide-left-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0%); }
+}
+
+/* slide-left-out */
+
+@-webkit-keyframes slide-left-out {
+  from { -webkit-transform: translateX(0%); }
+  to { -webkit-transform: translateX(-100%); }
+}
+
+@-moz-keyframes slide-left-out {
+  from { -moz-transform: translateX(0%); }
+  to { -moz-transform: translateX(-100%); }
+}
+
+@-ms-keyframes slide-left-out {
+  from { -ms-transform: translateX(0%); }
+  to { -ms-transform: translateX(-100%); }
+}
+
+@-o-keyframes slide-left-out {
+  from { -o-transform: translateX(0%); }
+  to { -o-transform: translateX(-100%); }
+}
+
+@keyframes slide-left-out {
+  from { transform: translateX(0%); }
+  to { transform: translateX(-100%); }
+}
+
+/* slide-right-in */
+
+@-webkit-keyframes slide-right-in {
+  from { -webkit-transform: translateX(-100%); }
+  to { -webkit-transform: translateX(0%); }
+}
+
+@-moz-keyframes slide-right-in {
+  from { -moz-transform: translateX(-100%); }
+  to { -moz-transform: translateX(0%); }
+}
+
+@-ms-keyframes slide-right-in {
+  from { -ms-transform: translateX(-100%); }
+  to { -ms-transform: translateX(0%); }
+}
+
+@-o-keyframes slide-right-in {
+  from { -o-transform: translateX(-100%); }
+  to { -o-transform: translateX(0%); }
+}
+
+@keyframes slide-right-in {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0%); }
+}
+
+/* slide-right-out */
+
+@-webkit-keyframes slide-right-out {
+  from { -webkit-transform: translateX(0%); }
+  to { -webkit-transform: translateX(100%); }
+}
+
+@-moz-keyframes slide-right-out {
+  from { -moz-transform: translateX(0%); }
+  to { -moz-transform: translateX(100%); }
+}
+
+@-ms-keyframes slide-right-out {
+  from { -ms-transform: translateX(0%); }
+  to { -ms-transform: translateX(100%); }
+}
+
+@-o-keyframes slide-right-out {
+  from { -o-transform: translateX(0%); }
+  to { -o-transform: translateX(100%); }
+}
+
+@keyframes slide-right-out {
+  from { transform: translateX(0%); }
+  to { transform: translateX(100%); }
+}
+
+/* slide-up-in */
+
+@-webkit-keyframes slide-up-in {
+  from { -webkit-transform: translateY(100%); }
+  to { -webkit-transform: translateY(0%); }
+}
+
+@-moz-keyframes slide-up-in {
+  from { -moz-transform: translateY(100%); }
+  to { -moz-transform: translateY(0%); }
+}
+
+@-ms-keyframes slide-up-in {
+  from { -ms-transform: translateY(100%); }
+  to { -ms-transform: translateY(0%); }
+}
+
+@-o-keyframes slide-up-in {
+  from { -o-transform: translateY(100%); }
+  to { -o-transform: translateY(0%); }
+}
+
+@keyframes slide-up-in {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0%); }
+}
+
+/* slide-up-out */
+
+@-webkit-keyframes slide-up-out {
+  from { -webkit-transform: translateY(0%); }
+  to { -webkit-transform: translateY(-100%); }
+}
+
+@-moz-keyframes slide-up-out {
+  from { -moz-transform: translateY(0%); }
+  to { -moz-transform: translateY(-100%); }
+}
+
+@-ms-keyframes slide-up-out {
+  from { -ms-transform: translateY(0%); }
+  to { -ms-transform: translateY(-100%); }
+}
+
+@-o-keyframes slide-up-out {
+  from { -o-transform: translateY(0%); }
+  to { -o-transform: translateY(-100%); }
+}
+
+@keyframes slide-up-out {
+  from { transform: translateY(0%); }
+  to { transform: translateY(-100%); }
+}
+
+/* slide-down-in */
+
+@-webkit-keyframes slide-down-in {
+  from { -webkit-transform: translateY(-100%); }
+  to { -webkit-transform: translateY(0%); }
+}
+
+@-moz-keyframes slide-down-in {
+  from { -moz-transform: translateY(-100%); }
+  to { -moz-transform: translateY(0%); }
+}
+
+@-ms-keyframes slide-down-in {
+  from { -ms-transform: translateY(-100%); }
+  to { -ms-transform: translateY(0%); }
+}
+
+@-o-keyframes slide-down-in {
+  from { -o-transform: translateY(-100%); }
+  to { -o-transform: translateY(0%); }
+}
+
+@keyframes slide-down-in {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0%); }
+}
+
+/* slide-down-out */
+
+@-webkit-keyframes slide-down-out {
+  from { -webkit-transform: translateY(0%); }
+  to { -webkit-transform: translateY(100%); }
+}
+
+@-moz-keyframes slide-down-out {
+  from { -moz-transform: translateY(0%); }
+  to { -moz-transform: translateY(100%); }
+}
+
+@-ms-keyframes slide-down-out {
+  from { -ms-transform: translateY(0%); }
+  to { -ms-transform: translateY(100%); }
+}
+
+@-o-keyframes slide-down-out {
+  from { -o-transform: translateY(0%); }
+  to { -o-transform: translateY(100%); }
+}
+
+@keyframes slide-down-out {
+  from { transform: translateY(0%); }
+  to { transform: translateY(100%); }
+}

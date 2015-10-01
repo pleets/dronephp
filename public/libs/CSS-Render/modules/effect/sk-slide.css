@@ -1,0 +1,44 @@
+@charset "utf-8";
+
+/*
+ * CSS Render - Skew-slide effect
+ * http://development.pleets.org/apps/css-render
+ *
+ * Copyright 2014, Pleets Apps
+ * Free to use under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ */
+
+@import "sk-slide-interface.css";
+
+/* sk-slide */
+
+@-webkit-keyframes sk-slide {
+  from { -webkit-transform: skew(0deg,-20deg) translate(-110%, -50%); }
+  75% { -webkit-transform: skew(0deg,-20deg) translate(0%); }
+  to { -webkit-transform: skew(0deg,0deg); }
+}
+
+@-moz-keyframes sk-slide {
+  from { -moz-transform: skew(0deg,-20deg) translate(-110%, -50%); }
+  75% { -moz-transform: skew(0deg,-20deg) translate(0%); }
+  to { -moz-transform: skew(0deg,0deg); }
+}
+
+@-ms-keyframes sk-slide {
+  from { -ms-transform: skew(0deg,-20deg) translate(-110%, -50%); }
+  75% { -ms-transform: skew(0deg,-20deg) translate(0%); }
+  to { -ms-transform: skew(0deg,0deg); }
+}
+
+@-o-keyframes sk-slide {
+  from { -o-transform: skew(0deg,-20deg) translate(-110%, -50%); }
+  75% { -o-transform: skew(0deg,-20deg) translate(0%); }
+  to { -o-transform: skew(0deg,0deg); }
+}
+
+@keyframes sk-slide {
+  from { transform: skew(0deg,-20deg) translate(-110%, -50%); }
+  75% { transform: skew(0deg,-20deg) translate(0%); }
+  to { transform: skew(0deg,0deg); }
+}

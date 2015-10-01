@@ -1,0 +1,17 @@
+<?php
+	if ($this->isParam('file')):
+		$desc = $this->param('description');
+		?>
+		<h4><i class="material-icons">label</i> <?= basename($this->param('file')) ?></h4>
+		<p><strong>Size:</strong> <?= $desc["size"] ?></p>
+		
+		<?php if ( $this->param('type') == 'view'): ?>
+			<p><a class="waves-effect waves-light btn" href="<?= $this->basePath() .'/public/Pleets/Files/editFile/file/' . basename($this->param('file')) ."/type/". $this->param('type') .  '/module/'.$this->param('module') . '/controller/'.$this->param('controller')?>">Editar</a> <button class="waves-effect red waves-light btn">Eliminar</button></p>
+		<?php else: ?>
+			<p><a class="waves-effect waves-light btn" href="<?= $this->basePath() .'/public/Pleets/Files/editFile/file/' . basename($this->param('file')) ."/type/". $this->param('type') .  '/module/'.$this->param('module') ?>">Editar</a> <button class="waves-effect red waves-light btn">Eliminar</button></p>
+		<?php endif; ?>
+		<?php
+	else:
+		?><div class="card-panel red">File not found!</div><?php
+	endif;
+?>
