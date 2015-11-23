@@ -13,10 +13,10 @@ namespace Pleets\Sql;
 
 class SQLServer
 {
-    private $dbhost = 'SVR';                           # default host
-    private $dbuser = 'sa';                           # default username
-    private $dbpass = 'admin';                           # default password
-    private $dbname = 'DBNAME';                           # default database
+    private $dbhost = '';                           # default host
+    private $dbuser = '';                           # default username
+    private $dbpass = '';                           # default password
+    private $dbname = '';                           # default database
 
     private $dbconn = null;                         # connection
     private $buffer = null;                         # buffer
@@ -39,7 +39,7 @@ class SQLServer
         $this->dbpass = is_null($dbpass) ? !defined('DBPASS') ? $this->dbpass : @DBPASS : $dbpass;
         $this->dbname = is_null($dbname) ? !defined('DBNAME') ? $this->dbname : @DBNAME : $dbname;
 
-		$db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass); 
+		$db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass);
 		$this->dbconn = sqlsrv_connect($this->dbhost, $db_info);
 
         if ($this->dbconn === false)
@@ -63,7 +63,7 @@ class SQLServer
 
     public function reconnect()
     {
-        $db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass); 
+        $db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass);
         $this->dbconn = sqlsrv_connect($this->dbhost, $db_info);
 
         if ($this->dbconn === false)
@@ -104,7 +104,7 @@ class SQLServer
     {
         $this->begin_transaction();
 
-        foreach ($querys as $sql) 
+        foreach ($querys as $sql)
         {
             $this->query($sql);
         }
@@ -166,7 +166,7 @@ class SQLServer
                     {
                         $rowParsed[$key] = (!is_object($value)) ? utf8_encode($value) : $value;
                     }
-                    $data[] = $rowParsed;            
+                    $data[] = $rowParsed;
                 }
                 else
                     $data[] = $row;

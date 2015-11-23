@@ -8,7 +8,14 @@ abstract class MySQLAbstractionModel
 
 	public function __construct()
 	{
-		$this->connect = new MySQL();
+		$dbsettings = include(__DIR__ . "/../../../config/database.mysql.config.php");
+
+		$this->connect = new MySQL(
+			$dbsettings["database"]["host"],
+			$dbsettings["database"]["user"],
+			$dbsettings["database"]["password"],
+			$dbsettings["database"]["dbname"]
+		);
 	}
 
 	/* Getters */

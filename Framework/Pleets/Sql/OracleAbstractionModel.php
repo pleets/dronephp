@@ -8,7 +8,14 @@ abstract class OracleAbstractionModel
 
 	public function __construct()
 	{
-		$this->connect = new Oracle();
+		$dbsettings = include(__DIR__ . "/../../../config/database.oracle.config.php");
+
+		$this->connect = new Oracle(
+			$dbsettings["database"]["host"],
+			$dbsettings["database"]["user"],
+			$dbsettings["database"]["password"],
+			$dbsettings["database"]["dbname"]
+		);
 	}
 
 	/* Getters */

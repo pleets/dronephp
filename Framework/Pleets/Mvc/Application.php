@@ -16,7 +16,7 @@ class Application
 		if (!isset($_SESSION))
 			session_start();
 
-		$_SESSION["APP"] = __CLASS__;		
+		$_SESSION["APP"] = __CLASS__;
 
 		// Get settings from application.config.php
 		$this->settings = require "config/application.config.php";
@@ -42,7 +42,7 @@ class Application
 
 		if (!ini_get('display_errors'))
 		{
-			if ($devMode) 
+			if ($devMode)
 			{
 				ini_set('display_errors', 1);
 
@@ -53,7 +53,7 @@ class Application
 				// error_reporting(E_ALL);
 
 				// Best way to view all possible errors
-				error_reporting(-1);			
+				error_reporting(-1);
 			}
 			else {
 				ini_set('display_errors', 0);
@@ -135,7 +135,7 @@ class Application
 			throw new \Exception("The application must have at least one module");
 	}
 
-	private function buildRoute($settings) 
+	private function buildRoute($settings)
 	{
 		/*
 		 *	PARSE ROUTE CONFIGURATION:
@@ -190,7 +190,7 @@ class Application
 				throw new \Exception("The key 'routes' does not exists in the 'router' key in the configuration file $moduleFileSettings");
 
 			if (!array_key_exists($module, $moduleSettings["router"]["routes"]))
-				throw new \Exception("The key '$module' does not exists in '[router][routes]' key in the configuration file $moduleFileSettings");			
+				throw new \Exception("The key '$module' does not exists in '[router][routes]' key in the configuration file $moduleFileSettings");
 
 			$spModule = $moduleSettings["router"]["routes"][$module]["module"];
 			if (!in_array($spModule, $settings['modules']))
@@ -233,12 +233,12 @@ class Application
 		{
 			$this->module = $spModule;
 			$this->controller = $moduleSettings['router']['routes'][$module]['controller'];
-			$this->view = $moduleSettings['router']['routes'][$module]['view'];	
+			$this->view = $moduleSettings['router']['routes'][$module]['view'];
 		}
 		else if (is_null($this->getView()))
 		{
 			$this->module = $spModule;
-			$this->view = $moduleSettings['router']['routes'][$module]['view'];	
+			$this->view = $moduleSettings['router']['routes'][$module]['view'];
 		}
 	}
 

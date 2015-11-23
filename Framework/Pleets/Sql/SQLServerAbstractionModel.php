@@ -8,7 +8,14 @@ abstract class SQLServerAbstractionModel
 
 	public function __construct()
 	{
-		$this->connect = new SQLServer();
+		$dbsettings = include(__DIR__ . "/../../../config/database.sqlserver.config.php");
+
+		$this->connect = new SQLServer(
+			$dbsettings["database"]["host"],
+			$dbsettings["database"]["user"],
+			$dbsettings["database"]["password"],
+			$dbsettings["database"]["dbname"]
+		);
 	}
 
 	/* Getters */

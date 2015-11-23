@@ -2,12 +2,12 @@
 
 namespace App\Model;
 
-class SQLServerModelExample extends \Pleets\Sql\MySQLAbstractionModel
+class MySQLModelExample extends \Pleets\Sql\MySQLAbstractionModel
 {
     public function consulta()
     {
-        $sql = "SELECT * FROM mysql.users";
+        $sql = "SELECT * FROM mysql.user";
         $result = $this->connect->query($sql);
-        return $this->connect->toArray(array('encode_utf8' => true));
+        return $this->connect->toArray();
     }
 }

@@ -14,9 +14,9 @@ namespace Pleets\Sql;
 class Oracle
 {
     private $dbhost = '';                           # default host
-    private $dbuser = 'SYSTEM';                           # default username
-    private $dbpass = 'dbadmin';                           # default password
-    private $dbname = 'localhost/XE';                           # default database
+    private $dbuser = '';                           # default username
+    private $dbpass = '';                           # default password
+    private $dbname = '';                           # default database
 
     private $dbconn = null;                         # connection
     private $buffer = null;                         # buffer
