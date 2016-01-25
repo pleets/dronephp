@@ -8,14 +8,10 @@ date_default_timezone_set("America/Bogota");
 // Memory limit
 ini_set("memory_limit","256M");
 
-
-/*
- *	Autoloader de recursos y librerías externads
- */
-
+// Directories to load
 $directories = array("library");
 
-/* autoload general*/
+// General library loader
 function LibraryLoader($name)
 {
 	global $directories;
@@ -32,7 +28,7 @@ function LibraryLoader($name)
 	}
 }
 
-// Librerías
+// Load libraries
 spl_autoload_register("LibraryLoader");
 
 // Run application
