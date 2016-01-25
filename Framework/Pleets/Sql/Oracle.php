@@ -43,7 +43,7 @@ class Oracle
 
         if ($this->dbconn === false)
         {
-            $this->errors = sqlsrv_errors();
+            $this->errors = oci_error();
                 throw new \Exception("The database connection could not be started!");
         }
 	}
@@ -66,7 +66,7 @@ class Oracle
 
         if ($this->dbconn === false)
         {
-            $this->errors = sqlsrv_errors();
+            $this->errors = oci_error();
             throw new \Exception("The database connection could not be started!");
         }
 
