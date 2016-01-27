@@ -23,7 +23,7 @@ abstract class AbstractionController
 		 */
 		$fqn = "\\" . $module . "\\Module";
 
-		$this->module = new $fqn($module);
+		$this->module = new $fqn($module, $this);
 
 		if (!is_null($method))
 		{

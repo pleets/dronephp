@@ -6,13 +6,13 @@ abstract class AbstractionModule
 {
 	protected $moduleName;
 
-	public function __construct($moduleName)
+	public function __construct($moduleName, $controller)
 	{
 		$this->moduleName = $moduleName;
-		$this->init();
+		$this->init($controller);
 	}
 
-	public abstract function init();
+	public abstract function init($controller);
 
 	public function getModuleName()
 	{
