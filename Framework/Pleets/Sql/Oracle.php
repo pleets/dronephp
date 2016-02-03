@@ -85,8 +85,7 @@ class Oracle
 
         if (!$r)
         {
-            $e = oci_error($stid);
-            $this->errors = trigger_error(htmlentities($e['message']), E_USER_ERROR);
+            $this->errors = oci_error($stid);
             throw new \Exception("Could not perform the query to the database");
         }
 
@@ -140,7 +139,7 @@ class Oracle
 
     public function cancel()
     {
-        sqlsrv_cancel($this->result);
+        oci_cancel($this->result);
     }
 
     public function toArray(Array $settings = array())
