@@ -39,7 +39,8 @@ class Oracle
         $this->dbpass = is_null($dbpass) ? !defined('DBPASS') ? $this->dbpass : @DBPASS : $dbpass;
         $this->dbname = is_null($dbname) ? !defined('DBNAME') ? $this->dbname : @DBNAME : $dbname;
 
-        $this->dbconn = oci_connect($this->dbuser,  $this->dbpass, $this->dbname);
+        $connection_string = (is_null($this->dbhost) || empty($this->dbhost)) ? $this->dbname : $this->dbhost ."/". $this->dbname;
+        $this->dbconn = oci_connect($this->dbuser,  $this->dbpass, $connection_string);
 
         if ($this->dbconn === false)
         {
@@ -65,7 +66,8 @@ class Oracle
 
     public function reconnect()
     {
-        $this->dbconn = oci_connect($this->dbuser,  $this->dbpass, $this->dbname);
+        $connection_string = (is_null($this->dbhost) || empty($this->dbhost)) ? $this->dbname : $this->dbhost ."/". $this->dbname;
+        $this->dbconn = oci_connect($this->dbuser,  $this->dbpass, $connection_string);
 
         if ($this->dbconn === false)
         {
