@@ -7,7 +7,7 @@ class SQLServerModelExample extends \Pleets\Sql\SQLServerAbstractionModel
     public function consulta()
     {
         $sql = "SELECT * FROM SYS.TABLES";
-        $result = $this->connect->query($sql);
+        $result = $this->getDb()->query($sql);
         return $this->getDb()->toArray(array('encode_utf8' => true));
     }
 }
