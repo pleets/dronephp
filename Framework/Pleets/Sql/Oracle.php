@@ -54,11 +54,14 @@ class Oracle
     public function getUsername() { return $this->dbuser; }
     public function getDatabase() { return $this->dbname; }
 
-    public function getErrors() { return $this->errors; }
-
     /* Setters */
 
+    public function setHostname($dbhost) { $this->dbhost = $dbhost; }
+    public function setDatabase($dbuser) { $this->dbuser = $dbuser; }
+    public function setDatabase($dbpass) { $this->dbpass = $dbpass; }
     public function setDatabase($dbname) { $this->dbname = $dbname; }
+    
+    public function getErrors() { return $this->errors; }
 
     public function reconnect()
     {
