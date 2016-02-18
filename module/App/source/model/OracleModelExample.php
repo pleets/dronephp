@@ -8,6 +8,6 @@ class OracleModelExample extends \Pleets\Sql\OracleAbstractionModel
     {
         $sql = "SELECT * FROM HELP";
         $result = $this->connect->query($sql);
-        return $this->connect->toArray(array('encode_utf8' => true));
+        return $this->getDb()->toArray(array('encode_utf8' => true));
     }
 }

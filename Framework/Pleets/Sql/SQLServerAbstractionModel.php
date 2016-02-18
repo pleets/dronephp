@@ -4,20 +4,20 @@ namespace Pleets\Sql;
 
 abstract class SQLServerAbstractionModel
 {
-	private $conn;		# SQLServer connection
+	private $db;		# SQLServer connection
 
-	public function __construct()
+	public function __construct($abstraction_connection_string = "default")
 	{
 		$dbsettings = include(__DIR__ . "/../../../config/database.sqlserver.config.php");
 
-		$this->connect = new SQLServer(
-			$dbsettings["database"]["host"],
-			$dbsettings["database"]["user"],
-			$dbsettings["database"]["password"],
-			$dbsettings["database"]["dbname"]
+		$this->db = new SQLServer(
+			$dbsettings[$abstraction_connection_string]["host"],
+			$dbsettings[$abstraction_connection_string]["user"],
+			$dbsettings[$abstraction_connection_string]["password"],
+			$dbsettings[$abstraction_connection_string]["dbname"]
 		);
 	}
 
 	/* Getters */
-	public function getConn() { return $this->conn; }
+	public function getDb() { return $this->db; }
 }

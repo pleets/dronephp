@@ -8,6 +8,6 @@ class SQLServerModelExample extends \Pleets\Sql\SQLServerAbstractionModel
     {
         $sql = "SELECT * FROM SYS.TABLES";
         $result = $this->connect->query($sql);
-        return $this->connect->toArray(array('encode_utf8' => true));
+        return $this->getDb()->toArray(array('encode_utf8' => true));
     }
 }

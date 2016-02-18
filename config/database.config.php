@@ -1,7 +1,7 @@
 <?php
 
 return array(
-	'database' => array(
+	'default' => array(
 		'dbname' => 'mysql',
 		'user' => 'root',
 		'password' => '',

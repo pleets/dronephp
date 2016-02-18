@@ -8,6 +8,6 @@ class MySQLModelExample extends \Pleets\Sql\MySQLAbstractionModel
     {
         $sql = "SELECT * FROM mysql.user";
         $result = $this->connect->query($sql);
-        return $this->connect->toArray();
+        return $this->getDb()->toArray();
     }
 }

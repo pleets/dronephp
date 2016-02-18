@@ -1,7 +1,7 @@
 <?php
 
 return array(
-	'database' => array(
+	'default' => array(
 		'host' => '',
 		'user' => 'SYSTEM',
 		'dbname' => 'localhost/XE',
