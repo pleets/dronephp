@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class MySQLModelExample extends \Pleets\Sql\MySQLAbstractionModel
+class MySQLModelExample extends \Pleets\Sql\AbstractionModel
 {
     public function consulta()
     {

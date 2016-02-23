@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class OracleModelExample extends \Pleets\Sql\OracleAbstractionModel
+class OracleModelExample extends \Pleets\Sql\AbstractionModel
 {
     public function consulta()
     {

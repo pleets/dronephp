@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class SQLServerModelExample extends \Pleets\Sql\SQLServerAbstractionModel
+class SQLServerModelExample extends \Pleets\Sql\AbstractionModel
 {
     public function consulta()
     {

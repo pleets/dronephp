@@ -6,7 +6,7 @@ return array(
 		'user' => 'root',
 		'password' => '',
 		'host' => 'localhost',
-		'driver' => 'pdo_mysql',
+		'driver' => 'Mysqli',
 		'charset' => 'utf8',
 	),
 );
