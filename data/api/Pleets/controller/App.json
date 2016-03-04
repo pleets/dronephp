@@ -1,0 +1,31 @@
+{
+    "description"                   : "Lists MVC components in the application",
+    "methods"                       : 
+    {
+        "index"    : 
+        {
+            "description"           : "Gets Models, controllers and views and lists its hierachy",
+            "returns"               : "Array",
+            "params"                : {}
+        },
+        "describeFile"    : 
+        {
+            "description"           : "Get the number of lines and characters of a file",
+            "returns"               : "Array",
+            "params"                : 
+            {
+                "file"              :
+                {
+                    "type"          : "String",
+                    "description"   : "File name"
+                }
+            }
+        },
+        "getViewsFromControler"     : 
+        {
+            "description"           : "Get all views from a Controller. This method lists all files in the controller folder,  not methods of its. The name of the file is catched from <strong>$_POST.</strong>",
+            "returns"               : "Array",
+            "params"                : {}
+        }
+    }
+}

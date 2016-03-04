@@ -46,6 +46,5 @@ $(function(){
                 window.location = baseURL + "/library/Calc-Writer/xls.php?name=" + $("title").text() + "-" + doc_title;
             }
         });		
-	});
-
+	});    
 });

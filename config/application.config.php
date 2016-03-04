@@ -3,6 +3,7 @@
 return array(
     'modules' => array(
         'App',
+        'Api',
         'Pleets',
     ),
     'router' => array(

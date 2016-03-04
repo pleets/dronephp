@@ -1,0 +1,50 @@
+{
+    "description"                   : "Manage File modifications in the editor",
+    "methods"                       : 
+    {
+        "fileActions"    : 
+        {
+            "description"           : "Presents general information about files",
+            "returns"               : "Array",
+            "params"                : {}
+        },
+        "editFile"    : 
+        {
+            "description"           : "Presents general information about files",
+            "returns"               : "Array",
+            "params"                : {}
+        },
+        "saveFile"    : 
+        {
+            "description"           : "Writes modifications on a file",
+            "returns"               : "Array",
+            "params"                : {}
+        },
+        "describeFile"    : 
+        {
+            "description"           : "Get the number of lines and characters of a file",
+            "returns"               : "Array",
+            "params"                : 
+            {
+                "file"              :
+                {
+                    "type"          : "String",
+                    "description"   : "File name"
+                }
+            }
+        },
+        "fileSize"     : 
+        {
+            "description"           : "Gets file size of a file and returns it",
+            "returns"               : "String",
+            "params"                : 
+            {
+                "file"              :
+                {
+                    "type"          : "String",
+                    "description"   : "File name"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,36 @@
+<?php $file_info = $this->param("file_info"); ?>
+
+<h2 class='text-danger'><?= $file_info["fq_class"] ?></h2>
+
+<p><strong>Description</strong> <?= $file_info["description"]; ?></p>
+
+<?php foreach ($file_info["methods"] as $method_name => $method_desc): ?>
+    <div class="panel panel-primary">
+
+        <?php
+            $keys = array_keys($method_desc["params"]);
+
+            $param_signa = "";
+
+            foreach ($keys as $key)
+            {
+                $param_signa .= $method_desc["params"][$key]["type"] . " <strong>" . $key . "</strong>, ";
+            }
+
+            $param_signa = substr($param_signa, 0, -2);
+        ?>
+
+        <div class="panel-heading"><?= $method_name ?> ( <?= $param_signa ?> )</div>
+        <div class="panel-body">
+            <p><strong>Description:</strong> <?= $method_desc["description"] ?></p>
+            <p><strong>Returns:</strong> <?= $method_desc["returns"] ?></p>
+            <?php if (count($method_desc["params"])): ?>
+                <p><strong>Params:</strong>
+                    <?php foreach ($method_desc["params"] as $param_name => $param_info): ?>
+                        <?= "<br /></span><span class='text-danger'>" . $param_info["type"] . "</span> <span class='text-primary'><strong>".$param_name."</strong></span>:" . " <em>" .$param_info["description"] . "</em>" ?><br />
+                    <?php endforeach; ?>
+                </p>
+            <?php endif; ?>
+        </div>
+    </div>
+<?php endforeach; ?>

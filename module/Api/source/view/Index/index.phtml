@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-sm-4">
+
+        <?php foreach($this->param("clases") as $module_name => $modules): ?>
+
+            <h3 class="text-danger"><?= $module_name ?></h3>
+            <?php foreach($modules as $mvc_type_name => $mvc_type): ?>
+
+                <span class="text-info"><?= $mvc_type_name ?></span>
+                <div class="list-group">
+                    <?php foreach($mvc_type as $component): ?>
+                    <a  href="<?= $this->basePath() ?>/public/?module=Api&controller=Index&view=getFileInfo&file=<?= $module_name ."/". $mvc_type_name . "/". strstr($component, '.', true) ?>"
+                        class="list-group-item" data-action="ajax-request" data-type="post" data-response="#file_info"
+                        id="actualizar-periodos"><?= strstr(basename($component), '.', true) ?></a>
+                    <?php endforeach; ?>
+                </div>
+
+            <?php endforeach; ?>               
+                        
+        <?php endforeach; ?>
+
+    </div>
+    <div class="col-sm-8" id="file_info">
+        <p>Welcome to Api!</p>
+    </div>
+</div>

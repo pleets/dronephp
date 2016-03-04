@@ -1,0 +1,24 @@
+{
+    "description"                   : "Manages the API",
+    "methods"                       : 
+    {
+        "index"                     : 
+        {
+            "description"           : "Gets PHP classes and lists it",
+            "returns"               : "Array",
+            "params"                : {}
+        },
+        "getFileInfo"               : 
+        {
+            "description"           : "Parse JSON file to get file information",
+            "returns"               : "Array",
+            "params"                : {}
+        },
+        "object_to_array"           : 
+        {
+            "description"           : "Converts an object to array type",
+            "returns"               : "Array",
+            "params"                : {}
+        }
+    }
+}
