@@ -11,7 +11,7 @@
 
 namespace Pleets\Sql;
 
-abstract class Pleets_Sql_AbstractionModel
+abstract class AbstractionModel
 {
     private $driver;
     private $db;
