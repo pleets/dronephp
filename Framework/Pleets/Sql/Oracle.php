@@ -58,10 +58,10 @@ class Oracle
     /* Setters */
 
     public function setHostname($dbhost) { $this->dbhost = $dbhost; }
-    public function setDatabase($dbuser) { $this->dbuser = $dbuser; }
-    public function setDatabase($dbpass) { $this->dbpass = $dbpass; }
+    public function setUsername($dbuser) { $this->dbuser = $dbuser; }
+    public function setPassword($dbpass) { $this->dbpass = $dbpass; }
     public function setDatabase($dbname) { $this->dbname = $dbname; }
-    
+
     public function getErrors() { return $this->errors; }
 
     public function reconnect()
