@@ -23,9 +23,9 @@ abstract class AbstractionModel
 
         # driver => className
         $this->availableDrivers = array(
-            "Oci8"          => "Oracle",
-            "Mysqli"        => "MySQL",
-            "Sqlsrv"        => "SQLServer",
+            "Oci8"          => "Pleets\Sql\Oracle",
+            "Mysqli"        => "Pleets\Sql\MySQL",
+            "Sqlsrv"        => "Pleets\Sql\SQLServer",
             // Drivers for future implementation
             //"Pdo_Mysql"     => "",
             //"Pgsql"         => "",
@@ -44,8 +44,8 @@ abstract class AbstractionModel
                 $dbsettings[$abstract_connection_string]["host"],
                 $dbsettings[$abstract_connection_string]["user"],
                 $dbsettings[$abstract_connection_string]["password"],
-                $dbsettings[$abstract_connection_string]["dbname"]              
-            );            
+                $dbsettings[$abstract_connection_string]["dbname"]
+            );
         }
         else
             throw new Exception("The Database driver does not exists");
