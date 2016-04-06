@@ -45,7 +45,11 @@ class Oracle
         if ($this->dbconn === false)
         {
             $this->errors = oci_error();
-                throw new \Exception("The database connection could not be started!");
+
+            if (count($this->errors))
+                throw new \Exception($this->errors["message"], $this->errors["code"]);
+            else
+                throw new \Exception("Unknown error!");
         }
 	}
 
@@ -72,7 +76,11 @@ class Oracle
         if ($this->dbconn === false)
         {
             $this->errors = oci_error();
-            throw new \Exception("The database connection could not be started!");
+
+            if (count($this->errors))
+                throw new \Exception($this->errors["message"], $this->errors["code"]);
+            else
+                throw new \Exception("Unknown error!");
         }
 
         return $this;
@@ -91,7 +99,11 @@ class Oracle
         if (!$r)
         {
             $this->errors = oci_error($stid);
-            throw new \Exception("Could not perform the query to the database");
+
+            if (count($this->errors))
+                throw new \Exception($this->errors["message"], $this->errors["code"]);
+            else
+                throw new \Exception("Unknown error!");
         }
 
         if ($this->transac_mode)
