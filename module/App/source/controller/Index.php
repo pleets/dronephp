@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use Pleets\Mvc\AbstractionController;
 
-use App\Model\MySQLModelExample;
+//use App\Model\MySQLModelExample;
 //use App\Model\SQLServerModelExample;
-//use App\Model\OracleModelExample;
+use App\Model\OracleModelExample;
 
 class Index extends AbstractionController
 {
@@ -15,13 +15,13 @@ class Index extends AbstractionController
 		return array();
 	}
 
-	public function inicio()
+	public function start()
 	{
 		$return_data = array();
 
-		$modelo = new MySQLModelExample();
+		//$modelo = new MySQLModelExample();
 		//$modelo = new SQLServerModelExample();
-		//$modelo = new OracleModelExample();
+		$modelo = new OracleModelExample();
 
 		try {
 
