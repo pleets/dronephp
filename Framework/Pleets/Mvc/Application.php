@@ -40,25 +40,22 @@ class Application
 
 		$devMode = (!array_key_exists('development_environment', $settings["app"]) || !$settings["app"]["development_environment"]) ? false : true;
 
-		if (!ini_get('display_errors'))
+		if ($devMode)
 		{
-			if ($devMode)
-			{
-				ini_set('display_errors', 1);
+			ini_set('display_errors', 1);
 
-				// See errors
-				// error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+			// See errors
+			// error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 
-				// PHP 5.4
-				// error_reporting(E_ALL);
+			// PHP 5.4
+			// error_reporting(E_ALL);
 
-				// Best way to view all possible errors
-				error_reporting(-1);
-			}
-			else {
-				ini_set('display_errors', 0);
-				error_reporting(-1);
-			}
+			// Best way to view all possible errors
+			error_reporting(-1);
+		}
+		else {
+			ini_set('display_errors', 0);
+			error_reporting(-1);
 		}
 
 		/*
