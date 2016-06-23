@@ -43,7 +43,7 @@ class Shell implements IShellCommands
 		{
 			$filesForHandler = $this->ls($handler);
 
-			foreach ($filesForHandler as $item) 
+			foreach ($filesForHandler as $item)
 			{
 				if ($item != '.' && $item != '..')
 					$contents[] = $item;
@@ -53,16 +53,16 @@ class Shell implements IShellCommands
 
 			if (count($contents) > 0)
 			{
-				foreach ($contents as $i) 
+				foreach ($contents as $i)
 				{
-					if (is_file($handler.'/'.$i)) 
+					if (is_file($handler.'/'.$i))
 					{
 						$allContents[] = $handler.'/'.$i;
 
 						$this->buffer = $handler.'/'.$i;
 						call_user_func($fileCallback, $this);
 					}
-					elseif (is_dir($handler.'/'.$i)) 
+					elseif (is_dir($handler.'/'.$i))
 					{
 						$allContents[] = $handler.'/'.$i;
 
@@ -140,7 +140,7 @@ class Shell implements IShellCommands
 			$pathIns = dir('.');
 			$contents = $this->ls();
 
-			foreach ($contents as $item) 
+			foreach ($contents as $item)
 			{
 				if (!empty($path))
 					if (!strlen(stristr($item, $path)) > 0)
@@ -149,7 +149,7 @@ class Shell implements IShellCommands
 					$filesToReturn[] = $item;
 			}
 		}
-		
+
 		return $filesToReturn;
 	}
 
@@ -168,7 +168,7 @@ class Shell implements IShellCommands
 
 	public function touch($file)
 	{
-		if (!file_exists($file)) 
+		if (!file_exists($file))
 		{
 			if (!$openFile = fopen($file, 'w+'))
 				return false;
@@ -189,7 +189,7 @@ class Shell implements IShellCommands
 
 		if (file_exists($file) && !$recursive)
 			unlink($file);
-		elseif (is_dir($file) && $recursive) 
+		elseif (is_dir($file) && $recursive)
 		{
 			$that = $this;
 
@@ -209,44 +209,39 @@ class Shell implements IShellCommands
 		$recursive = (is_null($recursive)) ? false : $recursive;
 
 		if (empty($file) || empty($dest))
-			throw new \Exception("Missing parameters!");
+			throw new Exception("Missing parameters!");
 
-		if (is_dir($dest)) 
+		if (is_dir($file))
 		{
-			if (!$recursive)
-				copy($file, $dest.'/'.$file);
-			else {
+			if ( (!file_exists($dest) || (file_exists($dest) && is_file($dest)) ) && $recursive)
+				mkdir($dest, 0777, true);
 
-				$files = array();
-				$files[0] = array();
-				$files[1] = array();
+            if ($handle = opendir($file)) {
 
-				$_SESSION["BUFFER"]["EXO"]["cp"][2] = $dest;
+                while (false !== ($item = readdir($handle))) {
 
-				$that = $this;
+                    if (strstr($item,'~') === false && $item != '.' && $item != '..')
+                    {
+                    	if (is_dir($file ."/". $item) && $recursive)
+                    	{
+                    		mkdir($dest ."/". $item, 0777, true);
+                    		$this->cp($file ."/". $item, $dest ."/". $item, true);
+                    	}
+                    	elseif (is_file($file ."/". $item))
+                    		$this->cp($file ."/". $item, $dest ."/". $item);
+                    }
+                }
 
-				$this->getContents($file, function() use($that, &$files) {
-					$files[0][] = $that->getBuffer();
-				}, function() use($that, &$files) {
-					$files[1][] = $that->getBuffer();
-				}, function() use ($files, $dest) {
-
-					foreach ($files[1] as $item)
-					{
-						if (!file_exists($dest.'/'.$item))
-							mkdir("$dest/$item", 0777, true);
-					}
-
-					foreach ($files[0] as $item)
-					{
-						if (!file_exists("$dest/$files"))
-							copy($item, $dest.'/'.$item);
-					}
-				});
-			}
+                closedir($handle);
+            }
 		}
 		else
-			copy($file, $dest);
+		{
+			if (file_exists($dest) && is_dir($dest))
+				copy($file, $dest.'/'. basename($file));
+			else
+				copy($file, $dest);
+		}
 
 		return $this;
 	}
@@ -284,7 +279,7 @@ class Shell implements IShellCommands
 			if (!is_dir($dir))
 			{
 				if(!mkdir("$dir", 0777))
-					return false;		
+					return false;
 			}
 		}
 		return $this;
