@@ -17,7 +17,7 @@ abstract class AbstractionModel
     private $db;
     private $availableDrivers;
 
-    public function __construct($abstract_connection_string = "default")
+    public function __construct($abstract_connection_string = "default", $auto_connect = true)
     {
 		$dbsettings = include(dirname(__FILE__) . "/../../../config/database.config.php");
 
@@ -44,7 +44,8 @@ abstract class AbstractionModel
                 $dbsettings[$abstract_connection_string]["host"],
                 $dbsettings[$abstract_connection_string]["user"],
                 $dbsettings[$abstract_connection_string]["password"],
-                $dbsettings[$abstract_connection_string]["dbname"]
+                $dbsettings[$abstract_connection_string]["dbname"],
+                $auto_connect
             );
         }
         else

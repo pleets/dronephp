@@ -32,20 +32,23 @@ class SQLServer
     private $transac_mode = false;                  # transaction process
     private $transac_result = null;                 # result of transactions
 
-    public function __construct($dbhost = null, $dbuser = null, $dbpass = null, $dbname = null)
+    public function __construct($dbhost = null, $dbuser = null, $dbpass = null, $dbname = null, $auto_connect = true)
     {
         $this->dbhost = is_null($dbhost) ? !defined('DBHOST') ? $this->dbhost : @DBHOST : $dbhost;
         $this->dbuser = is_null($dbuser) ? !defined('DBUSER') ? $this->dbuser : @DBUSER : $dbuser;
         $this->dbpass = is_null($dbpass) ? !defined('DBPASS') ? $this->dbpass : @DBPASS : $dbpass;
         $this->dbname = is_null($dbname) ? !defined('DBNAME') ? $this->dbname : @DBNAME : $dbname;
 
-		$db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass);
-		$this->dbconn = sqlsrv_connect($this->dbhost, $db_info);
-
-        if ($this->dbconn === false)
+        if ($auto_connect)
         {
-            $this->errors = sqlsrv_errors();
-                throw new \Exception("The database connection could not be started!");
+    		$db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass);
+    		$this->dbconn = sqlsrv_connect($this->dbhost, $db_info);
+
+            if ($this->dbconn === false)
+            {
+                $this->errors = sqlsrv_errors();
+                    throw new \Exception("The database connection could not be started!");
+            }
         }
 	}
 
@@ -180,6 +183,7 @@ class SQLServer
 
 	public function __destruct()
     {
-		sqlsrv_close($this->dbconn);
+        if ($this->dbconn)
+		    sqlsrv_close($this->dbconn);
 	}
 }
