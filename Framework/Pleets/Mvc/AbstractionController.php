@@ -52,7 +52,7 @@ abstract class AbstractionController
 		return $parameters[$param];
 	}
 
-	public function isParam($param) 
+	public function isParam($param)
 	{
 		$parameters = $this->getParams();
 
@@ -84,6 +84,14 @@ abstract class AbstractionController
 		return false;
 	}
 
+	public function getPost()
+	{
+		if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST))
+    		$_POST = json_decode(file_get_contents('php://input'), true);
+
+		return $_POST;
+	}
+
 	public function setTerminal($terminal = true)
 	{
 		$this->terminal = $terminal;
@@ -99,11 +107,11 @@ abstract class AbstractionController
 		if (array_key_exists('params', $_GET))
 		{
 			$params = explode("/", $_GET["params"]);
-			
+
 			$vars = $values = array();
 
 			$i = 1;
-			foreach ($params as $item) 
+			foreach ($params as $item)
 			{
 				if ($i % 2 != 0)
 					$vars[] = $item;
@@ -112,9 +120,9 @@ abstract class AbstractionController
 				$i++;
 			}
 
-			for ($i = 0; $i < count($vars); $i++) 
+			for ($i = 0; $i < count($vars); $i++)
 			{
-				if (array_key_exists($i, $values)) 
+				if (array_key_exists($i, $values))
 					$_GET[$vars[$i]] = $values[$i];
 				else
 					$_GET[$vars[$i]] = '';
