@@ -45,7 +45,8 @@ abstract class AbstractionModel
                 $dbsettings[$abstract_connection_string]["user"],
                 $dbsettings[$abstract_connection_string]["password"],
                 $dbsettings[$abstract_connection_string]["dbname"],
-                $auto_connect
+                $auto_connect,
+                array_key_exists('charset', $dbsettings[$abstract_connection_string]) ? $dbsettings[$abstract_connection_string]["charset"] : ""
             );
         }
         else
