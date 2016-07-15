@@ -4,7 +4,9 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-	<title>Application</title>
+	<?php $this->setTitle('Drone Application'); ?>
+
+	<title><?= $this->getTitle() ?></title>
 
 	<!-- Google fonts -->
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
@@ -78,6 +80,11 @@
 	<div class="container">
 		<?= $this->content(); ?>
 	</div>
+
+	<!-- update title -->
+	<script type="text/javascript">
+		$("head title").text('<?= $this->getTitle() ?>');
+	</script>
 
 	<!-- JS Controllers -->
 	<?php
