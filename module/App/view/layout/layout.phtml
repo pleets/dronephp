@@ -81,7 +81,7 @@
 
 	<!-- JS Controllers -->
 	<?php
-		$js = $this->basePath() . '/public/js/' . $this->getController()->getModule()->getModuleName() . '/' . get_class($this->getController()) . 'Controller.js';
+		$js = $this->basePath() . '/public/js/' . $this->getController()->getModule()->getModuleName() . '/' . substr(get_class($this->getController()), strrpos(get_class($this->getController()), '\\') + 1, strlen(get_class($this->getController()))) . 'Controller.js';
 
 		if (file_exists($js))
 			?><script type="text/javascript" src="<?= $js; ?>"></script><?php
