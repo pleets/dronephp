@@ -3,7 +3,9 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<link rel="icon" href="<?= $this->basePath() ?>/public/img/Pleets/pleets-apps.png">
+	<link rel="icon" href="<?= $this->basePath() ?>/public/img/Pleets/pleets-apps.png" type="image/x-icon" />
+	<link rel="shortcut icon" href="<?= $this->basePath() ?>/public/img/Pleets/pleets-apps.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 	<?php $this->setTitle('Drone Application'); ?>
 
@@ -30,13 +32,9 @@
 	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/js/settings.js"></script>
 	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/js/live.js"></script>
 
-
 	<!-- App -->
 	<link rel="stylesheet" type="text/css" href="<?= $this->basePath(); ?>/public/css/app.css" media="all" />
-	<link rel="stylesheet" type="text/css" href="<?= $this->basePath(); ?>/public/css/pleets.css" media="all" />
-
     <script type="text/javascript" src="<?= $this->basePath(); ?>/public/js/app.js"></script>
-    <script type="text/javascript" src="<?= $this->basePath(); ?>/public/js/pleets.js"></script>
 </head>
 
 <body data-path='<?= $this->basePath(); ?>'>
@@ -91,8 +89,9 @@
 	<?php
 		$js = $this->basePath() . '/public/js/' . $this->getController()->getModule()->getModuleName() . '/' . substr(get_class($this->getController()), strrpos(get_class($this->getController()), '\\') + 1, strlen(get_class($this->getController()))) . 'Controller.js';
 
-		if (file_exists($js))
+		if (file_exists($js)):
 			?><script type="text/javascript" src="<?= $js; ?>"></script><?php
+		endif;
 	?>
 
 </body>
