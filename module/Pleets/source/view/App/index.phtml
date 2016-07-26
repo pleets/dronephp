@@ -8,7 +8,9 @@
 			<li class="collection-item avatar">
 				<i class="material-icons circle">folder</i>
 				<span class="title"><?= $key ?></span>
-				<a href="<?= $this->basePath() ?>/public/<?= $key ?>" class="waves-effect waves-light btn" target="_blank">Ver</a>
+				<a href="<?= $this->basePath() ?>/public/<?= $key ?>" target="_blank">
+					<i class="material-icons dp">open_in_new</i> Go To
+				</a>
 
 				<ul class="collapsible" data-collapsible="accordion">
 					<?php if (count($mod['controller'])): ?>
@@ -19,7 +21,7 @@
 								<?php foreach ($mod['controller'] as $ctrl): ?>
 									<a class="collection-item" data-role="file-actions" href="<?= $this->basePath().'/public/Pleets/Files/fileActions/file/'.$ctrl['name'].'/type/controller/module/'.$key ?>"><?= $ctrl['name'] ?> <span class="badge"><?= $ctrl['lines'] ?> lines, <?= $ctrl['characters'] ?> characters</span></a>
 								<?php endforeach; ?>
-								</div>						
+								</div>
 							</div>
 						</li>
 					<?php endif; ?>
@@ -31,13 +33,13 @@
 								<?php foreach ($mod['model'] as $ctrl): ?>
 									<a class="collection-item" data-role="file-actions" href="<?= $this->basePath().'/public/Pleets/Files/fileActions/file/'.$ctrl['name'].'/type/model/module/'.$key ?>"><?= $ctrl['name'] ?> <span class="badge"><?= $ctrl['lines'] ?> lines, <?= $ctrl['characters'] ?> characters</span></a>
 								<?php endforeach; ?>
-								</div>						
+								</div>
 							</div>
 						</li>
 					<?php endif; ?>
 					<?php
 						$pass = false;
-						foreach ($mod['view'] as $item) 
+						foreach ($mod['view'] as $item)
 						{
 							if (count($item))
 								$pass = true;
@@ -65,7 +67,6 @@
 						</li>
 					<?php endif; ?>
 				</ul>
-				<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
 			</li>
 			<?php
 		endforeach;
@@ -82,7 +83,7 @@
 				<a href="#!" class="modal-action modal-close waves-effect btn-flat">Cancel</a>
 			</div>
 		</div>
-        
+
 		<?php
 	endif;
 ?>
