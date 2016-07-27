@@ -17,7 +17,7 @@ class App extends AbstractionController
 	{
 		$data = array();
 
-		$shell = new Pleets_FileSystem_Shell();
+		$shell = new Shell();
 		$files = $shell->ls($_GET["folder"], true);
 
 		$parsed_files = array();
@@ -160,6 +160,7 @@ class App extends AbstractionController
 
     private function describeFile($file)
     {
+    	$_file = $file;
         $file = fopen ($file, "r");
 
         $num_lines = 0;
