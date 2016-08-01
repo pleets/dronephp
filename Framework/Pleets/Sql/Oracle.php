@@ -110,6 +110,8 @@ class Oracle
         $this->numFields = 0;
         $this->rowsAffected = 0;
 
+        $this->arrayResult = null;
+
         $this->result = $stid = oci_parse($this->dbconn, $sql);
 
         # Bound variables
