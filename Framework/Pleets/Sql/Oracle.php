@@ -194,26 +194,15 @@ class Oracle
         oci_cancel($this->result);
     }
 
-    private function toArray(Array $settings = array())
+    private function toArray()
     {
-        $utf8 = (isset($settings['encode_utf8']) && $settings['encode_utf8'] == true);
         $data = array();
 
         if ($this->result)
         {
             while ( ($row = @oci_fetch_array($this->result, OCI_BOTH + OCI_RETURN_NULLS)) !== false )
             {
-                if ($utf8)
-                {
-                    $rowParsed = array();
-                    foreach ($row as $key => $value)
-                    {
-                        $rowParsed[$key] = (!is_object($value)) ? utf8_encode($value) : $value;
-                    }
-                    $data[] = $rowParsed;
-                }
-                else
-                    $data[] = $row;
+                $data[] = $row;
             }
         }
         else

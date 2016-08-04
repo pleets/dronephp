@@ -177,26 +177,15 @@ class SQLServer
         sqlsrv_cancel($this->result);
     }
 
-    private function toArray(Array $settings = array())
+    private function toArray()
     {
-        $utf8 = (isset($settings['encode_utf8']) && $settings['encode_utf8'] == true);
         $data = array();
 
         if ($this->result)
         {
             while ($row = sqlsrv_fetch_array($this->result))
             {
-                if ($utf8)
-                {
-                    $rowParsed = array();
-                    foreach ($row as $key => $value)
-                    {
-                        $rowParsed[$key] = (!is_object($value)) ? utf8_encode($value) : $value;
-                    }
-                    $data[] = $rowParsed;
-                }
-                else
-                    $data[] = $row;
+                $data[] = $row;
             }
         }
         else
