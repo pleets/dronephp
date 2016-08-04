@@ -17,31 +17,34 @@ class SQLServer
     private $dbuser = '';                           # default username
     private $dbpass = '';                           # default password
     private $dbname = '';                           # default database
+    private $dbchar = '';                           # default charset (SQLSRV_ENC_CHAR, UTF-8)
 
     private $dbconn = null;                         # connection
-    private $buffer = null;                         # buffer
 
-    private $errors = array();
+    private $errors = array();                      # Errors
 
     public $numRows;                                # Rows returned
     public $numFields;
     public $rowsAffected;
 
     public $result;                                 # latest result
+    private $buffer = null;                         # buffer
 
     private $transac_mode = false;                  # transaction process
     private $transac_result = null;                 # result of transactions
 
-    public function __construct($dbhost = null, $dbuser = null, $dbpass = null, $dbname = null, $auto_connect = true)
+    public function __construct($dbhost = null, $dbuser = null, $dbpass = null, $dbname = null, $auto_connect = true, $dbchar = "SQLSRV_ENC_CHAR")
     {
         $this->dbhost = is_null($dbhost) ? !defined('DBHOST') ? $this->dbhost : @DBHOST : $dbhost;
         $this->dbuser = is_null($dbuser) ? !defined('DBUSER') ? $this->dbuser : @DBUSER : $dbuser;
         $this->dbpass = is_null($dbpass) ? !defined('DBPASS') ? $this->dbpass : @DBPASS : $dbpass;
         $this->dbname = is_null($dbname) ? !defined('DBNAME') ? $this->dbname : @DBNAME : $dbname;
 
+        $this->dbchar = is_null($dbchar) ? !defined('DBCHAR') ? $this->dbchar : @DBCHAR : $dbchar;
+
         if ($auto_connect)
         {
-    		$db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass);
+    		$db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar);
     		$this->dbconn = sqlsrv_connect($this->dbhost, $db_info);
 
             if ($this->dbconn === false)
@@ -66,7 +69,7 @@ class SQLServer
 
     public function reconnect()
     {
-        $db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass);
+        $db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar);
         $this->dbconn = sqlsrv_connect($this->dbhost, $db_info);
 
         if ($this->dbconn === false)
