@@ -23,12 +23,12 @@ class SQLServer
 
     private $errors = array();                      # Errors
 
-    public $numRows;                                # Rows returned
-    public $numFields;
-    public $rowsAffected;
+    private $numRows;                               # Rows returned
+    private $numFields;                             # Fields returned
+    private $rowsAffected;                          # Rows affected
 
-    public $result;                                 # latest result
-    private $buffer = null;                         # buffer
+    private $result;                                # latest result (current buffer)
+    private $arrayResult;                           # result array (SELECT statements)
 
     private $transac_mode = false;                  # transaction process
     private $transac_result = null;                 # result of transactions
@@ -60,11 +60,25 @@ class SQLServer
     public function getHostname() { return $this->dbhost; }
     public function getUsername() { return $this->dbuser; }
     public function getDatabase() { return $this->dbname; }
+    public function getNumRows() { return $this->numRows; }
+    public function getNumFields() { return $this->numFields; }
+    public function getRowsAffected() { return $this->rowsAffected; }
+
+    public function getArrayResult()
+    {
+        if ($this->arrayResult)
+            return $this->arrayResult;
+
+        return $this->toArray();
+    }
 
     public function getErrors() { return $this->errors; }
 
     /* Setters */
 
+    public function setHostname($dbhost) { $this->dbhost = $dbhost; }
+    public function setUsername($dbuser) { $this->dbuser = $dbuser; }
+    public function setPassword($dbpass) { $this->dbpass = $dbpass; }
     public function setDatabase($dbname) { $this->dbname = $dbname; }
 
     public function reconnect()
@@ -87,18 +101,25 @@ class SQLServer
         $this->numFields = 0;
         $this->rowsAffected = 0;
 
+        $this->arrayResult = null;
+
         $this->result = sqlsrv_query($this->dbconn, $sql, $params, array( "Scrollable" => SQLSRV_CURSOR_KEYSET ));
 
-        if ($this->result)
+        if (!$this->result)
         {
-            $this->numRows = sqlsrv_num_rows($this->result);
-            $this->numFields = sqlsrv_num_fields($this->result);
-            $this->rowsAffected = sqlsrv_rows_affected($this->result);
-        }
-        else {
             $this->errors = sqlsrv_errors();
-            throw new \Exception("Could not perform the query to the database");
+
+            if (count($this->errors))
+                throw new \Exception($this->errors["message"], $this->errors["code"]);
+            else
+                throw new \Exception("Unknown error!");
         }
+
+        $this->getArrayResult();
+
+        $this->numRows = sqlsrv_num_rows($this->result);
+        $this->numFields = sqlsrv_num_fields($this->result);
+        $this->rowsAffected = sqlsrv_rows_affected($this->result);
 
         if ($this->transac_mode)
             $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
@@ -156,7 +177,7 @@ class SQLServer
         sqlsrv_cancel($this->result);
     }
 
-    public function toArray(Array $settings = array())
+    private function toArray(Array $settings = array())
     {
         $utf8 = (isset($settings['encode_utf8']) && $settings['encode_utf8'] == true);
         $data = array();
@@ -180,6 +201,8 @@ class SQLServer
         }
         else
             throw new Exception('There are not data in the buffer!');
+
+        $this->arrayResult = $data;
 
         return $data;
     }
