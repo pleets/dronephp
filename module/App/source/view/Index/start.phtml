@@ -20,9 +20,9 @@
 	if ($this->isParam("datos")):
 
 		$datos = $this->param("datos");
-var_dump($datos);
+
 		if (count($datos)):
-			//
+			var_dump($datos);
 		else:
 			?><div class="alert alert-warning">No existen datos para mostrar</div><?php
 		endif;
