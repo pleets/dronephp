@@ -50,7 +50,11 @@ class SQLServer
             if ($this->dbconn === false)
             {
                 $this->errors = sqlsrv_errors();
-                    throw new \Exception("The database connection could not be started!");
+
+                if (count($this->errors))
+                    throw new \Exception($this->errors[0]["message"], $this->errors[0]["code"]);
+                else
+                    throw new \Exception("Unknown error!");
             }
         }
 	}
