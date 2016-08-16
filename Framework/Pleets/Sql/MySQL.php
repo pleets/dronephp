@@ -13,155 +13,176 @@ namespace Pleets\Sql;
 
 class Mysql {
 
-    private $dbconn = NULL;                 # connection (Object Sql)
-    private $buffer = NULL;                 # buffer
+    private $dbhost = '';                           # default host
+    private $dbuser = '';                           # default username
+    private $dbpass = '';                           # default password
+    private $dbname = '';                           # default database
+    private $dbchar = '';                           # default charset
 
-    public function __construct($_dbhost=NULL,$_dbuser=NULL,$_dbpass=NULL,$_dbname=NULL) {
+    private $dbconn = null;                         # connection
 
-        # Default parameters
-        $this->dbhost = '';               # default host
-        $this->dbuser = '';               # default username
-        $this->dbpass = '';               # default password
-        $this->dbname = '';               # default database
+    private $errors = array();                      # Errors
 
-        /* Properties assigment. The order for this is the following:
-        - If $_dbhost parameter in the constructor function is not NULL, it is assigned to dbhost propertie.
-        - If $_dbhost parameter is NULL and exists a HOST constant in the namespace, it is assigned to dbhost propertie.
-        - If $_dbhost parameter is NULL and HOST constant does not exists, default parameter is assigned to dbhost propertie.
-        - Previos rules are same for dbuser, dbpass and dbname properties. */
+    private $numRows;                               # Rows returned
+    private $numFields;                             # Fields returned
+    private $rowsAffected;                          # Rows affected
 
-        $this->dbhost = is_null($_dbhost) ? !defined('HOST') ? $this->dbhost : @HOST : $_dbhost;
-        $this->dbuser = is_null($_dbuser) ? !defined('USER') ? $this->dbuser : @USER : $_dbuser;
-        $this->dbpass = is_null($_dbpass) ? !defined('PASS') ? $this->dbpass : @PASS : $_dbpass;
-        $this->dbname = is_null($_dbname) ? !defined('NAME') ? $this->dbname : @NAME : $_dbname;
+    private $result;                                # latest result (current buffer)
+    private $arrayResult;                           # result array (SELECT statements)
 
-        # Update connection
-        $conn = new \mysqli($this->dbhost,$this->dbuser,$this->dbpass,$this->dbname);
-        $this->dbconn = ($conn->connect_errno) ? false: $conn;
-    }
+    private $transac_mode = false;                  # transaction process
+    private $transac_result = null;                 # result of transactions
 
-    # Catch buffer
-    public function get() {
-        return $this->buffer;
-    }
-
-    public function query($query)
+    public function __construct($dbhost = null, $dbuser = null, $dbpass = null, $dbname = null, $auto_connect = true, $dbchar = "utf8")
     {
-        if ($result = $this->dbconn->query($query))
+        $this->dbhost = is_null($dbhost) ? !defined('DBHOST') ? $this->dbhost : @DBHOST : $dbhost;
+        $this->dbuser = is_null($dbuser) ? !defined('DBUSER') ? $this->dbuser : @DBUSER : $dbuser;
+        $this->dbpass = is_null($dbpass) ? !defined('DBPASS') ? $this->dbpass : @DBPASS : $dbpass;
+        $this->dbname = is_null($dbname) ? !defined('DBNAME') ? $this->dbname : @DBNAME : $dbname;
+
+        $this->dbchar = is_null($dbchar) ? !defined('DBCHAR') ? $this->dbchar : @DBCHAR : $dbchar;
+
+        if ($auto_connect)
         {
-            $this->buffer = $result;
-            return $result;
-        }
-        else
-            return false;
-    }
+            $this->dbconn = new \mysqli($this->dbhost,$this->dbuser,$this->dbpass,$this->dbname);
 
-    public function multiquery($query)
-    {
-        if ($result = $this->dbconn->multi_query($query)) {
-            $this->buffer = $result;
-            return $this;
-        }
-        else
-        return false;
-    }
+            if ($conn->connect_errno === false)
+            {
+                $this->errors = array(
+                    "code" => $this->dbconn->connect_errno,
+                    "message" => $this->dbconn->connect_error
+                );
 
-    public function fetch($type='array',$result_type='assoc')
-    {
-        $resultType = $result_type;       # save a reference to the initial value
-
-        # Define the result type to fetch array
-        switch (strtolower($result_type))
-        {
-            case 'assoc':
-                $result_type = MYSQLI_ASSOC;
-                break;
-            case 'num':
-                $result_type = MYSQLI_NUM;
-                break;
-            case 'both':
-                $result_type = MYSQLI_BOTH;
-                break;
-            default:
-                return false;
-                break;
-        }
-
-        # Data type to return
-        switch (strtolower($type))
-        {
-            case 'array':
-                $array = array();
-
-                if ($this->buffer->num_rows > 1)
-                {
-                    switch ($resultType)
-                    {
-                        case 'assoc':
-                            # Fetch a result row as an associative array
-                            while ($row = $this->buffer->fetch_assoc())
-                            {
-                                $array[] = $row;
-                            }
-
-                            if (count($array) === 0)
-                                return false;
-                            break;
-                        case 'num':
-                            # Get a result row as an enumerated array
-                            while ($row = $this->buffer->fetch_row())
-                            {
-                                $array[] = $row;
-                            }
-
-                            if (count($array) === 0)
-                                return false;
-                            break;
-                        case 'both':
-                            # Get a result row as an enumerated array
-                            while ($row = $this->buffer->fetch_array()) {
-                                $array[] = $row;
-                            }
-
-                            if (count($array) === 0)
-                                return false;
-                            break;
-                        default:
-                            return false;
-                            break;
-                    }
-                }
+                if (count($this->errors))
+                    throw new \Exception($this->errors["message"], $this->errors["code"]);
                 else
-                    $array = $this->buffer->fetch_array($result_type);
-
-                return $array;
-                break;
-            case 'object':
-                $array = array();
-
-                while ($row = $this->buffer->fetch_object())
-                {
-                    $array[] = $row;
-                }
-
-                if (count($array) === 0)
-                    return false;
-
-                return $array;
-                break;
-            default:
-                return false;
-                break;
+                    throw new \Exception("Unknown error!");
+            }
         }
     }
 
-    public function toArray()
+    /* Getters */
+
+    public function getHostname() { return $this->dbhost; }
+    public function getUsername() { return $this->dbuser; }
+    public function getDatabase() { return $this->dbname; }
+    public function getNumRows() { return $this->numRows; }
+    public function getNumFields() { return $this->numFields; }
+    public function getRowsAffected() { return $this->rowsAffected; }
+
+    public function getArrayResult()
     {
-        return $this->fetch();
+        if ($this->arrayResult)
+            return $this->arrayResult;
+
+        return $this->toArray();
     }
 
-    public function __destruct() {
+    public function getErrors() { return $this->errors; }
+
+    /* Setters */
+
+    public function setHostname($dbhost) { $this->dbhost = $dbhost; }
+    public function setUsername($dbuser) { $this->dbuser = $dbuser; }
+    public function setPassword($dbpass) { $this->dbpass = $dbpass; }
+    public function setDatabase($dbname) { $this->dbname = $dbname; }
+
+    public function reconnect()
+    {
+        $this->dbconn = new \mysqli($this->dbhost,$this->dbuser,$this->dbpass,$this->dbname);
+
+        if ($this->dbconn->connect_errno === false)
+        {
+            $this->errors = array(
+                "code" => $this->dbconn->connect_errno,
+                "message" => $this->dbconn->connect_error
+            );
+
+            if (count($this->errors))
+                throw new \Exception($this->errors["message"], $this->errors["code"]);
+            else
+                throw new \Exception("Unknown error!");
+        }
+
+        return $this;
+    }
+
+    public function query($sql, Array $params = array())
+    {
+        $this->numRows = 0;
+        $this->numFields = 0;
+        $this->rowsAffected = 0;
+
+        $this->arrayResult = null;
+
+        $r = @$this->dbconn->query($sql);
+
+        if (!$r)
+        {
+            $this->errors = array(
+                "code" => "[Drone MySQL]",
+                "message" => $r->error
+            );
+
+            if (count($this->errors))
+                throw new \Exception($this->errors["message"], $this->errors["code"]);
+            else
+                throw new \Exception("Unknown error!");
+        }
+
+        $rows = $this->getArrayResult();
+
+        $this->numRows = $r->num_rows;
+        $this->numFields = $r->field_count;
+        $this->rowsAffected = $r->affected_rows;
+
+        if ($this->transac_mode)
+            $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
+
+        return $this->result;
+    }
+
+    function transaction($querys)
+    {
+        $this->begin_transaction();
+
+        foreach ($querys as $sql)
+        {
+            $this->query($sql);
+        }
+
+        $this->end_transaction();
+    }
+
+    public function begin_transaction()
+    {
+        if ($this->transac_mode)
+            throw new \Exception("Transaction mode has already started");
+
+        if ($this->dbconn->begin_transaction() === false)
+            throw new \Exception($this->dbconn->error);
+
+        $this->transac_mode = true;
+
+        return true;
+    }
+
+    public function end_transaction()
+    {
+        if (is_null($this->transac_result))
+            throw new \Exception("There are not querys in this transaction");
+
+        if ($this->transac_result)
+            $this->dbconn->commit();
+        else {
+            $this->dbconn->rollback();
+            return false;
+        }
+    }
+
+    public function __destruct()
+    {
         if ($this->dbconn !== false)
-        $this->dbconn->close();
+            $this->dbconn->close();
     }
 }
