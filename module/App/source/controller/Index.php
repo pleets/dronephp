@@ -18,6 +18,7 @@ class Index extends AbstractionController
 	public function start()
 	{
 		$data = array();
+		$data["process"] = "success";
 
 		$modelo = new MySQLModelExample();
 		//$modelo = new SQLServerModelExample();
@@ -25,12 +26,13 @@ class Index extends AbstractionController
 
 		try {
 
-			$rows = $modelo->consulta();
-			$data["datos"] = $rows;
+			$rows = $modelo->myQuery();
+			$data["data"] = $rows;
 
 		} catch (\Exception $e) {
 
-			$data["standard_error"] = $e->getMessage();
+			$data["message"] = $e->getMessage();
+			$data["process"] = "error";
 
 			return $data;
 		}

@@ -4,7 +4,7 @@ namespace App\Model;
 
 class OracleModelExample extends \Pleets\Sql\AbstractionModel
 {
-    public function consulta()
+    public function myQuery()
     {
         $sql = "SELECT * FROM HELP";
         $result = $this->getDb()->query($sql);
