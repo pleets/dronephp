@@ -6,7 +6,7 @@ class MySQLModelExample extends \Pleets\Sql\AbstractionModel
 {
     public function consulta()
     {
-        $sql = "SELECT * FROM mysql.user";
+        $sql = "SELECT host, user, password FROM mysql.user";
         $result = $this->getDb()->query($sql);
         return $this->getDb()->getArrayResult();
     }

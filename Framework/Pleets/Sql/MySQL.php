@@ -46,7 +46,7 @@ class Mysql {
         {
             $this->dbconn = new \mysqli($this->dbhost,$this->dbuser,$this->dbpass,$this->dbname);
 
-            if ($conn->connect_errno === false)
+            if ($this->dbconn->connect_errno === false)
             {
                 $this->errors = array(
                     "code" => $this->dbconn->connect_errno,
@@ -115,13 +115,13 @@ class Mysql {
 
         $this->arrayResult = null;
 
-        $r = @$this->dbconn->query($sql);
+        $this->result = @$this->dbconn->query($sql);
 
-        if (!$r)
+        if (!$this->result)
         {
             $this->errors = array(
-                "code" => "[Drone MySQL]",
-                "message" => $r->error
+                "code" => 100,
+                "message" => $this->dbconn->error
             );
 
             if (count($this->errors))
@@ -132,9 +132,11 @@ class Mysql {
 
         $rows = $this->getArrayResult();
 
-        $this->numRows = $r->num_rows;
-        $this->numFields = $r->field_count;
-        $this->rowsAffected = $r->affected_rows;
+        $this->numRows = $this->result->num_rows;
+        $this->numFields = $this->result->field_count;
+
+        if (is_object($this->result) && property_exists($this->result, 'affected_rows'))
+            $this->rowsAffected = $this->result->affected_rows;
 
         if ($this->transac_mode)
             $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
@@ -178,6 +180,30 @@ class Mysql {
             $this->dbconn->rollback();
             return false;
         }
+    }
+
+    public function cancel()
+    {
+        $this->dbconn->close();
+    }
+
+    private function toArray()
+    {
+        $data = array();
+
+        if ($this->result && !is_bool($this->result))
+        {
+            while ($row = $this->result->fetch_array(MYSQLI_BOTH))
+            {
+                $data[] = $row;
+            }
+        }
+        else
+            throw new \Exception('There are not data in the buffer!');
+
+        $this->arrayResult = $data;
+
+        return $data;
     }
 
     public function __destruct()

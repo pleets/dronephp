@@ -4,7 +4,7 @@ return array(
 	'default' => array(
 		'dbname' => 'mysql',
 		'user' => 'root',
-		'password' => '',
+		'password' => 'dbadmin',
 		'host' => 'localhost',
 		'driver' => 'Mysqli',
 		'charset' => 'utf8',
