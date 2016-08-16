@@ -135,11 +135,13 @@ class Oracle
                 throw new \Exception("Unknown error!");
         }
 
+        # This should be before of getArrayResult() because oci_fetch() is incremental.
+        $this->rowsAffected = oci_num_rows($stid);
+
         $rows = $this->getArrayResult();
 
         $this->numRows = count($rows);
         $this->numFields = oci_num_fields($stid);
-        $this->rowsAffected = oci_num_rows($stid);
 
         if ($this->transac_mode)
             $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
