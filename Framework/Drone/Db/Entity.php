@@ -9,7 +9,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-namespace Pleets\Db;
+namespace Drone\Db;
 
 abstract class Entity
 {

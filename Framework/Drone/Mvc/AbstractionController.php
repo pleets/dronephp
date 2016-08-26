@@ -1,6 +1,6 @@
 <?php
 
-namespace Pleets\Mvc;
+namespace Drone\Mvc;
 
 abstract class AbstractionController
 {
@@ -135,6 +135,6 @@ abstract class AbstractionController
 	public function __destruct()
 	{
 		if (!is_null($this->getMethod()))
-			$layoutManager = new \Pleets\LayoutManager\Layout($this);
+			$layoutManager = new \Drone\LayoutManager\Layout($this);
 	}
 }

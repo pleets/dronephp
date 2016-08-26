@@ -1,6 +1,6 @@
 <?php
 
-namespace Pleets\LayoutManager;
+namespace Drone\LayoutManager;
 
 class Layout
 {

@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class OracleModelExample extends \Pleets\Sql\AbstractionModel
+class OracleModelExample extends \Drone\Sql\AbstractionModel
 {
     public function myQuery()
     {

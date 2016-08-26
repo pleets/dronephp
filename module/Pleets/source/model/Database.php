@@ -2,14 +2,14 @@
 
 namespace Pleets\model;
 
-Use Pleets\Mvc\AbstractionModel;
+Use Drone\Mvc\AbstractionModel;
 
 class Database extends AbstractionModel
 {
 	public function example()
 	{
 		#$query = $this->getEntityManager()->createQuery("SELECT u FROM User u");
-		#return $users = $query->getResult();		
+		#return $users = $query->getResult();
 	}
 
 	public function getUser($NUM_DOC_PAC)
@@ -34,7 +34,7 @@ class Database extends AbstractionModel
 	public function authenticate($NUM_DOC_PAC, $PAS_USU)
 	{
 		$user = $this->getEntityManager()->find('\Auth\Model\Usuario', $NUM_DOC_PAC);
-		
+
 		if (!is_null($user))
 		{
 			if (md5($PAS_USU) == $user->getPAS_USU())

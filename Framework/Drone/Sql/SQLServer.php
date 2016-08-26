@@ -9,7 +9,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-namespace Pleets\Sql;
+namespace Drone\Sql;
 
 class SQLServer
 {

@@ -10,7 +10,7 @@
  * Date: 2014-10-06
  */
 
-namespace Pleets\FileSystem;
+namespace Drone\FileSystem;
 
 class Shell implements IShellCommands
 {

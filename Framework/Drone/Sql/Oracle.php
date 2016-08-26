@@ -1,7 +1,7 @@
 <?php
 
 /*
- * MySQL class
+ * Oracle class
  * http://www.pleets.org
  *
  * Copyright 2014, Pleets Apps
@@ -9,10 +9,10 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-namespace Pleets\Sql;
+namespace Drone\Sql;
 
-class Mysql {
-
+class Oracle
+{
     private $dbhost = '';                           # default host
     private $dbuser = '';                           # default username
     private $dbpass = '';                           # default password
@@ -33,7 +33,7 @@ class Mysql {
     private $transac_mode = false;                  # transaction process
     private $transac_result = null;                 # result of transactions
 
-    public function __construct($dbhost = null, $dbuser = null, $dbpass = null, $dbname = null, $auto_connect = true, $dbchar = "utf8")
+    public function __construct($dbhost = null, $dbuser = null, $dbpass = null, $dbname = null, $auto_connect = true, $dbchar = "AL32UTF8")
     {
         $this->dbhost = is_null($dbhost) ? !defined('DBHOST') ? $this->dbhost : @DBHOST : $dbhost;
         $this->dbuser = is_null($dbuser) ? !defined('DBUSER') ? $this->dbuser : @DBUSER : $dbuser;
@@ -44,14 +44,12 @@ class Mysql {
 
         if ($auto_connect)
         {
-            $this->dbconn = new \mysqli($this->dbhost,$this->dbuser,$this->dbpass,$this->dbname);
+            $connection_string = (is_null($this->dbhost) || empty($this->dbhost)) ? $this->dbname : $this->dbhost ."/". $this->dbname;
+            $this->dbconn = @oci_connect($this->dbuser,  $this->dbpass, $connection_string, $this->dbchar);
 
-            if ($this->dbconn->connect_errno === false)
+            if ($this->dbconn === false)
             {
-                $this->errors = array(
-                    "code" => $this->dbconn->connect_errno,
-                    "message" => $this->dbconn->connect_error
-                );
+                $this->errors = oci_error();
 
                 if (count($this->errors))
                     throw new \Exception($this->errors["message"], $this->errors["code"]);
@@ -59,7 +57,7 @@ class Mysql {
                     throw new \Exception("Unknown error!");
             }
         }
-    }
+	}
 
     /* Getters */
 
@@ -80,6 +78,7 @@ class Mysql {
 
     public function getErrors() { return $this->errors; }
 
+
     /* Setters */
 
     public function setHostname($dbhost) { $this->dbhost = $dbhost; }
@@ -89,14 +88,12 @@ class Mysql {
 
     public function reconnect()
     {
-        $this->dbconn = new \mysqli($this->dbhost,$this->dbuser,$this->dbpass,$this->dbname);
+        $connection_string = (is_null($this->dbhost) || empty($this->dbhost)) ? $this->dbname : $this->dbhost ."/". $this->dbname;
+        $this->dbconn = @oci_connect($this->dbuser,  $this->dbpass, $connection_string, $this->dbchar);
 
-        if ($this->dbconn->connect_errno === false)
+        if ($this->dbconn === false)
         {
-            $this->errors = array(
-                "code" => $this->dbconn->connect_errno,
-                "message" => $this->dbconn->connect_error
-            );
+            $this->errors = oci_error();
 
             if (count($this->errors))
                 throw new \Exception($this->errors["message"], $this->errors["code"]);
@@ -115,14 +112,22 @@ class Mysql {
 
         $this->arrayResult = null;
 
-        $this->result = @$this->dbconn->query($sql);
+        $this->result = $stid = oci_parse($this->dbconn, $sql);
 
-        if (!$this->result)
+        # Bound variables
+        if (count($params))
         {
-            $this->errors = array(
-                "code" => 100,
-                "message" => $this->dbconn->error
-            );
+            foreach ($params as $var => $value)
+            {
+                oci_bind_by_name($stid, $var, $value);
+            }
+        }
+
+        $r = ($this->transac_mode) ? @oci_execute($stid, OCI_NO_AUTO_COMMIT) : @oci_execute($stid,  OCI_COMMIT_ON_SUCCESS);
+
+        if (!$r)
+        {
+            $this->errors = oci_error($stid);
 
             if (count($this->errors))
                 throw new \Exception($this->errors["message"], $this->errors["code"]);
@@ -130,13 +135,13 @@ class Mysql {
                 throw new \Exception("Unknown error!");
         }
 
+        # This should be before of getArrayResult() because oci_fetch() is incremental.
+        $this->rowsAffected = oci_num_rows($stid);
+
         $rows = $this->getArrayResult();
 
-        $this->numRows = $this->result->num_rows;
-        $this->numFields = $this->result->field_count;
-
-        if (is_object($this->result) && property_exists($this->result, 'affected_rows'))
-            $this->rowsAffected = $this->result->affected_rows;
+        $this->numRows = count($rows);
+        $this->numFields = oci_num_fields($stid);
 
         if ($this->transac_mode)
             $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
@@ -161,9 +166,6 @@ class Mysql {
         if ($this->transac_mode)
             throw new \Exception("Transaction mode has already started");
 
-        if ($this->dbconn->begin_transaction() === false)
-            throw new \Exception($this->dbconn->error);
-
         $this->transac_mode = true;
 
         return true;
@@ -175,40 +177,47 @@ class Mysql {
             throw new \Exception("There are not querys in this transaction");
 
         if ($this->transac_result)
-            $this->dbconn->commit();
+            oci_commit($this->dbconn);
         else {
-            $this->dbconn->rollback();
+            oci_rollback($this->dbconn);
             return false;
         }
+
+        $this->result = $this->transac_result;
+
+        $this->transac_result = null;
+        $this->transac_mode = false;
+
+        return true;
     }
 
     public function cancel()
     {
-        $this->dbconn->close();
+        oci_cancel($this->result);
     }
 
     private function toArray()
     {
         $data = array();
 
-        if ($this->result && !is_bool($this->result))
+        if ($this->result)
         {
-            while ($row = $this->result->fetch_array(MYSQLI_BOTH))
+            while ( ($row = @oci_fetch_array($this->result, OCI_BOTH + OCI_RETURN_NULLS)) !== false )
             {
                 $data[] = $row;
             }
         }
         else
-            throw new \Exception('There are not data in the buffer!');
+            throw new Exception('There are not data in the buffer!');
 
         $this->arrayResult = $data;
 
         return $data;
     }
 
-    public function __destruct()
+	public function __destruct()
     {
-        if ($this->dbconn !== false)
-            $this->dbconn->close();
-    }
+        if ($this->dbconn)
+		    oci_close($this->dbconn);
+	}
 }

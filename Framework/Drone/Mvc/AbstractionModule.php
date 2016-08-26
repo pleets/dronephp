@@ -1,6 +1,6 @@
 <?php
 
-namespace Pleets\Mvc;
+namespace Drone\Mvc;
 
 abstract class AbstractionModule
 {

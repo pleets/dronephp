@@ -2,8 +2,8 @@
 
 namespace Pleets\Controller;
 
-Use Pleets\Mvc\AbstractionController;
-Use Pleets\FileSystem\Shell;
+Use Drone\Mvc\AbstractionController;
+Use Drone\FileSystem\Shell;
 
 class Files extends AbstractionController
 {
@@ -48,7 +48,7 @@ class Files extends AbstractionController
             $return_data['type'] = $_GET["type"];
 
             if ($_GET["type"] == 'view')
-                $return_data['controller'] = $_GET["controller"];                   
+                $return_data['controller'] = $_GET["controller"];
         }
 
         return $return_data;
@@ -65,7 +65,7 @@ class Files extends AbstractionController
         $contents = $_POST["file-edition"];
 
         if (file_exists($file))
-    		$return_data["success"] = !(file_put_contents($file, $contents) === false); 
+    		$return_data["success"] = !(file_put_contents($file, $contents) === false);
 
 		return $return_data;
 	}
@@ -94,6 +94,6 @@ class Files extends AbstractionController
 
     private function fileSize($file)
     {
-        return number_format(filesize($file) / 1024, 2) . " KB"; 
-    } 
+        return number_format(filesize($file) / 1024, 2) . " KB";
+    }
 }

@@ -2,7 +2,7 @@
 
 namespace Pleets;
 
-Use Pleets\Mvc\AbstractionModule;
+Use Drone\Mvc\AbstractionModule;
 
 class Module extends AbstractionModule
 {

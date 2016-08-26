@@ -9,7 +9,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
-namespace Pleets\Sql;
+namespace Drone\Sql;
 
 abstract class AbstractionModel
 {
@@ -23,9 +23,9 @@ abstract class AbstractionModel
 
         # driver => className
         $this->availableDrivers = array(
-            "Oci8"          => "Pleets\Sql\Oracle",
-            "Mysqli"        => "Pleets\Sql\MySQL",
-            "Sqlsrv"        => "Pleets\Sql\SQLServer",
+            "Oci8"          => "Drone\Sql\Oracle",
+            "Mysqli"        => "Drone\Sql\MySQL",
+            "Sqlsrv"        => "Drone\Sql\SQLServer",
             // Drivers for future implementation
             //"Pdo_Mysql"     => "",
             //"Pgsql"         => "",

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pleets\Mvc;
+namespace Drone\Mvc;
 
 class Application
 {
@@ -92,7 +92,7 @@ class Application
 		 *	Loads all classes that has been created for the user.
 		 */
 
-		$fileSystem = new \Pleets\FileSystem\Shell();
+		$fileSystem = new \Drone\FileSystem\Shell();
 
 		if (!array_key_exists('modules', $settings))
 			throw new \Exception("The key 'modules' does not exists in the configuration file");

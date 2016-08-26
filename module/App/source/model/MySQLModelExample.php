@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class MySQLModelExample extends \Pleets\Sql\AbstractionModel
+class MySQLModelExample extends \Drone\Sql\AbstractionModel
 {
     public function myQuery()
     {
