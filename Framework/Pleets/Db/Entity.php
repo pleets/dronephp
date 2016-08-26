@@ -9,6 +9,8 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
+namespace Pleets\Db;
+
 abstract class Entity
 {
     public function exchangeArray($data)

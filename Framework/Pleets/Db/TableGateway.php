@@ -9,6 +9,8 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
+namespace Pleets\Db;
+
 class TableGateway extends AbstractionModel implements TableGatewayInterface
 {
     private $tableName;

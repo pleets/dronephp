@@ -9,6 +9,8 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 
+namespace Pleets\Db;
+
 interface TableGatewayInterface
 {
    public function select($where);
