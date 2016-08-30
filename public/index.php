@@ -33,5 +33,6 @@ spl_autoload_register("LibraryLoader");
 
 // Run application
 require_once("Framework/autoload.php");
-$mvc = new Drone\Mvc\Application();
+
+$mvc = new Drone\Mvc\Application(include "config/application.config.php");
 $mvc->run();

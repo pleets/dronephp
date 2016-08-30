@@ -1,4 +1,11 @@
 <?php
+/**
+ * DronePHP (http://www.dronephp.com)
+ *
+ * @link      http://github.com/Pleets/Drone
+ * @copyright Copyright (c) 2014-2016 DronePHP. (http://www.dronephp.com)
+ * @license   http://www.dronephp.com/license
+ */
 
 namespace Drone\Mvc;
 
@@ -12,8 +19,9 @@ abstract class AbstractionController
 	private $layout = "default";
 	private $terminal = false;
 
-	public function __construct($module, $method)
+	public function __construct($module, $method, $basePath)
 	{
+		$this->basePath = $basePath;
 		$this->parseRequestParameters($_GET);
 
 		/* Module class:
@@ -33,6 +41,10 @@ abstract class AbstractionController
 
 				// Get the return value of the method (parameters sent to the view)
 				$this->params = $this->$method();
+
+				if (!is_null($this->getMethod()))
+					$layoutManager = new \Drone\LayoutManager\Layout($this);
+
 			}
 			else {
 				$class = __CLASS__;
@@ -130,11 +142,5 @@ abstract class AbstractionController
 
 			unset($_GET["params"]);
 		}
-	}
-
-	public function __destruct()
-	{
-		if (!is_null($this->getMethod()))
-			$layoutManager = new \Drone\LayoutManager\Layout($this);
 	}
 }

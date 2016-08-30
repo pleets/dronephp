@@ -20,8 +20,8 @@ return array(
             ),
         ),
     ),
-    'app' => array(
+    'environment' => array(
         'base_path' => dirname(dirname($_SERVER['PHP_SELF'])),
-        'development_environment' => true                       // set this to FALSE for production environments
+        'dev_mode'  => true                       // set this to FALSE for production environments
     ),
 );

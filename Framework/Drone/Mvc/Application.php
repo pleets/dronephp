@@ -1,46 +1,114 @@
 <?php
+/**
+ * DronePHP (http://www.dronephp.com)
+ *
+ * @link      http://github.com/Pleets/Drone
+ * @copyright Copyright (c) 2014-2016 DronePHP. (http://www.dronephp.com)
+ * @license   http://www.dronephp.com/license
+ */
 
 namespace Drone\Mvc;
 
+use Exception as Exception;
+use Drone\FileSystem\Shell as Shell;
+
 class Application
 {
-	protected $module;
-	protected $controller;
-	protected $view;
+    /**
+     * @var array
+     */
+	private $modules;
 
-	private $settings;
+    /**
+     * @var Drone\Mvc\Router
+     */
+	private $router;
 
-	public function __construct()
+    /**
+     * @var boolean
+     */
+	private $devMode;
+
+    /**
+	 * @return Drone\Mvc\Router
+     */
+	public function getRouter()
 	{
-		// Start sessions
+		return $this->router;
+	}
+
+    /**
+     * Prepare app environment
+     *
+	 * @return null
+     */
+	public function prepare()
+	{
+		# start sessions
 		if (!isset($_SESSION))
 			session_start();
+	}
 
-		$_SESSION["APP"] = __CLASS__;
+    /**
+     * Check app.config structure
+     *
+     * @param array $parameters
+     *
+	 * @return null
+     */
+	public function verifyRequiredParameters(Array $required_tree, Array $parameters)
+	{
+		foreach ($required_tree as $key => $value)
+		{
+			$req_keys = array_keys($parameters);
 
-		// Get settings from application.config.php
-		$this->settings = require "config/application.config.php";
-		$settings = $this->getSettings();
+			if (!in_array($key, $req_keys))
+				throw new Exception("The key '$key' must be in the configuration!", 1);
 
-		/*
-		 *	APP CONSTANTS
-		 */
+			if (is_array($value))
+				$this->verifyRequiredParameters($value, $parameters[$key]);
+		}
+	}
 
-		if (!array_key_exists('app', $settings))
-			throw new \Exception("The key 'app' does not exists in the configuration file");
-		if (!array_key_exists('base_path', $settings["app"]))
-			throw new \Exception("The key 'base_path' does not exists in the configuration file");
+    /**
+     * Constructor
+     *
+     * @param array $init_parameters
+     */
+	public function __construct($init_parameters)
+	{
+		$this->prepare();
 
-		define('BASEPATH', $settings["app"]["base_path"]);
+		$this->verifyRequiredParameters(
+			array(
+				"modules" 		=> array(
+					"{key}"		=> "{value}"
+				),
+				"router"		=> array(
+					"routes"	=> array(
+			            'defaults' => array(
+			                'module' 		=> '{value}',
+			                'controller'	=> '{value}',
+			                'view' 			=> '{value}'
+			            )
+					)
+				),
+				"environment"	=> array(
+					"base_path" => "{value}",
+					"dev_mode"	=> "{value}"
+				)
+			),
+		$init_parameters);
+
+		$this->devMode = $init_parameters["environment"]["dev_mode"];
+		$this->modules = $init_parameters["modules"];
 
 		/*
 		 *	DEV MODE:
 		 *	Set Development or production environment
 		 */
 
-		$devMode = (!array_key_exists('development_environment', $settings["app"]) || !$settings["app"]["development_environment"]) ? false : true;
-
-		if ($devMode)
+		if ($this->devMode)
 		{
 			ini_set('display_errors', 1);
 
@@ -58,50 +126,35 @@ class Application
 			error_reporting(-1);
 		}
 
-		/*
-		 *	GET URL PARAMETERS:
-		 *	The route is constructed from the URL in the following order
-		 *	www.example.com/module/controller/view
-		 */
+		$this->loadModules($this->modules, $init_parameters["router"]["routes"]["defaults"]["module"]);
 
-		$this->module = isset($_GET["module"]) ? $_GET["module"] : null;
-		$this->controller = isset($_GET["controller"]) ? $_GET["controller"] : null;
-		$this->view = isset($_GET["view"]) ? $_GET["view"] : null;
+		$this->router = new Router($init_parameters["router"]["routes"]);
+		$this->router->setBasePath($init_parameters["environment"]["base_path"]);
 
-		$this->loadUserClasses($settings);
-
-		$this->buildRoute($settings);
+		# load routes from modules
+		foreach ($this->modules as $module)
+		{
+			$module_config_file = require "module/$module/config/module.config.php";
+			$this->getRouter()->addRoute($module_config_file["router"]["routes"]);
+		}
 	}
 
-	/* Getters */
-	public function getModule() { return $this->module; }
-	public function getController() { return $this->controller; }
-	public function getView() { return $this->view; }
-
-	public function getSettings() { return $this->settings; }
-
-	/* Setters */
-	public function setModule($module) { return $this->module = $module; }
-	public function setController($controller) { return $this->controller = $controller; }
-	public function setView($view) { return $this->view = $view; }
-
-	private function loadUserClasses($settings)
+    /**
+     * Load user classes in each module
+     *
+     * @param array $modules
+     *
+	 * @return null
+     */
+	private function loadModules($modules, $module)
 	{
-		/*
-		 *	LOAD USER CLASSES:
-		 *	Loads all classes that has been created for the user.
-		 */
+		$fileSystem = new Shell();
 
-		$fileSystem = new \Drone\FileSystem\Shell();
-
-		if (!array_key_exists('modules', $settings))
-			throw new \Exception("The key 'modules' does not exists in the configuration file");
-
-		if (count($settings["modules"]))
+		if ($modules)
 		{
-			$mod = $this->getModule();
+			$mod = array_key_exists('module', $_GET) ? $_GET["module"] : $module;
 
-			foreach ($settings["modules"] as $module)
+			foreach ($modules as $module)
 			{
 				/* Load only Pleets componentes when the current module is Pleets */
 				if ($mod == 'Pleets' && $module != 'Pleets')
@@ -113,7 +166,8 @@ class Application
 					$controllers = $fileSystem->ls("module/".$module."/source/controller");
 
 					// Load controllers for each module
-					foreach ($controllers as $controller) {
+					foreach ($controllers as $controller)
+					{
 						if (!in_array($controller, array('.', '..')))
 							include("module/".$module."/source/controller/" . $controller);
 					}
@@ -121,7 +175,8 @@ class Application
 					$models = $fileSystem->ls("module/".$module."/source/model");
 
 					// Load models for each module
-					foreach ($models as $model) {
+					foreach ($models as $model)
+					{
 						if (!in_array($model, array('.', '..')))
 							include("module/".$module."/source/model/" . $model);
 				    }
@@ -129,133 +184,21 @@ class Application
 			}
 		}
 		else
-			throw new \Exception("The application must have at least one module");
+			throw new Exception("The application must have at least one module");
 	}
 
-	private function buildRoute($settings)
-	{
-		/*
-		 *	PARSE ROUTE CONFIGURATION:
-		 *
-		 *	The file config/application.config.php should return an array that
-		 *	contains the following array to assign the default route
-		 *
-		 *	   'router' => array(
-		 *			'routes' => array(
-		 *				'defaults' => array(
-		 *					'module' => 'MyModule',
-		 *					'controller' => 'MyController',
-		 *					'view'     => 'MyView',
-		 *				),
-		 *			),
-		 *	   ),
-		 */
-
-		if (is_null($this->getModule()))
-		{
-			if (!array_key_exists('router', $settings))
-				throw new \Exception("The key 'router' does not exists in the configuration file");
-
-			if (!array_key_exists('routes', $settings["router"]))
-				throw new \Exception("The key 'routes' does not exists in the 'router' key in the configuration file");
-
-			/*
-			 *	GETS DEFAULT ROUTE
-			 */
-
-			if (!array_key_exists('defaults', $settings["router"]["routes"]))
-				throw new \Exception("The key 'defaults' does not exists in '[router][routes]' key in the configuration file");
-
-			if (!array_key_exists('module', $settings["router"]["routes"]["defaults"]))
-				throw new \Exception("You must define the module in the 'defaults' route");
-
-			if (!array_key_exists('controller', $settings["router"]["routes"]["defaults"]))
-				throw new \Exception("You must define the controller in the 'defaults' route");
-
-			if (!array_key_exists('view', $settings["router"]["routes"]["defaults"]))
-				throw new \Exception("You must define the view in the 'defaults' route");
-		}
-		else {
-			$module = $this->getModule();
-			$moduleFileSettings = "module/$module/config/module.config.php";
-			$moduleSettings = require $moduleFileSettings;
-
-			if (!array_key_exists('router', $moduleSettings))
-				throw new \Exception("The key 'router' does not exists in the configuration file $moduleFileSettings");
-
-			if (!array_key_exists('routes', $moduleSettings["router"]))
-				throw new \Exception("The key 'routes' does not exists in the 'router' key in the configuration file $moduleFileSettings");
-
-			if (!array_key_exists($module, $moduleSettings["router"]["routes"]))
-				throw new \Exception("The key '$module' does not exists in '[router][routes]' key in the configuration file $moduleFileSettings");
-
-			$spModule = $moduleSettings["router"]["routes"][$module]["module"];
-			if (!in_array($spModule, $settings['modules']))
-				throw new \Exception("The module '$spModule' does not exist in the global configuration");
-
-			if (!array_key_exists('module', $moduleSettings["router"]["routes"][$module]))
-				throw new \Exception("You must define the module in the '$module' route");
-
-			/*
-			 *	GETS RELATIVE ROUTE TO MODULE
-			 */
-
-			if (is_null($this->getController()))
-			{
-				if (!array_key_exists('controller', $moduleSettings["router"]["routes"][$module]))
-					throw new \Exception("You must define the controller in the '$module' route");
-
-				if (!array_key_exists('view', $moduleSettings["router"]["routes"][$module]))
-					throw new \Exception("You must define the view in the '$module' route");
-			}
-			if (is_null($this->getView()))
-			{
-				if (!array_key_exists('view', $moduleSettings["router"]["routes"][$module]))
-					throw new \Exception("You must define the view in the '$module' route");
-			}
-		}
-
-
-		/*
-		 *	BUILD DEFAULT ROUTE
-		 */
-
-		if (is_null($this->getModule()))
-		{
-			$this->module = $settings['router']['routes']['defaults']['module'];
-			$this->controller = $settings['router']['routes']['defaults']['controller'];
-			$this->view = $settings['router']['routes']['defaults']['view'];
-		}
-		else if (is_null($this->getController()))
-		{
-			$this->module = $spModule;
-			$this->controller = $moduleSettings['router']['routes'][$module]['controller'];
-			$this->view = $moduleSettings['router']['routes'][$module]['view'];
-		}
-		else if (is_null($this->getView()))
-		{
-			$this->module = $spModule;
-			$this->view = $moduleSettings['router']['routes'][$module]['view'];
-		}
-	}
-
+    /**
+     * Run application
+     *
+	 * @return null
+     */
 	public function run()
 	{
-		try {
-			if (!is_null($this->getController()))
-			{
-				$controller = '\\' . $this->getModule() . "\Controller\\" . $this->getController();
+		$module = isset($_GET["module"]) ? $_GET["module"] : null;
+		$controller = isset($_GET["controller"]) ? $_GET["controller"] : null;
+		$view = isset($_GET["view"]) ? $_GET["view"] : null;
 
-				if (class_exists($controller))
-					$controller_instance = new $controller($this->getModule(), $this->getView());
-				else
-					throw new \Exception("The control class $controller does not exists");
-			}
-			else
-				throw new \Exception("The control class is NULL");
-		}
-		catch (\Exception $e) {
-			echo $e->getMessage();
-		}
+		$this->router->setIdentifiers($module, $controller, $view);
+		$this->router->run();
 	}
 }

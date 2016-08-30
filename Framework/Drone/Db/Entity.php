@@ -1,12 +1,10 @@
 <?php
-
-/*
- * TableGateway abstraction class
- * http://www.pleets.org
+/**
+ * DronePHP (http://www.dronephp.com)
  *
- * Copyright 2016, Pleets Apps
- * Free to use under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
+ * @link      http://github.com/Pleets/Drone
+ * @copyright Copyright (c) 2014-2016 DronePHP. (http://www.dronephp.com)
+ * @license   http://www.dronephp.com/license
  */
 
 namespace Drone\Db;

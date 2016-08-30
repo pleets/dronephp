@@ -1,12 +1,10 @@
 <?php
-
-/*
- * TableGateway abstraction class
- * http://www.pleets.org
+/**
+ * DronePHP (http://www.dronephp.com)
  *
- * Copyright 2016, Pleets Apps
- * Free to use under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
+ * @link      http://github.com/Pleets/Drone
+ * @copyright Copyright (c) 2014-2016 DronePHP. (http://www.dronephp.com)
+ * @license   http://www.dronephp.com/license
  */
 
 namespace Drone\Db;
@@ -29,9 +27,9 @@ class TableGateway extends AbstractionModel implements TableGatewayInterface
             foreach ($where as $key => $value)
             {
                 if (is_string($value))
-                    $condition = "$key = '$value'";
-
-                $parsed_where[] = "$key = $value";
+                    $parsed_where[] = "$key = '$value'";
+                else
+                    $parsed_where[] = "$key = $value";
             }
 
             $where = "WHERE " . implode(" AND ", $parsed_where);

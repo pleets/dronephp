@@ -4,7 +4,7 @@
  *	App Autoloader
  */
 
-function FrameworkLoader($name) 
+function FrameworkLoader($name)
 {
 
 	$class = __DIR__ . "/". str_replace('\\', '/', $name) . ".php";

@@ -1,13 +1,10 @@
 <?php
-
-/*
- * PHP FileSystem Environment - FileSystem tools for PHP
- * http://www.pleets.org
- * Copyright 2014, Pleets Apps
- * Free to use under the MIT license.
- * http://www.opensource.org/licenses/mit-license.php
+/**
+ * DronePHP (http://www.dronephp.com)
  *
- * Date: 2014-10-06
+ * @link      http://github.com/Pleets/Drone
+ * @copyright Copyright (c) 2014-2016 DronePHP. (http://www.dronephp.com)
+ * @license   http://www.dronephp.com/license
  */
 
 namespace Drone\FileSystem;

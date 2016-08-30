@@ -1,12 +1,12 @@
 {
-    "name": "pleetsapps/Drone",
-    "description": "Framework for PHP",
+    "name": "pleets/Drone",
+    "description": "DronePHP Framework for PHP",
     "license": "MIT licence",
     "keywords": [
         "framework",
         "PHP"
     ],
-    "homepage": "http://pleets.org",	
+    "homepage": "http://www.dronephp.com",
 	"require": {
 		"doctrine/orm": "2.4.*",
 		"symfony/yaml": "2.*"
