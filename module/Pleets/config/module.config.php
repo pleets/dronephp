@@ -11,9 +11,9 @@ return array(
         ),
     ),
    'view_manager' => array(
-    	'template_map' => array(
+    	'template_map'  => array(
         	'default'	=> __DIR__ . '/../view/layout/layout.phtml',
-        	'error'	=> __DIR__ . '/../view/layout/error.phtml',
+        	'error'    	=> __DIR__ . '/../view/layout/error.phtml',
      	),
    ),
 );

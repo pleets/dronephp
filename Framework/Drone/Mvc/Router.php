@@ -120,10 +120,10 @@ class Router
 					? $this->routes["defaults"]["module"] : $this->identifiers["module"];
 
 		$controller = (is_null($this->identifiers["controller"]) || empty($this->identifiers["controller"]))
-					? $this->routes["defaults"]["controller"] : $this->identifiers["controller"];
+					? $this->routes[$module]["controller"] : $this->identifiers["controller"];
 
 		$view = (is_null($this->identifiers["view"]) || empty($this->identifiers["view"]))
-					? $this->routes["defaults"]["view"] : $this->identifiers["view"];
+					? $this->routes[$module]["view"] : $this->identifiers["view"];
 
 		$fqn_controller = '\\' . $module . "\Controller\\" . $controller;
 
