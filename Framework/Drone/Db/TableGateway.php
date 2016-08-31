@@ -18,7 +18,7 @@ class TableGateway extends AbstractionModel implements TableGatewayInterface
         $this->tableName = $tableName;
     }
 
-    public function select($where)
+    public function select($where = array())
     {
         if (count($where))
         {
