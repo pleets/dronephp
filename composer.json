@@ -8,8 +8,9 @@
     ],
     "homepage": "http://www.dronephp.com",
 	"require": {
-		"doctrine/orm": "2.4.*",
-		"symfony/yaml": "2.*"
+        "zendframework/zend-validator": "2.8.*",
+        "zendframework/zend-filter": "2.7.*",
+        "zendframework/zend-i18n": "2.7.*"
 	},
 		"autoload": {
 		"psr-0": {"": "src/"}
