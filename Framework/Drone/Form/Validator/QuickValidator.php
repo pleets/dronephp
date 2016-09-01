@@ -4,6 +4,10 @@ namespace Drone\Form\Validator;
 
 use Zend\Validator\NotEmpty;
 use Zend\Validator\Digits;
+use Zend\Validator\LessThan;
+use Zend\Validator\GreaterThan;
+use Zend\Validator\EmailAddress;
+use Zend\Validator\Date;
 use \Exception as Exception;
 
 class QuickValidator
@@ -60,46 +64,91 @@ class QuickValidator
      */
 	public function __construct($rules)
 	{
-		$this->components = $rules;
+		$this->rules = $rules;
 	}
 
-	public function validateWith($formArray)
+	public function validateWith($arrayForm)
 	{
-		foreach ($this->components as $key => $constraints)
+
+		foreach ($this->rules as $key => $attributes)
 		{
-			if (!array_key_exists($key, $formArray))
+			if (!array_key_exists($key, $arrayForm))
 				throw new Exception("El campo <strong>$key</strong> no existe!", 300);
 
-			$label = (array_key_exists('label', array_keys($constraints))) ? $constraints["label"] : $key;
+			$label = (array_key_exists('label', array_keys($attributes))) ? $attributes["label"] : $key;
 
-			foreach ($constraints as $name => $value)
+			foreach ($attributes as $name => $value)
 			{
+				$form_value = $arrayForm[$key];
+
 				switch ($name)
 				{
 					case 'required':
 
 						$validator = new NotEmpty();
+						break;
+
+					case 'minlength':
+
+						$validator = new GreaterThan(['min' => $value, 'inclusive' => true]);
+						$form_value = strlen($form_value);
+						break;
+
+					case 'maxlength':
+
+						$validator = new LessThan(['max' => $value, 'inclusive' => true]);
+						$form_value = strlen((string) $form_value);
+						break;
+
+					case 'type':
+
+						switch ($value)
+						{
+							case 'number':
+
+								$validator = new Digits();
+								break;
+
+							case 'email':
+
+								$validator = new EmailAddress();
+								break;
+
+							case 'date':
+
+								$validator = new Date();
+								break;
+						}
+						break;
+
+					case 'min':
+
+						if (in_array('type', $attributes) && $attributes['type'] == "number")
+							$validator = new GreaterThan(['min' => $value, 'inclusive' => true]);
 
 						break;
 
-					case 'digits':
+					case 'max':
 
-						$validator = new Digits();
+						if (in_array('type', $attributes) && $attributes['type'] == "number")
+							$validator = new LessThan(['max' => $value, 'inclusive' => true]);
 
 						break;
 				}
 
-				$valid = $validator->isValid($formArray[$key]);
-				$this->setValid($valid);
-
-				if (!$valid)
+				if (in_array($name, ['required', 'digits', 'minlength', 'maxlength', 'type', 'min', 'max', 'date']))
 				{
-					if (!in_array($key, array_keys($this->messages)))
-						$this->messages[$key] = array();
+					$valid = $validator->isValid($form_value);
+					$this->setValid($valid);
 
-					$this->messages[$key] = array_merge($this->messages[$key], $validator->getOption("messages"));
+					if (!$valid)
+					{
+						if (!in_array($key, array_keys($this->messages)))
+							$this->messages[$key] = array();
+
+						$this->messages[$key] = array_merge($this->messages[$key], $validator->getOption("messages"));
+					}
 				}
-
 			}
 		}
 	}

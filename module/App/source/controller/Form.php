@@ -18,25 +18,37 @@ class Form extends AbstractionController
 			$data["success"] = true;
 
 			$rules = array(
-				"fname" => array(
+				"fname" => [
 					"required" => true,
-					/*"minlength" => 3,
+					"minlength" => 3,
 					"maxlength" => 10,
-					"alnumWhiteSpace" => true,*/
+					#"alnumWhiteSpace" => true,
 					"label" => "First name"
-				),
-				"lname" => array(
+				],
+				"lname" => [
 					"required" => true,
-					/*"minlength" => 3,
-					"maxlength" => 10,
-					"alnumWhiteSpace" => true,*/
+					"minlength" => 3,
+					"maxlength" => 5,
+					#"alnumWhiteSpace" => true,
 					"label" => "Last name"
-				),
-				"age" => array(
+				],
+				"age" => [
+					"type" => "number",
 					"required" => true,
-					"digits" => true,
+					"min" => 18,
+					"max" => 90,
 					"label" => "Age"
-				)
+				],
+				"email" => [
+					"type" => "email",
+					"required" => true,
+					"label" => "Email"
+				],
+				"date" => [
+					"type" => "date",
+					"required" => true,
+					"label" => "Date"
+				]
 			);
 
 			try {
