@@ -75,7 +75,7 @@ class QuickValidator
 		foreach ($this->rules as $key => $attributes)
 		{
 			if (!array_key_exists($key, $arrayForm))
-				throw new Exception("El campo <strong>$key</strong> no existe!", 300);
+				throw new Exception("The field '$key' does not exists!");
 
 			$label = (array_key_exists('label', array_keys($attributes))) ? $attributes["label"] : $key;
 
@@ -130,15 +130,19 @@ class QuickValidator
 
 					case 'min':
 
-						if (in_array('type', $attributes) && $attributes['type'] == "number")
+						if (in_array('type', $attributes) && in_array($attributes['type'], ['number', 'range']))
 							$validator = new GreaterThan(['min' => $value, 'inclusive' => true]);
+						else
+							throw new Exception("The input type must be 'range' or 'number'");
 
 						break;
 
 					case 'max':
 
-						if (in_array('type', $attributes) && $attributes['type'] == "number")
+						if (in_array('type', $attributes) && in_array($attributes['type'], ['number', 'range']))
 							$validator = new LessThan(['max' => $value, 'inclusive' => true]);
+						else
+							throw new Exception("The input type must be 'range' or 'number'");
 
 						break;
 
