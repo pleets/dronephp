@@ -4,6 +4,7 @@ namespace Drone\Form\Validator;
 
 use Zend\Validator\NotEmpty;
 use Zend\Validator\Digits;
+use Zend\Validator\Step;
 use Zend\Validator\LessThan;
 use Zend\Validator\GreaterThan;
 use Zend\Validator\EmailAddress;
@@ -134,9 +135,20 @@ class QuickValidator
 							$validator = new LessThan(['max' => $value, 'inclusive' => true]);
 
 						break;
+
+					case 'steap':
+
+						$baseValue = (in_array('min', $attributes)) ? $attributes['min'] : 0;
+
+						if (in_array('type', $attributes) && $attributes['type'] == "range")
+							$validator = new Step(['baseValue' => $baseValue, 'step' => $value]);
+						else
+							throw new Exception("The input type must be 'range'");
+
+						break;
 				}
 
-				if (in_array($name, ['required', 'digits', 'minlength', 'maxlength', 'type', 'min', 'max', 'date']))
+				if (in_array($name, ['required', 'digits', 'minlength', 'maxlength', 'type', 'min', 'max', 'date', 'steap']))
 				{
 					$valid = $validator->isValid($form_value);
 					$this->setValid($valid);

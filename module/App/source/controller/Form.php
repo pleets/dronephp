@@ -32,12 +32,13 @@ class Form extends AbstractionController
 					#"alnumWhiteSpace" => true,
 					"label" => "Last name"
 				],
-				"age" => [
-					"type" => "number",
+				"height" => [
+					"type" => "range",
 					"required" => true,
-					"min" => 18,
-					"max" => 90,
-					"label" => "Age"
+					"min" => 0.5,
+					"max" => 2.5,
+					"steap" => 0.1,
+					"label" => "Height"
 				],
 				"email" => [
 					"type" => "email",
