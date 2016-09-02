@@ -10,7 +10,8 @@
 	"require": {
         "zendframework/zend-validator": "2.8.*",
         "zendframework/zend-filter": "2.7.*",
-        "zendframework/zend-i18n": "2.7.*"
+        "zendframework/zend-i18n": "2.7.*",
+        "zendframework/zend-uri": "2.5.*"
 	},
 		"autoload": {
 		"psr-0": {"": "src/"}

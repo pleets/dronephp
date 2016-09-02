@@ -46,9 +46,14 @@ class Form extends AbstractionController
 					"label" => "Email"
 				],
 				"date" => [
-					"type" => "date",
 					"required" => true,
+					"type" => "date",
 					"label" => "Date"
+				],
+				"url" => [
+					"required" => true,
+					"type" => "url",
+					"label" => "Website"
 				]
 			);
 

@@ -9,6 +9,7 @@ use Zend\Validator\LessThan;
 use Zend\Validator\GreaterThan;
 use Zend\Validator\EmailAddress;
 use Zend\Validator\Date;
+use Zend\Validator\Uri;
 use \Exception as Exception;
 
 class QuickValidator
@@ -118,6 +119,11 @@ class QuickValidator
 							case 'date':
 
 								$validator = new Date();
+								break;
+
+							case 'url':
+
+								$validator = new Uri();
 								break;
 						}
 						break;
