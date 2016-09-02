@@ -146,7 +146,7 @@ class QuickValidator
 
 						break;
 
-					case 'steap':
+					case 'step':
 
 						$baseValue = (in_array('min', $attributes)) ? $attributes['min'] : 0;
 
@@ -158,7 +158,7 @@ class QuickValidator
 						break;
 				}
 
-				if (in_array($name, ['required', 'digits', 'minlength', 'maxlength', 'type', 'min', 'max', 'date', 'steap']))
+				if (in_array($name, ['required', 'digits', 'minlength', 'maxlength', 'type', 'min', 'max', 'date', 'step']))
 				{
 					$valid = $validator->isValid($form_value);
 					$this->setValid($valid);
