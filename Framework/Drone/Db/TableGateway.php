@@ -9,6 +9,8 @@
 
 namespace Drone\Db;
 
+use Drone\Sql\AbstractionModel;
+
 class TableGateway extends AbstractionModel implements TableGatewayInterface
 {
     private $tableName;

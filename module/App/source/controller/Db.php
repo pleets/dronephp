@@ -10,6 +10,23 @@ use App\Model\OracleModelExample;
 
 class Db extends AbstractionController
 {
+
+	private $mysqlUserTable;
+
+	public function getMysqlUserTable()
+	{
+		if (!is_null($this->mysqlUserTable))
+			return $this->mysqlUserTable;
+
+		$tableGateway = new \Drone\Db\TableGateway();
+		$tableGateway->bind("mysql.user");
+
+		$entity = new \App\Model\MysqlUser();
+		$this->mysqlUserTable = new \App\Model\MysqlUserTable($entity, $tableGateway);
+
+		return $this->mysqlUserTable;
+	}
+
 	public function mysql()
 	{
 		$data = array();
@@ -19,7 +36,11 @@ class Db extends AbstractionController
 
 		try {
 
-			$rows = $model->myQuery();
+			# no entity
+			# $rows = $model->myQuery();
+
+			# entity
+			$rows = $this->getMysqlUserTable()->fetch();
 			$data["data"] = $rows;
 
 		} catch (\Exception $e) {
