@@ -1,6 +1,13 @@
 <?php
+/**
+ * DronePHP (http://www.dronephp.com)
+ *
+ * @link      http://github.com/Pleets/Drone
+ * @copyright Copyright (c) 2014-2016 DronePHP. (http://www.dronephp.com)
+ * @license   http://www.dronephp.com/license
+ */
 
-namespace Drone\Form\Validator;
+namespace Drone\Validator;
 
 use Zend\Validator\NotEmpty;
 use Zend\Validator\Digits;
@@ -10,15 +17,13 @@ use Zend\Validator\GreaterThan;
 use Zend\Validator\EmailAddress;
 use Zend\Validator\Date;
 use Zend\Validator\Uri;
-use \Exception as Exception;
 
-class QuickValidator
+use Drone\Dom\Element\Form as HtmlForm;
+
+use Exception;
+
+class FormValidator
 {
-    /**
-     * @var array
-     */
-	private $rules;
-
     /**
      * @var boolean
      */
@@ -28,6 +33,11 @@ class QuickValidator
      * @var array
      */
 	private $messages = array();
+
+    /**
+     * @var Drone\Dom\Element\Form
+     */
+	private $formHandler;
 
     /**
      * Get all failure messages
@@ -64,24 +74,40 @@ class QuickValidator
      *
      * @param array $rules
      */
-	public function __construct($rules)
+	public function __construct(HtmlForm $formHandler)
 	{
-		$this->rules = $rules;
+		$this->formHandler = $formHandler;
 	}
 
-	public function validateWith($arrayForm)
+    /**
+     * Check all form rules
+     *
+     * @return null
+     */
+	public function validate()
 	{
+		$attribs = $this->formHandler->getAttributes();
 
-		foreach ($this->rules as $key => $attributes)
+		foreach ($attribs as $key => $attributes)
 		{
-			if (!array_key_exists($key, $arrayForm))
+			if (!array_key_exists($key, $attribs))
 				throw new Exception("The field '$key' does not exists!");
 
 			$label = (array_key_exists('label', array_keys($attributes))) ? $attributes["label"] : $key;
 
-			foreach ($attributes as $name => $value)
+			$all_attribs = [];
+
+			foreach ($attributes as $attr)
 			{
-				$form_value = $arrayForm[$key];
+				$all_attribs[$attr->getName()] = $attr->getValue();
+			}
+
+			foreach ($attributes as $name => $attr)
+			{
+				$name = $attr->getName();
+				$value = $attr->getValue();
+
+				$form_value = $this->formHandler->getAttribute($label, "value")->getValue();
 
 				switch ($name)
 				{
@@ -130,7 +156,7 @@ class QuickValidator
 
 					case 'min':
 
-						if (in_array('type', $attributes) && in_array($attributes['type'], ['number', 'range']))
+						if (array_key_exists('type', $all_attribs) && in_array($all_attribs['type'], ['number', 'range']))
 							$validator = new GreaterThan(['min' => $value, 'inclusive' => true]);
 						else
 							throw new Exception("The input type must be 'range' or 'number'");
@@ -139,7 +165,7 @@ class QuickValidator
 
 					case 'max':
 
-						if (in_array('type', $attributes) && in_array($attributes['type'], ['number', 'range']))
+						if (array_key_exists('type', $all_attribs) && in_array($all_attribs['type'], ['number', 'range']))
 							$validator = new LessThan(['max' => $value, 'inclusive' => true]);
 						else
 							throw new Exception("The input type must be 'range' or 'number'");
@@ -148,9 +174,9 @@ class QuickValidator
 
 					case 'step':
 
-						$baseValue = (in_array('min', $attributes)) ? $attributes['min'] : 0;
+						$baseValue = (array_key_exists('min', $all_attribs)) ? $all_attribs['min'] : 0;
 
-						if (in_array('type', $attributes) && $attributes['type'] == "range")
+						if (array_key_exists('type', $all_attribs) && in_array($all_attribs['type'], ['range']))
 							$validator = new Step(['baseValue' => $baseValue, 'step' => $value]);
 						else
 							throw new Exception("The input type must be 'range'");
