@@ -9,63 +9,13 @@
 
 namespace Drone\Sql;
 
-class Oracle
+use Exception;
+
+class Oracle extends Driver implements DriverInterface
 {
-    private $dbhost = '';                           # default host
-    private $dbuser = '';                           # default username
-    private $dbpass = '';                           # default password
-    private $dbname = '';                           # default database
-    private $dbchar = '';                           # default charset
-
-    private $dbconn = null;                         # connection
-
-    private $errors = array();                      # Errors
-
-    private $numRows;                               # Rows returned
-    private $numFields;                             # Fields returned
-    private $rowsAffected;                          # Rows affected
-
-    private $result;                                # latest result (current buffer)
-    private $arrayResult;                           # result array (SELECT statements)
-
-    private $transac_mode = false;                  # transaction process
-    private $transac_result = null;                 # result of transactions
-
-    public function __construct($dbhost = null, $dbuser = null, $dbpass = null, $dbname = null, $auto_connect = true, $dbchar = "AL32UTF8")
-    {
-        $this->dbhost = is_null($dbhost) ? !defined('DBHOST') ? $this->dbhost : @DBHOST : $dbhost;
-        $this->dbuser = is_null($dbuser) ? !defined('DBUSER') ? $this->dbuser : @DBUSER : $dbuser;
-        $this->dbpass = is_null($dbpass) ? !defined('DBPASS') ? $this->dbpass : @DBPASS : $dbpass;
-        $this->dbname = is_null($dbname) ? !defined('DBNAME') ? $this->dbname : @DBNAME : $dbname;
-
-        $this->dbchar = is_null($dbchar) ? !defined('DBCHAR') ? $this->dbchar : @DBCHAR : $dbchar;
-
-        if ($auto_connect)
-        {
-            $connection_string = (is_null($this->dbhost) || empty($this->dbhost)) ? $this->dbname : $this->dbhost ."/". $this->dbname;
-            $this->dbconn = @oci_connect($this->dbuser,  $this->dbpass, $connection_string, $this->dbchar);
-
-            if ($this->dbconn === false)
-            {
-                $this->errors = oci_error();
-
-                if (count($this->errors))
-                    throw new \Exception($this->errors["message"], $this->errors["code"]);
-                else
-                    throw new \Exception("Unknown error!");
-            }
-        }
-	}
-
-    /* Getters */
-
-    public function getHostname() { return $this->dbhost; }
-    public function getUsername() { return $this->dbuser; }
-    public function getDatabase() { return $this->dbname; }
-    public function getNumRows() { return $this->numRows; }
-    public function getNumFields() { return $this->numFields; }
-    public function getRowsAffected() { return $this->rowsAffected; }
-
+    /**
+     * @return array
+     */
     public function getArrayResult()
     {
         if ($this->arrayResult)
@@ -74,16 +24,46 @@ class Oracle
         return $this->toArray();
     }
 
-    public function getErrors() { return $this->errors; }
+    /**
+     * Constructor for Oracle driver
+     *
+     * @param array
+     */
+    public function __construct($options)
+    {
+        if (!array_key_exists("Dbchar", $options))
+            $options["dbchar"] = "AL32UTF8";
 
+        parent::__construct($options);
 
-    /* Setters */
+        $auto_connect = array_key_exists('auto_connect', $options) ? $options["auto_connect"] : true;
 
-    public function setHostname($dbhost) { $this->dbhost = $dbhost; }
-    public function setUsername($dbuser) { $this->dbuser = $dbuser; }
-    public function setPassword($dbpass) { $this->dbpass = $dbpass; }
-    public function setDatabase($dbname) { $this->dbname = $dbname; }
+        if ($auto_connect)
+        {
+            $connection_string = (is_null($this->dbhost) || empty($this->dbhost)) ? $this->dbname : $this->dbhost ."/". $this->dbname;
+            $this->dbconn = @oci_connect($this->dbuser,  $this->dbpass, $connection_string, $this->dbchar);
 
+            if ($this->dbconn === false)
+            {
+                $error = oci_error();
+
+                $this->error(
+                    $error["code"], $error["message"]
+                );
+
+                if (count($this->errors))
+                    throw new Exception($error["message"], $error["code"]);
+                else
+                    throw new Exception("Unknown error!");
+            }
+        }
+	}
+
+    /**
+     * Reconnects to database
+     *
+     * @return boolean
+     */
     public function reconnect()
     {
         $connection_string = (is_null($this->dbhost) || empty($this->dbhost)) ? $this->dbname : $this->dbhost ."/". $this->dbname;
@@ -91,17 +71,23 @@ class Oracle
 
         if ($this->dbconn === false)
         {
-            $this->errors = oci_error();
+            $error = oci_error();
 
-            if (count($this->errors))
-                throw new \Exception($this->errors["message"], $this->errors["code"]);
-            else
-                throw new \Exception("Unknown error!");
+            $this->error(
+                $error["code"], $error["message"]
+            );
+
+            return false;
         }
 
-        return $this;
+        return true;
     }
 
+    /**
+     * Excecutes a statement
+     *
+     * @return boolean
+     */
     public function query($sql, Array $params = array())
     {
         $this->numRows = 0;
@@ -125,12 +111,16 @@ class Oracle
 
         if (!$r)
         {
-            $this->errors = oci_error($stid);
+            $error = oci_error($this->result);
+
+            $this->error(
+                $error["code"], $error["message"]
+            );
 
             if (count($this->errors))
-                throw new \Exception($this->errors["message"], $this->errors["code"]);
+                throw new Exception($error["message"], $error["code"]);
             else
-                throw new \Exception("Unknown error!");
+                throw new Exception("Unknown error!");
         }
 
         # This should be before of getArrayResult() because oci_fetch() is incremental.
@@ -147,7 +137,12 @@ class Oracle
         return $this->result;
     }
 
-    function transaction($querys)
+    /**
+     * Excecutes multiple statements as transaction
+     *
+     * @return boolean
+     */
+    public function transaction($querys)
     {
         $this->begin_transaction();
 
@@ -156,44 +151,46 @@ class Oracle
             $this->query($sql);
         }
 
-        $this->end_transaction();
+        return $this->end_transaction();
     }
 
-    public function begin_transaction()
+    /**
+     * Commit definition
+     *
+     * @return boolean
+     */
+    public function commit()
     {
-        if ($this->transac_mode)
-            throw new \Exception("Transaction mode has already started");
-
-        $this->transac_mode = true;
-
-        return true;
+        return oci_commit($this->dbconn);
     }
 
-    public function end_transaction()
+    /**
+     * Rollback definition
+     *
+     * @return boolean
+     */
+    public function rollback()
     {
-        if (is_null($this->transac_result))
-            throw new \Exception("There are not querys in this transaction");
-
-        if ($this->transac_result)
-            oci_commit($this->dbconn);
-        else {
-            oci_rollback($this->dbconn);
-            return false;
-        }
-
-        $this->result = $this->transac_result;
-
-        $this->transac_result = null;
-        $this->transac_mode = false;
-
-        return true;
+        return oci_rollback($this->dbconn);
     }
 
+    /**
+     * Close connection
+     *
+     * @return boolean
+     */
     public function cancel()
     {
         oci_cancel($this->result);
     }
 
+    /**
+     * Returns an array with the rows fetched
+     *
+     * @throws Exception
+     *
+     * @return array
+     */
     private function toArray()
     {
         $data = array();

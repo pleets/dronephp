@@ -9,65 +9,14 @@
 
 namespace Drone\Sql;
 
-class Mysql {
+use mysqli;
+use Exception;
 
-    private $dbhost = '';                           # default host
-    private $dbuser = '';                           # default username
-    private $dbpass = '';                           # default password
-    private $dbname = '';                           # default database
-    private $dbchar = '';                           # default charset
-
-    private $dbconn = null;                         # connection
-
-    private $errors = array();                      # Errors
-
-    private $numRows;                               # Rows returned
-    private $numFields;                             # Fields returned
-    private $rowsAffected;                          # Rows affected
-
-    private $result;                                # latest result (current buffer)
-    private $arrayResult;                           # result array (SELECT statements)
-
-    private $transac_mode = false;                  # transaction process
-    private $transac_result = null;                 # result of transactions
-
-    public function __construct($dbhost = null, $dbuser = null, $dbpass = null, $dbname = null, $auto_connect = true, $dbchar = "utf8")
-    {
-        $this->dbhost = is_null($dbhost) ? !defined('DBHOST') ? $this->dbhost : @DBHOST : $dbhost;
-        $this->dbuser = is_null($dbuser) ? !defined('DBUSER') ? $this->dbuser : @DBUSER : $dbuser;
-        $this->dbpass = is_null($dbpass) ? !defined('DBPASS') ? $this->dbpass : @DBPASS : $dbpass;
-        $this->dbname = is_null($dbname) ? !defined('DBNAME') ? $this->dbname : @DBNAME : $dbname;
-
-        $this->dbchar = is_null($dbchar) ? !defined('DBCHAR') ? $this->dbchar : @DBCHAR : $dbchar;
-
-        if ($auto_connect)
-        {
-            $this->dbconn = new \mysqli($this->dbhost,$this->dbuser,$this->dbpass,$this->dbname);
-
-            if ($this->dbconn->connect_errno === false)
-            {
-                $this->errors = array(
-                    "code" => $this->dbconn->connect_errno,
-                    "message" => $this->dbconn->connect_error
-                );
-
-                if (count($this->errors))
-                    throw new \Exception($this->errors["message"], $this->errors["code"]);
-                else
-                    throw new \Exception("Unknown error!");
-            }
-        }
-    }
-
-    /* Getters */
-
-    public function getHostname() { return $this->dbhost; }
-    public function getUsername() { return $this->dbuser; }
-    public function getDatabase() { return $this->dbname; }
-    public function getNumRows() { return $this->numRows; }
-    public function getNumFields() { return $this->numFields; }
-    public function getRowsAffected() { return $this->rowsAffected; }
-
+class Mysql extends Driver implements DriverInterface
+{
+    /**
+     * @return array
+     */
     public function getArrayResult()
     {
         if ($this->arrayResult)
@@ -76,36 +25,67 @@ class Mysql {
         return $this->toArray();
     }
 
-    public function getErrors() { return $this->errors; }
+    /**
+     * Constructor for MySql driver
+     *
+     * @param array
+     */
+    public function __construct($options)
+    {
+        if (!array_key_exists("Dbchar", $options))
+            $options["dbchar"] = "utf8";
 
-    /* Setters */
+        parent::__construct($options);
 
-    public function setHostname($dbhost) { $this->dbhost = $dbhost; }
-    public function setUsername($dbuser) { $this->dbuser = $dbuser; }
-    public function setPassword($dbpass) { $this->dbpass = $dbpass; }
-    public function setDatabase($dbname) { $this->dbname = $dbname; }
+        $auto_connect = array_key_exists('auto_connect', $options) ? $options["auto_connect"] : true;
 
+        if ($auto_connect)
+        {
+            $this->dbconn = new mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname);
+
+            if ($this->dbconn->connect_errno === false)
+            {
+                $this->error(
+                    $this->dbconn->connect_errno,
+                    $this->dbconn->connect_error
+                );
+
+                if (count($this->errors))
+                    throw new Exception($this->dbconn->connect_errno, $this->dbconn->connect_error);
+                else
+                    throw new Exception("Unknown error!");
+            }
+        }
+    }
+
+    /**
+     * Reconnects to database
+     *
+     * @return boolean
+     */
     public function reconnect()
     {
-        $this->dbconn = new \mysqli($this->dbhost,$this->dbuser,$this->dbpass,$this->dbname);
+        $this->dbconn = new mysqli($this->dbhost,$this->dbuser,$this->dbpass,$this->dbname);
 
         if ($this->dbconn->connect_errno === false)
         {
-            $this->errors = array(
-                "code" => $this->dbconn->connect_errno,
-                "message" => $this->dbconn->connect_error
+            $this->error(
+                $this->dbconn->connect_errno,
+                $this->dbconn->connect_error
             );
 
-            if (count($this->errors))
-                throw new \Exception($this->errors["message"], $this->errors["code"]);
-            else
-                throw new \Exception("Unknown error!");
+            return false;
         }
 
-        return $this;
+        return true;
     }
 
-    public function query($sql, Array $params = array())
+    /**
+     * Excecutes a statement
+     *
+     * @return boolean
+     */
+    public function query($sql, $params = [])
     {
         $this->numRows = 0;
         $this->numFields = 0;
@@ -117,15 +97,14 @@ class Mysql {
 
         if (!$this->result)
         {
-            $this->errors = array(
-                "code" => 100,
-                "message" => $this->dbconn->error
+            $this->error(
+                100, $this->dbconn->error
             );
 
             if (count($this->errors))
-                throw new \Exception($this->errors["message"], $this->errors["code"]);
+                throw new Exception($this->dbconn->error, 100);
             else
-                throw new \Exception("Unknown error!");
+                throw new Exception("Unknown error!");
         }
 
         $rows = $this->getArrayResult();
@@ -142,7 +121,12 @@ class Mysql {
         return $this->result;
     }
 
-    function transaction($querys)
+    /**
+     * Excecutes multiple statements as transaction
+     *
+     * @return boolean
+     */
+    public function transaction($querys)
     {
         $this->begin_transaction();
 
@@ -151,40 +135,26 @@ class Mysql {
             $this->query($sql);
         }
 
-        $this->end_transaction();
+        return $this->end_transaction();
     }
 
-    public function begin_transaction()
-    {
-        if ($this->transac_mode)
-            throw new \Exception("Transaction mode has already started");
-
-        if ($this->dbconn->begin_transaction() === false)
-            throw new \Exception($this->dbconn->error);
-
-        $this->transac_mode = true;
-
-        return true;
-    }
-
-    public function end_transaction()
-    {
-        if (is_null($this->transac_result))
-            throw new \Exception("There are not querys in this transaction");
-
-        if ($this->transac_result)
-            $this->dbconn->commit();
-        else {
-            $this->dbconn->rollback();
-            return false;
-        }
-    }
-
+    /**
+     * Close connection
+     *
+     * @return boolean
+     */
     public function cancel()
     {
         $this->dbconn->close();
     }
 
+    /**
+     * Returns an array with the rows fetched
+     *
+     * @throws Exception
+     *
+     * @return array
+     */
     private function toArray()
     {
         $data = array();
@@ -197,7 +167,7 @@ class Mysql {
             }
         }
         else
-            throw new \Exception('There are not data in the buffer!');
+            throw new Exception('There are not data in the buffer!');
 
         $this->arrayResult = $data;
 

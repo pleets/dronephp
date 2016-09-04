@@ -1,12 +1,20 @@
 <?php
 
 return array(
-	'default' => array(
+	/*'default' => array(
+		'dbhost' => 'localhost',
+		'dbuser' => 'root',
+		'dbpass' => '',
 		'dbname' => 'mysql',
-		'user' => 'root',
-		'password' => 'dbadmin',
-		'host' => 'localhost',
 		'driver' => 'Mysqli',
+		'charset' => 'utf8',
+	),*/
+	'default' => array(
+		'dbhost' => 'localhost',
+		'dbuser' => 'SYSTEM',
+		'dbpass' => '',
+		'dbname' => 'XE',
+		'driver' => 'Oci8',
 		'charset' => 'utf8',
 	),
 );

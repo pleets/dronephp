@@ -17,7 +17,7 @@ abstract class AbstractionModel
 
     public function __construct($abstract_connection_string = "default", $auto_connect = true)
     {
-		$dbsettings = include(dirname(__FILE__) . "/../../../config/database.config.php");
+		$dbsettings = include(__DIR__ . "/../../../config/database.config.php");
 
         # driver => className
         $this->availableDrivers = array(
@@ -38,14 +38,7 @@ abstract class AbstractionModel
         {
             $driver = $this->getAvailableDrivers();
 
-            $this->db = new $driver[$drv](
-                $dbsettings[$abstract_connection_string]["host"],
-                $dbsettings[$abstract_connection_string]["user"],
-                $dbsettings[$abstract_connection_string]["password"],
-                $dbsettings[$abstract_connection_string]["dbname"],
-                $auto_connect,
-                array_key_exists('charset', $dbsettings[$abstract_connection_string]) ? $dbsettings[$abstract_connection_string]["charset"] : ""
-            );
+            $this->db = new $driver[$drv]($dbsettings[$abstract_connection_string]);
         }
         else
             throw new Exception("The Database driver does not exists");

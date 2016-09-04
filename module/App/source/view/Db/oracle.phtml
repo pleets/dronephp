@@ -12,7 +12,7 @@
 					$string_columns = array();
 
 					foreach ($columns as $col):
-						if (is_string($col))
+						if (is_string($col) and in_array($col, ['OWNER', 'TABLE_NAME', 'NUM_ROWS']))
 							$string_columns[] = $col;
 					endforeach;
 				?>

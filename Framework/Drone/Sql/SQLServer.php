@@ -9,63 +9,13 @@
 
 namespace Drone\Sql;
 
-class SQLServer
+use Exception;
+
+class SQLServer extends Driver implements DriverInterface
 {
-    private $dbhost = '';                           # default host
-    private $dbuser = '';                           # default username
-    private $dbpass = '';                           # default password
-    private $dbname = '';                           # default database
-    private $dbchar = '';                           # default charset (SQLSRV_ENC_CHAR, UTF-8)
-
-    private $dbconn = null;                         # connection
-
-    private $errors = array();                      # Errors
-
-    private $numRows;                               # Rows returned
-    private $numFields;                             # Fields returned
-    private $rowsAffected;                          # Rows affected
-
-    private $result;                                # latest result (current buffer)
-    private $arrayResult;                           # result array (SELECT statements)
-
-    private $transac_mode = false;                  # transaction process
-    private $transac_result = null;                 # result of transactions
-
-    public function __construct($dbhost = null, $dbuser = null, $dbpass = null, $dbname = null, $auto_connect = true, $dbchar = "SQLSRV_ENC_CHAR")
-    {
-        $this->dbhost = is_null($dbhost) ? !defined('DBHOST') ? $this->dbhost : @DBHOST : $dbhost;
-        $this->dbuser = is_null($dbuser) ? !defined('DBUSER') ? $this->dbuser : @DBUSER : $dbuser;
-        $this->dbpass = is_null($dbpass) ? !defined('DBPASS') ? $this->dbpass : @DBPASS : $dbpass;
-        $this->dbname = is_null($dbname) ? !defined('DBNAME') ? $this->dbname : @DBNAME : $dbname;
-
-        $this->dbchar = is_null($dbchar) ? !defined('DBCHAR') ? $this->dbchar : @DBCHAR : $dbchar;
-
-        if ($auto_connect)
-        {
-    		$db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar);
-    		$this->dbconn = sqlsrv_connect($this->dbhost, $db_info);
-
-            if ($this->dbconn === false)
-            {
-                $this->errors = sqlsrv_errors();
-
-                if (count($this->errors))
-                    throw new \Exception($this->errors[0]["message"], $this->errors[0]["code"]);
-                else
-                    throw new \Exception("Unknown error!");
-            }
-        }
-	}
-
-    /* Getters */
-
-    public function getHostname() { return $this->dbhost; }
-    public function getUsername() { return $this->dbuser; }
-    public function getDatabase() { return $this->dbname; }
-    public function getNumRows() { return $this->numRows; }
-    public function getNumFields() { return $this->numFields; }
-    public function getRowsAffected() { return $this->rowsAffected; }
-
+    /**
+     * @return array
+     */
     public function getArrayResult()
     {
         if ($this->arrayResult)
@@ -74,15 +24,49 @@ class SQLServer
         return $this->toArray();
     }
 
-    public function getErrors() { return $this->errors; }
+    /**
+     * Constructor for Oracle driver
+     *
+     * @param array
+     */
+    public function __construct($options)
+    {
+        if (!array_key_exists("Dbchar", $options))
+            $options["dbchar"] = "SQLSRV_ENC_CHAR";
 
-    /* Setters */
+        parent::__construct($options);
 
-    public function setHostname($dbhost) { $this->dbhost = $dbhost; }
-    public function setUsername($dbuser) { $this->dbuser = $dbuser; }
-    public function setPassword($dbpass) { $this->dbpass = $dbpass; }
-    public function setDatabase($dbname) { $this->dbname = $dbname; }
+        $auto_connect = array_key_exists('auto_connect', $options) ? $options["auto_connect"] : true;
 
+        if ($auto_connect)
+        {
+    		$db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar);
+    		$this->dbconn = sqlsrv_connect($this->dbhost, $db_info);
+
+            if ($this->dbconn === false)
+            {
+                $errors = sqlsrv_errors();
+
+                foreach ($errors as $error)
+                {
+                    $this->error(
+                        $error["code"], $error["message"]
+                    );
+                }
+
+                if (count($this->errors))
+                    throw new Exception($errors[0]["message"], $errors[0]["code"]);
+                else
+                    throw new Exception("Unknown error!");
+            }
+        }
+	}
+
+    /**
+     * Reconnects to database
+     *
+     * @return boolean
+     */
     public function reconnect()
     {
         $db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar);
@@ -90,13 +74,26 @@ class SQLServer
 
         if ($this->dbconn === false)
         {
-            $this->errors = sqlsrv_errors();
-            throw new \Exception("The database connection could not be started!");
+            $errors = sqlsrv_errors();
+
+            foreach ($errors as $error)
+            {
+                $this->error(
+                    $error["code"], $error["message"]
+                );
+            }
+
+            return false;
         }
 
-        return $this;
+        return true;
     }
 
+    /**
+     * Excecutes a statement
+     *
+     * @return boolean
+     */
     public function query($sql, Array $params = array())
     {
         $this->numRows = 0;
@@ -109,12 +106,19 @@ class SQLServer
 
         if (!$this->result)
         {
-            $this->errors = sqlsrv_errors();
+            $errors = sqlsrv_errors();
+
+            foreach ($errors as $error)
+            {
+                $this->error(
+                    $error["code"], $error["message"]
+                );
+            }
 
             if (count($this->errors))
-                throw new \Exception($this->errors["message"], $this->errors["code"]);
+                throw new Exception($errors[0]["message"], $[0]["code"]);
             else
-                throw new \Exception("Unknown error!");
+                throw new Exception("Unknown error!");
         }
 
         $this->getArrayResult();
@@ -129,7 +133,12 @@ class SQLServer
         return $this->result;
     }
 
-    function transaction($querys)
+    /**
+     * Excecutes multiple statements as transaction
+     *
+     * @return boolean
+     */
+    public function transaction($querys)
     {
         $this->begin_transaction();
 
@@ -141,44 +150,67 @@ class SQLServer
         $this->end_transaction();
     }
 
+    /**
+     * Commit definition
+     *
+     * @return boolean
+     */
+    public function commit()
+    {
+        return sqlsrv_commit($this->dbconn);
+    }
+
+    /**
+     * Rollback definition
+     *
+     * @return boolean
+     */
+    public function rollback()
+    {
+        return sqlsrv_rollback($this->dbconn);
+    }
+
+    /**
+     * Begin a transaction in SQLServer
+     *
+     * @return boolean
+     */
     public function begin_transaction()
     {
         if (sqlsrv_begin_transaction($this->dbconn) === false)
-            throw new \Exception(sqlsrv_errors());
+        {
+            $errors = sqlsrv_errors();
 
-        if ($this->transac_mode)
-            throw new \Exception("Transaction mode has already started");
+            foreach ($errors as $error)
+            {
+                $this->error(
+                    $error["code"], $error["message"]
+                );
+            }
 
-        $this->transac_mode = true;
-
-        return true;
-    }
-
-    public function end_transaction()
-    {
-        if (is_null($this->transac_result))
-            throw new \Exception("There are not querys in this transaction");
-
-        if ($this->transac_result)
-            sqlsrv_commit($this->dbconn);
-        else {
-            sqlsrv_rollback($this->dbconn);
             return false;
         }
 
-        $this->result = $this->transac_result;
-
-        $this->transac_result = null;
-        $this->transac_mode = false;
-
-        return true;
+        return parent::begin_transaction();
     }
 
+    /**
+     * Close connection
+     *
+     * @return boolean
+     */
     public function cancel()
     {
         sqlsrv_cancel($this->result);
     }
 
+    /**
+     * Returns an array with the rows fetched
+     *
+     * @throws Exception
+     *
+     * @return array
+     */
     private function toArray()
     {
         $data = array();
