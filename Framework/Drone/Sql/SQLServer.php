@@ -28,6 +28,8 @@ class SQLServer extends Driver implements DriverInterface
      * Constructor for Oracle driver
      *
      * @param array
+     *
+     * @throws Exception
      */
     public function __construct($options)
     {

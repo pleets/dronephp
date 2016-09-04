@@ -29,6 +29,8 @@ class Mysql extends Driver implements DriverInterface
      * Constructor for MySql driver
      *
      * @param array
+     *
+     * @throws Exception
      */
     public function __construct($options)
     {
@@ -41,9 +43,9 @@ class Mysql extends Driver implements DriverInterface
 
         if ($auto_connect)
         {
-            $this->dbconn = new mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname);
+            $this->dbconn = @new mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname);
 
-            if ($this->dbconn->connect_errno === false)
+            if ($this->dbconn->connect_errno)
             {
                 $this->error(
                     $this->dbconn->connect_errno,
@@ -51,7 +53,7 @@ class Mysql extends Driver implements DriverInterface
                 );
 
                 if (count($this->errors))
-                    throw new Exception($this->dbconn->connect_errno, $this->dbconn->connect_error);
+                    throw new Exception($this->dbconn->connect_error, $this->dbconn->connect_errno);
                 else
                     throw new Exception("Unknown error!");
             }

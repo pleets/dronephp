@@ -32,9 +32,9 @@ class Db extends AbstractionController
 		$data = array();
 		$data["process"] = "success";
 
-		$model = new MySQLModelExample();
-
 		try {
+
+			$model = new MySQLModelExample();
 
 			# no entity
 			# $rows = $model->myQuery();
@@ -59,9 +59,10 @@ class Db extends AbstractionController
 		$data = array();
 		$data["process"] = "success";
 
-		$model = new OracleModelExample();
 
 		try {
+
+			$model = new OracleModelExample();
 
 			$rows = $model->myQuery();
 			$data["data"] = $rows;
@@ -82,9 +83,10 @@ class Db extends AbstractionController
 		$data = array();
 		$data["process"] = "success";
 
-		$model = new SqlServerModelExample();
 
 		try {
+
+			$model = new SqlServerModelExample();
 
 			$rows = $model->myQuery();
 			$data["data"] = $rows;
