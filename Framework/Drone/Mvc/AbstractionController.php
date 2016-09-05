@@ -9,16 +9,151 @@
 
 namespace Drone\Mvc;
 
+use Drone\LayoutManager\Layout;
+
 abstract class AbstractionController
 {
+	/**
+	 * @var string
+	 */
 	private $module;
+
+	/**
+	 * @var string
+	 */
 	private $method = null;
 
+	/**
+	 * @var string
+	 */
 	private $params;
 
+	/**
+	 * @var string
+	 */
 	private $layout = "default";
+
+	/**
+	 * @var boolean
+	 */
 	private $terminal = false;
 
+	/**
+	 * Returns the current module
+	 *
+	 * @return string
+	 */
+	public function getModule()
+	{
+		return $this->module;
+	}
+
+	/**
+	 * Returns the current method
+	 *
+	 * @return string
+	 */
+	public function getMethod()
+	{
+		return $this->method;
+	}
+
+	/**
+	 * Returns the mode of visualization
+	 *
+	 * @return boolean
+	 */
+	public function getTerminal()
+	{
+		return $this->terminal;
+	}
+
+	/**
+	 * Returns the current layout
+	 *
+	 * @return string
+	 */
+	public function getLayout()
+	{
+		return $this->layout;
+	}
+
+	/**
+	 * Returns all params
+	 *
+	 * @return string
+	 */
+	public function getParams()
+	{
+		return $this->params;
+	}
+
+	/**
+	 * Returns the class name
+	 *
+	 * @return string
+	 */
+	public static function getClassName()
+	{
+		return __CLASS__;
+	}
+
+	/**
+	 * Returns the $_POST variable
+	 *
+	 * @return array
+	 */
+	public function getPost()
+	{
+		if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST))
+    		$_POST = json_decode(file_get_contents('php://input'), true);
+
+		return $_POST;
+	}
+
+	/**
+	 * Sets the terminal mode
+	 *
+	 * @param boolean $terminal
+	 *
+	 * @return null
+	 */
+	public function setTerminal($terminal = true)
+	{
+		$this->terminal = $terminal;
+	}
+
+	/**
+	 * Sets layout parameter
+	 *
+	 * @param string $layout
+	 *
+	 * @return null
+	 */
+	public function setLayout($layout)
+	{
+		$this->layout = $layout;
+	}
+
+	/**
+	 * Sets the method parameter
+	 *
+	 * @param string $method
+	 *
+	 * @return null
+	 */
+	public function setMethod($method)
+	{
+		$this->method = $method;
+	}
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $module
+	 * @param string $method
+	 * @param string $basePath
+	 */
 	public function __construct($module, $method, $basePath)
 	{
 		$this->basePath = $basePath;
@@ -43,7 +178,7 @@ abstract class AbstractionController
 				$this->params = $this->$method();
 
 				if (!is_null($this->getMethod()))
-					$layoutManager = new \Drone\LayoutManager\Layout($this);
+					$layoutManager = new Layout($this);
 
 			}
 			else {
@@ -53,17 +188,22 @@ abstract class AbstractionController
 		}
 	}
 
-	/* Getters */
-	public function getModule() { return $this->module; }
-	public function getMethod() { return $this->method; }
-	public function getParams() { return $this->params; }
-
+	/**
+	 * Gets a particular parameter
+	 *
+	 * @return string
+	 */
 	public function getParam($param)
 	{
 		$parameters = $this->getParams();
 		return $parameters[$param];
 	}
 
+	/**
+	 * Checks if a param exists
+	 *
+	 * @return boolean
+	 */
 	public function isParam($param)
 	{
 		$parameters = $this->getParams();
@@ -74,14 +214,11 @@ abstract class AbstractionController
 		return false;
 	}
 
-	public function getTerminal() { return $this->terminal; }
-	public function getLayout() { return $this->layout; }
-
-	public static function getClassName() { return __CLASS__; }
-
-	/* Setters */
-	public function setMethod($method) { $this->method = $method; }
-
+	/**
+	 * Checks if the current request is XmlHttpRequest (AJAX)
+	 *
+	 * @return boolean
+	 */
 	public function isXmlHttpRequest()
 	{
 	   if (isset($_SERVER['CONTENT_TYPE']))
@@ -89,6 +226,11 @@ abstract class AbstractionController
 	   return false;
 	}
 
+	/**
+	 * Checks if the current request is POST
+	 *
+	 * @return boolean
+	 */
 	public function isPost()
 	{
 		if ($_SERVER["REQUEST_METHOD"] == "POST")
@@ -96,24 +238,12 @@ abstract class AbstractionController
 		return false;
 	}
 
-	public function getPost()
-	{
-		if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST))
-    		$_POST = json_decode(file_get_contents('php://input'), true);
-
-		return $_POST;
-	}
-
-	public function setTerminal($terminal = true)
-	{
-		$this->terminal = $terminal;
-	}
-
-	public function setLayout($layout)
-	{
-		$this->layout = $layout;
-	}
-
+	/**
+	 * Parses requets parameters
+	 * Search for URI formed as /var1/value1/var2/value2
+	 *
+	 * @return null
+	 */
 	private function parseRequestParameters($get)
 	{
 		if (array_key_exists('params', $_GET))
