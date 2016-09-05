@@ -2,35 +2,70 @@
 /**
  * DronePHP (http://www.dronephp.com)
  *
- * @link      http://github.com/Pleets/Drone
+ * @link      http://github.com/Pleets/DronePHP
  * @copyright Copyright (c) 2014-2016 DronePHP. (http://www.dronephp.com)
  * @license   http://www.dronephp.com/license
  */
 
 namespace Drone\FileSystem;
 
-class Shell implements IShellCommands
+use Exception;
+
+class Shell implements ShellInterface
 {
-	private $home = null;				# Home path. Equivalent to ~
-	private $buffer = null;				# Buffer
+	/**
+	 * Home directory (~)
+	 *
+	 * @var string
+	 */
+	private $home = null;
 
-	public function __construct($home = null)
-	{
-		$this->home = (is_null($home) || empty($home)) ? $this->pwd() : $home;
-	}
+	/**
+	 * Result of last command (optional)
+	 *
+	 * @var string
+	 */
+	private $buffer = null;
 
+	/**
+	 * Returns the home path
+	 *
+	 * @return string
+	 */
 	public function getHome()
 	{
 		return $this->home;
 	}
 
+	/**
+	 * Returns $buffer
+	 *
+	 * @return mixed
+	 */
 	public function getBuffer()
 	{
 		return $this->buffer;
 	}
 
-	/*
-	 *	Recursive function to list files and directories
+    /**
+     * Constructor
+     *
+     * @param string $home
+     */
+	public function __construct($home = null)
+	{
+		$this->home = (is_null($home) || empty($home)) ? $this->pwd() : $home;
+	}
+
+	/**
+	 * Interative function of directories and files
+	 *
+	 * @param string $handler
+	 * @param callable $fileCallback
+	 * @param callable $dirCallback
+	 * @param callable $callback
+	 *
+	 * @return array
 	 */
 	public function getContents($handler, $fileCallback, $dirCallback, $callback = null)
 	{
@@ -77,7 +112,7 @@ class Shell implements IShellCommands
 			}
 		}
 		else
-			throw new \Exception("The directory '$handler' does not exists");
+			throw new Exception("The directory '$handler' does not exists");
 
 		if (!is_null($callback))
 			call_user_func($callback, $this);
@@ -85,15 +120,29 @@ class Shell implements IShellCommands
 		return $allContents;
 	}
 
+	/**
+	 * Returns the curent directory
+	 *
+	 * @return string|boolean
+	 */
 	public function pwd()
 	{
 		if (getcwd())
 			$this->buffer = getcwd();
 		else
 			return false;
+
 		return $this->buffer;
 	}
 
+	/**
+	 * Returns a list of contents
+	 *
+	 * @param string $path
+	 * @param boolean $recursive
+	 *
+	 * @return array
+	 */
 	public function ls($path = null, $recursive = false)
 	{
 		$filesToReturn = array();
@@ -150,39 +199,59 @@ class Shell implements IShellCommands
 		return $filesToReturn;
 	}
 
+	/**
+	 * Changes the current directory
+	 *
+	 * @return boolean
+	 */
 	public function cd($path = null)
 	{
 		$moveTo = (is_null($path) || empty($path)) ? $this->home : $path;
 
 		if (is_dir($path))
 		{
-			if (!chdir($moveTo))
-				return false;
+			if (chdir($moveTo))
+				return true;
 		}
 
-		return $this;
+		return false;
 	}
 
+	/**
+	 * Creates files
+	 *
+	 * @return boolean
+	 */
 	public function touch($file)
 	{
-		if (!file_exists($file))
+		if (file_exists($file))
 		{
 			if (!$openFile = fopen($file, 'w+'))
 				return false;
-			fwrite($openFile, "");
+
+			if (fwrite($openFile, ""))
+				return true;
+
 			fclose($openFile);
 		}
-		else
-			return false;
-		return $this;
+
+		return false;
 	}
 
+	/**
+	 * Deletes files
+	 *
+	 * @param string $file
+	 * @param boolean $recursive
+	 *
+	 * @return boolean
+	 */
 	public function rm($file = null, $recursive = null)
 	{
 		$recursive = is_null($recursive) ? false : $recursive;
 
 		if (is_null($file))
-			throw new \Exception("Missing parameter for rm!");
+			throw new Exception("Missing parameter for rm!");
 
 		if (file_exists($file) && !$recursive)
 			unlink($file);
@@ -198,9 +267,18 @@ class Shell implements IShellCommands
 				@rmdir($file);
 			});
 		}
-		return $this;
+
+		return true;
 	}
 
+	/**
+	 * Copies files
+	 *
+	 * @param string $file
+	 * @param boolean $recursive
+	 *
+	 * @return boolean
+	 */
 	public function cp($file = null, $dest, $recursive = null)
 	{
 		$recursive = (is_null($recursive)) ? false : $recursive;
@@ -208,45 +286,58 @@ class Shell implements IShellCommands
 		if (empty($file) || empty($dest))
 			throw new Exception("Missing parameters!");
 
-		if (is_dir($file))
+		if (is_dir($dest))
 		{
-			if ( (!file_exists($dest) || (file_exists($dest) && is_file($dest)) ) && $recursive)
-				mkdir($dest, 0777, true);
+			if (!$recursive)
+				copy($file, $dest.'/'.$file);
+			else {
 
-            if ($handle = opendir($file)) {
+				$files = array();
+				$files[0] = array();
+				$files[1] = array();
 
-                while (false !== ($item = readdir($handle))) {
+				$_SESSION["BUFFER"]["EXO"]["cp"][2] = $dest;
 
-                    if (strstr($item,'~') === false && $item != '.' && $item != '..')
-                    {
-                    	if (is_dir($file ."/". $item) && $recursive)
-                    	{
-                    		mkdir($dest ."/". $item, 0777, true);
-                    		$this->cp($file ."/". $item, $dest ."/". $item, true);
-                    	}
-                    	elseif (is_file($file ."/". $item))
-                    		$this->cp($file ."/". $item, $dest ."/". $item);
-                    }
-                }
+				$that = $this;
 
-                closedir($handle);
-            }
+				$this->getContents($file, function() use($that, &$files) {
+					$files[0][] = $that->getBuffer();
+				}, function() use($that, &$files) {
+					$files[1][] = $that->getBuffer();
+				}, function() use ($files, $dest) {
+
+					foreach ($files[1] as $item)
+					{
+						if (!file_exists($dest.'/'.$item))
+							mkdir("$dest/$item", 0777, true);
+					}
+
+					foreach ($files[0] as $item)
+					{
+						if (!file_exists("$dest/$files"))
+							copy($item, $dest.'/'.$item);
+					}
+				});
+			}
 		}
 		else
-		{
-			if (file_exists($dest) && is_dir($dest))
-				copy($file, $dest.'/'. basename($file));
-			else
-				copy($file, $dest);
-		}
+			copy($file, $dest);
 
-		return $this;
+		return true;
 	}
 
+	/**
+	 * Moves and renames files
+	 *
+	 * @param string $oldfile
+	 * @param string $newfile
+	 *
+	 * @return boolean
+	 */
 	public function mv($oldfile = null, $newfile)
 	{
 		if (empty($oldfile))
-			throw new \Exception("Missing parameter for mv!");
+			throw new Exception("Missing parameter for mv!");
 
 		if (is_dir($newfile))
 				$newfile .= '/'.basename($oldfile);
@@ -257,13 +348,22 @@ class Shell implements IShellCommands
 		if(!rename($oldfile, $newfile))
 			return false;
 
-		return $this;
+		return true;
 	}
 
+	/**
+	 * Creates directories
+	 *
+	 * @param string $dir
+	 * @param string $dest
+	 * @param booelan $recursive
+	 *
+	 * @return boolean
+	 */
 	public function mkdir($dir = null, $dest = null, $recursive = null)
 	{
 		if (empty($dir))
-			throw new \Exception("Missing parameter for mkdir!");
+			throw new Exception("Missing parameter for mkdir!");
 
 		if (empty($dest))
 			$dest = '.';
@@ -279,16 +379,23 @@ class Shell implements IShellCommands
 					return false;
 			}
 		}
-		return $this;
+		return true;
 	}
 
+	/**
+	 * Deletes directories
+	 *
+	 * @param string $dir
+	 *
+	 * @return boolean
+	 */
 	public function rmdir($dir = null)
 	{
 		if (is_null($dir) || empty($dir))
-			throw new \Exception("Missing parameter for rmdir!");
+			throw new Exception("Missing parameter for rmdir!");
 
 		if (rmdir($dir))
-			return $this;
+			return true;
 		else
 			return false;
 	}

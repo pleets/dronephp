@@ -2,7 +2,7 @@
 /**
  * DronePHP (http://www.dronephp.com)
  *
- * @link      http://github.com/Pleets/Drone
+ * @link      http://github.com/Pleets/DronePHP
  * @copyright Copyright (c) 2014-2016 DronePHP. (http://www.dronephp.com)
  * @license   http://www.dronephp.com/license
  */
@@ -13,18 +13,37 @@ use Drone\Sql\AbstractionModel;
 
 class TableGateway extends AbstractionModel implements TableGatewayInterface
 {
+    /**
+     * Table name
+     *
+     * @var string
+     */
     private $tableName;
 
+    /**
+     * Sets table name
+     *
+     * @param string
+     *
+     * @return null
+     */
     public function bind($tableName)
     {
         $this->tableName = $tableName;
     }
 
-    public function select($where = array())
+    /**
+     * Select statement
+     *
+     * @param array $where
+     *
+     * @return array
+     */
+    public function select($where = [])
     {
         if (count($where))
         {
-            $parsed_where = array();
+            $parsed_where = [];
 
             foreach ($where as $key => $value)
             {
@@ -46,12 +65,19 @@ class TableGateway extends AbstractionModel implements TableGatewayInterface
         return $this->getDb()->getArrayResult();
     }
 
+    /**
+     * Insert statement
+     *
+     * @param array $where
+     *
+     * @return boolean
+     */
     public function insert($data)
     {
         $cols = implode(", ", array_keys($row));
         $vals = array_values($row);
 
-        $parsed_vals = array();
+        $parsed_vals = [];
 
         foreach ($vals as $value)
         {
@@ -66,6 +92,14 @@ class TableGateway extends AbstractionModel implements TableGatewayInterface
         return $this->getDb()->query($sql);
     }
 
+    /**
+     * Update statement
+     *
+     * @param array $set
+     * @param array $where
+     *
+     * @return boolean
+     */
     public function update($set, $where)
     {
         $parsed_set = array();
@@ -100,11 +134,18 @@ class TableGateway extends AbstractionModel implements TableGatewayInterface
         return $this->getDb()->query($sql);
     }
 
+    /**
+     * Delete statement
+     *
+     * @param array $where
+     *
+     * @return boolean
+     */
     public function delete($where)
     {
         if (count($where))
         {
-            $parsed_where = array();
+            $parsed_where = [];
 
             foreach ($where as $key => $value)
             {
@@ -117,7 +158,7 @@ class TableGateway extends AbstractionModel implements TableGatewayInterface
             $where = "WHERE " . implode(" AND ", $parsed_where);
         }
         else
-            throw new \Exception("You cannot delete rows without WHERE clause!");
+            throw new Exception("You cannot delete rows without WHERE clause!");
 
         $sql = "DELETE
                 FROM {$this->tableName} $where";

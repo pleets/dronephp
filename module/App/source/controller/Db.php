@@ -8,9 +8,12 @@ use App\Model\MySQLModelExample;
 use App\Model\SQLServerModelExample;
 use App\Model\OracleModelExample;
 
+use App\Model\MysqlUser;
+use App\Model\MysqlUserTable;
+use Drone\Db\TableGateway;
+
 class Db extends AbstractionController
 {
-
 	private $mysqlUserTable;
 
 	public function getMysqlUserTable()
@@ -18,11 +21,11 @@ class Db extends AbstractionController
 		if (!is_null($this->mysqlUserTable))
 			return $this->mysqlUserTable;
 
-		$tableGateway = new \Drone\Db\TableGateway();
+		$tableGateway = new TableGateway();
 		$tableGateway->bind("mysql.user");
 
-		$entity = new \App\Model\MysqlUser();
-		$this->mysqlUserTable = new \App\Model\MysqlUserTable($entity, $tableGateway);
+		$entity = new MysqlUser();
+		$this->mysqlUserTable = new MysqlUserTable($entity, $tableGateway);
 
 		return $this->mysqlUserTable;
 	}
