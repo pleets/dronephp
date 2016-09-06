@@ -11,6 +11,7 @@ namespace Drone\Validator;
 
 use Zend\Validator\NotEmpty;
 use Zend\Validator\Digits;
+use Zend\Validator\StringLength;
 use Zend\Validator\Step;
 use Zend\Validator\LessThan;
 use Zend\Validator\GreaterThan;
@@ -118,14 +119,12 @@ class FormValidator
 
 					case 'minlength':
 
-						$validator = new GreaterThan(['min' => $value, 'inclusive' => true]);
-						$form_value = strlen($form_value);
+						$validator = new StringLength(['min' => $value]);
 						break;
 
 					case 'maxlength':
 
-						$validator = new LessThan(['max' => $value, 'inclusive' => true]);
-						$form_value = strlen((string) $form_value);
+						$validator = new StringLength(['max' => $value]);
 						break;
 
 					case 'type':
