@@ -2,9 +2,7 @@
 
 return array(
     'modules' => array(
-        'App',
-        'Api',
-        'Pleets',
+        'App'
     ),
     'router' => array(
         'routes' => array(
@@ -15,7 +13,7 @@ return array(
             */
             'defaults' => array(
                 'module' => 'App',
-                'controller' => 'Index',
+                'controller' => 'Dashboard',
                 'view' => 'index'
             ),
         ),

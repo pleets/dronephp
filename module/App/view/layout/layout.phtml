@@ -4,109 +4,48 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<link rel="icon" href="<?= $this->basePath() ?>/public/img/Pleets/pleets-apps.png" type="image/x-icon" />
-	<link rel="shortcut icon" href="<?= $this->basePath() ?>/public/img/Pleets/pleets-apps.png" />
+	<link rel="shortcut icon" href="<?= $this->basePath() ?>/public/img/favicon.png" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-	<?php $this->setTitle('Drone Application'); ?>
+	<?php $this->setTitle('Dashboard'); ?>
 
 	<title><?= $this->getTitle() ?></title>
 
-	<!-- Google fonts -->
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+	<link rel="stylesheet" type="text/css" href="<?= $this->basePath(); ?>/public/css/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="<?= $this->basePath(); ?>/public/css/bootstrap-theme.min.css" />
 
-	<!-- Le Styles -->
-	<link rel="stylesheet" type="text/css" href="<?= $this->basePath(); ?>/public/libs/bootstrap-3.1.1/css/bootstrap.min.css" />
-	<link rel="stylesheet" type="text/css" href="<?= $this->basePath(); ?>/public/libs/jquery-ui-1.10.4/themes/flick/jquery-ui.css" />
-	<link rel="stylesheet" type="text/css" href="<?= $this->basePath(); ?>/public/libs/CSS-Render/css-render.css" />
-	<link rel="stylesheet" type="text/css" href="<?= $this->basePath(); ?>/public/libs/JScript-Render/css/JScriptRender.css" />
+	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/js/jquery-3.1.0.min.js"></script>
+	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/js/bootstrap.min.js"></script>
 
-	<!-- Scripts -->
-	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/js/html5shiv.js"></script>
-	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/js/respond.min.js"></script>
-	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/libs/jquery/jquery-2.1.1/jquery-2.1.1.min.js"></script>
-	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/libs/jquery/plugins/carhartl-jquery-cookie-92b7715/jquery.cookie.js"></script>
-	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/libs/jquery-ui-1.10.4/ui/jquery-ui.js"></script>
-	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/libs/bootstrap-3.1.1/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/libs/JScript-Render/JScriptRender.js"></script>
-	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/js/persistent.js"></script>
-	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/js/settings.js"></script>
-	<script type="text/javascript" src="<?= $this->basePath(); ?>/public/js/live.js"></script>
-
-	<!-- App -->
-	<link rel="stylesheet" type="text/css" href="<?= $this->basePath(); ?>/public/css/app.css" media="all" />
-    <script type="text/javascript" src="<?= $this->basePath(); ?>/public/js/app.js"></script>
 </head>
 
-<body data-path='<?= $this->basePath(); ?>'>
+<body>
 
-	<nav class="navbar navbar-default">
-	  <div class="container-fluid">
+<nav class="navbar navbar-default">
+  	<div class="container-fluid">
 	    <!-- Brand and toggle get grouped for better mobile display -->
 	    <div class="navbar-header">
-	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-	        <span class="sr-only">Toggle navigation</span>
-	        <span class="icon-bar"></span>
-	        <span class="icon-bar"></span>
-	        <span class="icon-bar"></span>
-	      </button>
-	      <a class="navbar-brand" href="<?= $this->basePath(); ?>/public">BRANCH</a>
+	      	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+	      	</button>
+	      	<a class="navbar-brand" href="#">DronePHP</a>
 	    </div>
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-	      <ul class="nav navbar-nav">
-	        <li>
-	          <a href="<?= $this->basePath(); ?>/public/App/Index/index">Home</a>
-	        </li>
-	        <li class="dropdown">
-	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Database <span class="caret"></span></a>
-	          <ul class="dropdown-menu" role="menu">
-	            <li><a href="<?= $this->basePath(); ?>/public/App/Db/mysql"><span class="glyphicon glyphicon-inbox"></span> MySQL</a></li>
-	            <li><a href="<?= $this->basePath(); ?>/public/App/Db/oracle"><span class="glyphicon glyphicon-inbox"></span> Oracle</a></li>
-	            <li><a href="<?= $this->basePath(); ?>/public/App/Db/sqlserver"><span class="glyphicon glyphicon-inbox"></span> SQLServer</a></li>
-	          </ul>
-	        </li>
-	        <li class="dropdown">
-	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Form <span class="caret"></span></a>
-	          <ul class="dropdown-menu" role="menu">
-	            <li><a href="<?= $this->basePath(); ?>/public/App/Form/validator"><span class="glyphicon glyphicon-ok"></span> Validator</a></li>
-	          </ul>
-	        </li>
-	        <li>
-	          <a href="<?= $this->basePath(); ?>/public/App/Index/about">About</a>
-	        </li>
-	      </ul>
-	      <ul class="nav navbar-nav navbar-right">
-	        <li class="dropdown">
-	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span> <span class="caret"></span></a>
-	          <ul class="dropdown-menu" role="menu">
-	            <li><a href="#"><span class="glyphicon glyphicon-lock"></span>&nbsp; Something</a></li>
-	            <li class="divider"></li>
-	            <li><a href="#"><span class="glyphicon glyphicon-warning-sign"></span>&nbsp; Another option</a></li>
-	          </ul>
-	        </li>
-	      </ul>
+	      	<ul class="nav navbar-nav">
+	        	<li class="active"><a href="#">Dashboard <span class="sr-only">(current)</span></a></li>
+	      	</ul>
 	    </div><!-- /.navbar-collapse -->
-	  </div><!-- /.container-fluid -->
-	</nav>
+  	</div><!-- /.container-fluid -->
+</nav>
 
-	<div class="container">
-		<?= $this->content(); ?>
-	</div>
-
-	<!-- update title -->
-	<script type="text/javascript">
-		$("head title").text('<?= $this->getTitle() ?>');
-	</script>
-
-	<!-- JS Controllers -->
-	<?php
-		$js = $this->basePath() . '/public/js/' . $this->getController()->getModule()->getModuleName() . '/' . substr(get_class($this->getController()), strrpos(get_class($this->getController()), '\\') + 1, strlen(get_class($this->getController()))) . 'Controller.js';
-
-		if (file_exists($js)):
-			?><script type="text/javascript" src="<?= $js; ?>"></script><?php
-		endif;
-	?>
+<div class="container">
+	<?= $this->content() ?>
+</div>
 
 </body>
 

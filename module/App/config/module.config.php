@@ -5,7 +5,7 @@ return array(
         'routes' => array(
         	'App' => array(
         		'module' => 'App',
-        		'controller' => 'Index',
+        		'controller' => 'Dashboard',
         		'view' => 'index'
         	)
         ),
