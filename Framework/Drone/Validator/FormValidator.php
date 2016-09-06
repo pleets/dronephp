@@ -63,11 +63,11 @@ class FormValidator
     /**
      * Set valid atribute after each validation
      *
-     * @return array
+     * @return boolean
      */
 	public function setValid($valid)
 	{
-		return $this->valid && $valid;
+		$this->valid = $this->valid && $valid;
 	}
 
     /**
