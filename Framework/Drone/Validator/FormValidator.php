@@ -73,7 +73,7 @@ class FormValidator
     /**
      * Constructor
      *
-     * @param array $rules
+     * @param HtmlForm $formHandler
      */
 	public function __construct(HtmlForm $formHandler)
 	{
