@@ -1,6 +1,6 @@
-# Drone
+# DronePHP
 ### Framework for PHP
 
-Simple framework for PHP
+Make it easy!
 
-Please visit the [Pleets Apps project](http://pleets.org)
+Visit [DronePHP official](http://www.dronephp.com)
