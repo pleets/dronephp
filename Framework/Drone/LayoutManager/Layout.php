@@ -3,7 +3,7 @@
  * DronePHP (http://www.dronephp.com)
  *
  * @link      http://github.com/Pleets/Drone
- * @copyright Copyright (c) 2014-2016 DronePHP. (http://www.dronephp.com)
+ * @copyright Copyright (c) 2016 DronePHP. (http://www.dronephp.com)
  * @license   http://www.dronephp.com/license
  */
 
