@@ -17,6 +17,8 @@ abstract class Element
     protected $startTag;
 
     /**
+     * Defines if the element has a end tag
+     *
      * @var boolean
      */
     protected $endTag;
@@ -27,7 +29,7 @@ abstract class Element
 	protected $attributes;
 
     /**
-     * Get all attributes
+     * Gets all attributes of the element
      *
      * @return array
      */
@@ -37,7 +39,7 @@ abstract class Element
     }
 
     /**
-     * Get startTag
+     * Returns startTag attribute
      *
      * @return string
      */
@@ -47,7 +49,7 @@ abstract class Element
     }
 
     /**
-     * Get endTag
+     * Returns the endTag attribute
      *
      * @return string
      */
@@ -57,7 +59,7 @@ abstract class Element
 	}
 
     /**
-     * Set start tag
+     * Sets the startTag attribute
      *
      * @param string $startTag
      *
@@ -69,7 +71,7 @@ abstract class Element
     }
 
     /**
-     * Set end tag
+     * Sets the endTag attribute
      *
      * @param boolean $endTag
      *
@@ -81,9 +83,9 @@ abstract class Element
     }
 
     /**
-     * Get a particular Attribute object
+     * Returns a particular Attribute
      *
-     * @return Drone\Dom\Atribute
+     * @return Drone\Dom\Atribute|null
      */
     public function getAttribute($label, $name)
     {
@@ -97,9 +99,11 @@ abstract class Element
     }
 
     /**
-     * Set only one attribute
+     * Sets only one attribute
      *
-     * @param array $attributes
+     * @param string $label
+     * @param string $name
+     * @param mixed $value
      *
      * @return null
      */
@@ -121,7 +125,7 @@ abstract class Element
 	}
 
     /**
-     * Add all attributes passed as parameter
+     * Adds all attributes passed as parameter
      *
      * @param array $definition
      *

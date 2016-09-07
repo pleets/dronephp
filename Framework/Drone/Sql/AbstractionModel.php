@@ -11,10 +11,35 @@ namespace Drone\Sql;
 
 abstract class AbstractionModel
 {
+    /**
+     * Driver identifier
+     *
+     * @var string
+     */
     private $driver;
+
+    /**
+     * Handle
+     *
+     * @var object
+     */
     private $db;
+
+    /**
+     * All supported drivers
+     *
+     * @var string
+     */
     private $availableDrivers;
 
+    /**
+     * Constructor
+     *
+     * @param string  $abstract_connection_string
+     * @param boolean $auto_connect
+     *
+     * @return null
+     */
     public function __construct($abstract_connection_string = "default", $auto_connect = true)
     {
 		$dbsettings = include(__DIR__ . "/../../../config/database.config.php");
@@ -44,9 +69,33 @@ abstract class AbstractionModel
             throw new Exception("The Database driver does not exists");
 	}
 
-    /* Getters */
+    /**
+     * Returns the current driver
+     *
+     * @return string
+     */
+    public function getDriver()
+    {
+        return $this->driver;
+    }
 
-    public function getDriver() { return $this->driver; }
-    public function getDb() { return $this->db; }
-    public function getAvailableDrivers() { return $this->availableDrivers; }
+    /**
+     * Returns the current handle instance
+     *
+     * @return object
+     */
+    public function getDb()
+    {
+        return $this->db;
+    }
+
+    /**
+     * Returns all supported drivers
+     *
+     * @return array
+     */
+    public function getAvailableDrivers()
+    {
+        return $this->availableDrivers;
+    }
 }

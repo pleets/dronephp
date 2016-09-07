@@ -27,7 +27,7 @@ class SQLServer extends Driver implements DriverInterface
     /**
      * Constructor for Oracle driver
      *
-     * @param array
+     * @param array $options
      *
      * @throws Exception
      */
@@ -173,7 +173,7 @@ class SQLServer extends Driver implements DriverInterface
     }
 
     /**
-     * Begin a transaction in SQLServer
+     * Begins a transaction in SQLServer
      *
      * @return boolean
      */
@@ -197,7 +197,7 @@ class SQLServer extends Driver implements DriverInterface
     }
 
     /**
-     * Close connection
+     * Closes the connection
      *
      * @return boolean
      */

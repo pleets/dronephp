@@ -28,7 +28,7 @@ class Form extends Element
 	}
 
     /**
-     * Fill the form with passed values (apply for form controls)
+     * Fills the form with all passed values
      *
      * @param array $values
      */

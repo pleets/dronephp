@@ -41,7 +41,7 @@ class FormValidator
 	private $formHandler;
 
     /**
-     * Get all failure messages
+     * Returns all failure messages
      *
      * @return array
      */
@@ -51,7 +51,7 @@ class FormValidator
 	}
 
     /**
-     * Get valid attribute after validation
+     * Returns valid attribute after validation
      *
      * @return array
      */
@@ -61,7 +61,7 @@ class FormValidator
 	}
 
     /**
-     * Set valid atribute after each validation
+     * Sets valid atribute after each validation
      *
      * @return boolean
      */
@@ -81,7 +81,7 @@ class FormValidator
 	}
 
     /**
-     * Check all form rules
+     * Checks all form rules
      *
      * @return null
      */

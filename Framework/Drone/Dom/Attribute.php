@@ -22,7 +22,7 @@ class Attribute
 	private $value;
 
     /**
-     * Get name
+     * Gets the name attribute
      *
      * @return array
      */
@@ -32,7 +32,7 @@ class Attribute
     }
 
     /**
-     * Get value
+     * Gets the value attribute
      *
      * @return array
      */
@@ -42,7 +42,7 @@ class Attribute
     }
 
     /**
-     * Set value
+     * Sets the value attribute
      *
      * @param mixed $value
      *

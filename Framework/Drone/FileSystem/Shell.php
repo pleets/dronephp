@@ -18,7 +18,7 @@ class Shell implements ShellInterface
 	 *
 	 * @var string
 	 */
-	private $home = null;
+	private $home;
 
 	/**
 	 * Result of last command (optional)
@@ -28,7 +28,7 @@ class Shell implements ShellInterface
 	private $buffer = null;
 
 	/**
-	 * Returns the home path
+	 * Returns the home attribute
 	 *
 	 * @return string
 	 */
@@ -38,7 +38,7 @@ class Shell implements ShellInterface
 	}
 
 	/**
-	 * Returns $buffer
+	 * Returns the buffer attribute
 	 *
 	 * @return mixed
 	 */
@@ -60,7 +60,7 @@ class Shell implements ShellInterface
 	/**
 	 * Interative function of directories and files
 	 *
-	 * @param string $handler
+	 * @param string   $handler
 	 * @param callable $fileCallback
 	 * @param callable $dirCallback
 	 * @param callable $callback
@@ -136,10 +136,10 @@ class Shell implements ShellInterface
 	}
 
 	/**
-	 * Returns a list of contents
+	 * Returns a list with directory contents
 	 *
-	 * @param string $path
-	 * @param boolean $recursive
+	 * @param string|null $path
+	 * @param boolean     $recursive
 	 *
 	 * @return array
 	 */
@@ -202,6 +202,8 @@ class Shell implements ShellInterface
 	/**
 	 * Changes the current directory
 	 *
+	 * @param boolean|null $path
+	 *
 	 * @return boolean
 	 */
 	public function cd($path = null)
@@ -218,7 +220,9 @@ class Shell implements ShellInterface
 	}
 
 	/**
-	 * Creates files
+	 * Creates a file
+	 *
+	 * @param string
 	 *
 	 * @return boolean
 	 */
@@ -239,14 +243,14 @@ class Shell implements ShellInterface
 	}
 
 	/**
-	 * Deletes files
+	 * Deletes one or more files
 	 *
-	 * @param string $file
-	 * @param boolean $recursive
+	 * @param string       $file
+	 * @param boolean|null $recursive
 	 *
 	 * @return boolean
 	 */
-	public function rm($file = null, $recursive = null)
+	public function rm($file, $recursive = null)
 	{
 		$recursive = is_null($recursive) ? false : $recursive;
 
@@ -272,14 +276,15 @@ class Shell implements ShellInterface
 	}
 
 	/**
-	 * Copies files
+	 * Copies one or more files
 	 *
-	 * @param string $file
-	 * @param boolean $recursive
+	 * @param string       $file
+	 * @param string       $dest
+	 * @param boolean|null $recursive
 	 *
 	 * @return boolean
 	 */
-	public function cp($file = null, $dest, $recursive = null)
+	public function cp($file, $dest, $recursive = null)
 	{
 		$recursive = (is_null($recursive)) ? false : $recursive;
 
@@ -327,14 +332,14 @@ class Shell implements ShellInterface
 	}
 
 	/**
-	 * Moves and renames files
+	 * Moves or renames files
 	 *
 	 * @param string $oldfile
 	 * @param string $newfile
 	 *
 	 * @return boolean
 	 */
-	public function mv($oldfile = null, $newfile)
+	public function mv($oldfile, $newfile)
 	{
 		if (empty($oldfile))
 			throw new Exception("Missing parameter for mv!");
@@ -352,15 +357,15 @@ class Shell implements ShellInterface
 	}
 
 	/**
-	 * Creates directories
+	 * Creates a directory
 	 *
-	 * @param string $dir
-	 * @param string $dest
-	 * @param booelan $recursive
+	 * @param string       $dir
+	 * @param string|null  $dest
+	 * @param booelan|null $recursive
 	 *
 	 * @return boolean
 	 */
-	public function mkdir($dir = null, $dest = null, $recursive = null)
+	public function mkdir($dir, $dest = null, $recursive = null)
 	{
 		if (empty($dir))
 			throw new Exception("Missing parameter for mkdir!");
@@ -383,13 +388,13 @@ class Shell implements ShellInterface
 	}
 
 	/**
-	 * Deletes directories
+	 * Deletes a directory
 	 *
 	 * @param string $dir
 	 *
 	 * @return boolean
 	 */
-	public function rmdir($dir = null)
+	public function rmdir($dir)
 	{
 		if (is_null($dir) || empty($dir))
 			throw new Exception("Missing parameter for rmdir!");

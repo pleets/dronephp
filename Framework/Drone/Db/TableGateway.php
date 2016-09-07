@@ -24,7 +24,7 @@ class TableGateway extends AbstractionModel implements TableGatewayInterface
     /**
      * Constructor
      *
-     * @param string $entity
+     * @param Entity $entity
      *
      * @return null
      */
@@ -39,7 +39,7 @@ class TableGateway extends AbstractionModel implements TableGatewayInterface
      *
      * @param array $where
      *
-     * @return array
+     * @return array With all results
      */
     public function select($where = [])
     {

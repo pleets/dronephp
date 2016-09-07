@@ -28,7 +28,7 @@ class Mysql extends Driver implements DriverInterface
     /**
      * Constructor for MySql driver
      *
-     * @param array
+     * @param array $options
      *
      * @throws Exception
      */
@@ -141,7 +141,7 @@ class Mysql extends Driver implements DriverInterface
     }
 
     /**
-     * Close connection
+     * Closes the connection
      *
      * @return boolean
      */

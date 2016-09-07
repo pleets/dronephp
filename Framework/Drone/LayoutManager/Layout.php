@@ -103,6 +103,8 @@ class Layout
 	/**
 	 * Returns a user param
 	 *
+	 * This param is sent through the controller in a return statement
+	 *
 	 * @param string
 	 *
 	 * @return mixed
@@ -113,7 +115,7 @@ class Layout
 	}
 
 	/**
-	 * Checks if a param exists
+	 * Checks if a parameters exists
 	 *
 	 * @param string
 	 *
@@ -125,7 +127,7 @@ class Layout
 	}
 
 	/**
-	 * Returns all params
+	 * Returns all parameters sent through the controller
 	 *
 	 * @return array
 	 */
@@ -135,7 +137,7 @@ class Layout
 	}
 
 	/**
-	 * Returns the base path of application
+	 * Returns the base path of the application
 	 *
 	 * @return string
 	 */

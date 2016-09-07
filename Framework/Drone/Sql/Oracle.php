@@ -27,7 +27,7 @@ class Oracle extends Driver implements DriverInterface
     /**
      * Constructor for Oracle driver
      *
-     * @param array
+     * @param array $options
      *
      * @throws Exception
      */
@@ -177,7 +177,7 @@ class Oracle extends Driver implements DriverInterface
     }
 
     /**
-     * Close connection
+     * Closes the connection
      *
      * @return boolean
      */

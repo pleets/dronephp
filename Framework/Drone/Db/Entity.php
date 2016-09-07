@@ -17,7 +17,7 @@ abstract class Entity
     private $tableName;
 
     /**
-     * Gets the tableName property
+     * Returns the tableName property
      *
      * @return string
      */
@@ -39,7 +39,7 @@ abstract class Entity
     }
 
     /**
-     * Sets entity properties
+     * Sets all entity properties passed in the array
      *
      * @param array $data
      *

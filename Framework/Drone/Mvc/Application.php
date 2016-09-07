@@ -9,8 +9,8 @@
 
 namespace Drone\Mvc;
 
-use Exception as Exception;
-use Drone\FileSystem\Shell as Shell;
+use Exception;
+use Drone\FileSystem\Shell;
 
 class Application
 {
@@ -30,6 +30,8 @@ class Application
 	private $devMode;
 
     /**
+     * Returns the router instance
+     *
 	 * @return Drone\Mvc\Router
      */
 	public function getRouter()
@@ -38,7 +40,7 @@ class Application
 	}
 
     /**
-     * Prepare app environment
+     * Prepares the app environment
      *
 	 * @return null
      */
@@ -50,8 +52,9 @@ class Application
 	}
 
     /**
-     * Check app.config structure
+     * Checks app.config structure
      *
+     * @param array $required_tree
      * @param array $parameters
      *
 	 * @return null
@@ -140,9 +143,10 @@ class Application
 	}
 
     /**
-     * Load user classes in each module
+     * Loads user classes in each module
      *
      * @param array $modules
+     * @param array $module
      *
 	 * @return null
      */
@@ -188,7 +192,7 @@ class Application
 	}
 
     /**
-     * Run application
+     * Runs the application
      *
 	 * @return null
      */
