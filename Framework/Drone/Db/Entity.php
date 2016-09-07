@@ -12,6 +12,33 @@ namespace Drone\Db;
 abstract class Entity
 {
     /**
+     * @var string
+     */
+    private $tableName;
+
+    /**
+     * Gets the tableName property
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->tableName;
+    }
+
+    /**
+     * Sets the tableName property
+     *
+     * @param string $tableName
+     *
+     * @param null
+     */
+    public function setTableName($tableName)
+    {
+        $this->tableName = $tableName;
+    }
+
+    /**
      * Sets entity properties
      *
      * @param array $data

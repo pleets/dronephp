@@ -10,26 +10,28 @@
 namespace Drone\Db;
 
 use Drone\Sql\AbstractionModel;
+use Drone\Db\Entity;
 
 class TableGateway extends AbstractionModel implements TableGatewayInterface
 {
     /**
-     * Table name
+     * Entity instance
      *
-     * @var string
+     * @var Entity
      */
-    private $tableName;
+    private $entity;
 
     /**
-     * Sets table name
+     * Constructor
      *
-     * @param string
+     * @param string $entity
      *
      * @return null
      */
-    public function bind($tableName)
+    public function __construct(Entity $entity)
     {
-        $this->tableName = $tableName;
+        parent::__construct("default", true);
+        $this->entity = $entity;
     }
 
     /**
@@ -58,8 +60,10 @@ class TableGateway extends AbstractionModel implements TableGatewayInterface
         else
             $where = "";
 
+        $table = $this->entity->getTableName();
+
         $sql = "SELECT *
-                FROM {$this->tableName} $where";
+                FROM {$table} $where";
 
         $result = $this->getDb()->query($sql);
         return $this->getDb()->getArrayResult();
@@ -86,7 +90,9 @@ class TableGateway extends AbstractionModel implements TableGatewayInterface
 
         $vals = implode(", ", array_values($parsed_vals));
 
-        $sql = "INSERT INTO {$this->tableName}
+        $table = $this->entity->getTableName();
+
+        $sql = "INSERT INTO {$table}
                 ($cols) VALUES ($vals)";
 
         return $this->getDb()->query($sql);
@@ -127,7 +133,9 @@ class TableGateway extends AbstractionModel implements TableGatewayInterface
 
         $parsed_where = implode(" AND ", $parsed_where);
 
-        $sql = "UPDATE {$this->tableName}
+        $table = $this->entity->getTableName();
+
+        $sql = "UPDATE {$table}
                 SET $parsed_set
                 WHERE $parsed_where";
 
@@ -160,8 +168,10 @@ class TableGateway extends AbstractionModel implements TableGatewayInterface
         else
             throw new Exception("You cannot delete rows without WHERE clause!");
 
+        $table = $this->entity->getTableName();
+
         $sql = "DELETE
-                FROM {$this->tableName} $where";
+                FROM {$table} $where";
 
         return $this->getDb()->query($sql);
     }
