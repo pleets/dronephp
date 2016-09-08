@@ -71,14 +71,14 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
     /**
      * Insert statement
      *
-     * @param array $where
+     * @param array $data
      *
      * @return boolean
      */
     public function insert($data)
     {
-        $cols = implode(", ", array_keys($row));
-        $vals = array_values($row);
+        $cols = implode(", ", array_keys($data));
+        $vals = array_values($data);
 
         $parsed_vals = [];
 
