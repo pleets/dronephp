@@ -291,7 +291,7 @@ abstract class Driver
     {
         if ($this->transac_mode)
         {
-            $this->errors(self::TRANSAC_STARTED);
+            $this->error(self::TRANSAC_STARTED);
             return false;
         }
 
