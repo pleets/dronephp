@@ -9,10 +9,9 @@
 
 namespace Drone\Db;
 
-use Drone\Sql\AbstractionModel;
 use Drone\Db\Entity;
 
-class TableGateway extends AbstractionModel implements TableGatewayInterface
+class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 {
     /**
      * Entity instance
@@ -72,14 +71,14 @@ class TableGateway extends AbstractionModel implements TableGatewayInterface
     /**
      * Insert statement
      *
-     * @param array $data
+     * @param array $where
      *
      * @return boolean
      */
     public function insert($data)
     {
-        $cols = implode(", ", array_keys($data));
-        $vals = array_values($data);
+        $cols = implode(", ", array_keys($row));
+        $vals = array_values($row);
 
         $parsed_vals = [];
 
