@@ -26,7 +26,7 @@ use Exception;
 class FormValidator
 {
     /**
-     * @var boolean
+     * @var boolean|null
      */
 	private $valid;
 
@@ -67,7 +67,7 @@ class FormValidator
      */
 	public function setValid($valid)
 	{
-		$this->valid = $this->valid && $valid;
+		$this->valid = (is_null($this->valid) ? true : $this->valid) && $valid;
 	}
 
     /**
