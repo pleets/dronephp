@@ -12,7 +12,7 @@ namespace Drone\Sql;
 use mysqli;
 use Exception;
 
-class Mysql extends Driver implements DriverInterface
+class MySQL extends Driver implements DriverInterface
 {
     /**
      * @return array
