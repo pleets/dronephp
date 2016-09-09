@@ -108,7 +108,8 @@ class FormValidator
 				$name = $attr->getName();
 				$value = $attr->getValue();
 
-				$form_value = $this->formHandler->getAttribute($label, "value")->getValue();
+				$attrib = $this->formHandler->getAttribute($label, "value");
+				$form_value = (!is_null($attrib)) ? $attrib->getValue() : null;
 
 				switch ($name)
 				{
