@@ -40,6 +40,11 @@ class FormValidator
      */
 	private $formHandler;
 
+	/**
+	 * @var array
+	 */
+	private $options;
+
     /**
      * Returns all failure messages
      *
@@ -71,13 +76,29 @@ class FormValidator
 	}
 
     /**
+     * Gets an option
+     *
+     * @param string $option
+     *
+     * @return mixed
+     */
+	public function getOption($key, $name)
+	{
+		if (!array_key_exists($key, $this->options))
+			throw new Exception("The option '$option' does not exists");
+
+		return array_key_exists($name, $this->options[$key]) ? $this->options[$key][$name] : null;
+	}
+
+    /**
      * Constructor
      *
      * @param HtmlForm $formHandler
      */
-	public function __construct(HtmlForm $formHandler)
+	public function __construct(HtmlForm $formHandler, $options)
 	{
 		$this->formHandler = $formHandler;
+		$this->options = (is_array($options)) ? $options : array();
 	}
 
     /**
@@ -94,7 +115,7 @@ class FormValidator
 			if (!array_key_exists($key, $attribs))
 				throw new Exception("The field '$key' does not exists!");
 
-			$label = (array_key_exists('label', array_keys($attributes))) ? $attributes["label"] : $key;
+			$label = (array_key_exists('label', array_keys($this->options))) ? $attributes["label"] : $key;
 
 			$all_attribs = [];
 
