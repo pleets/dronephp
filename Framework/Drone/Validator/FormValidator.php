@@ -220,5 +220,35 @@ class FormValidator
 				}
 			}
 		}
+
+		foreach ($this->options as $key => $options)
+		{
+			if (isset($options["validators"]) and is_array($options["validators"]))
+			{
+				foreach ($options["validators"] as $class => $params)
+				{
+					$className = "\Zend\Validator\'" . $class;
+
+					if (!class_exists($className))
+						throw new Exception("The class '$className' does not exists");
+
+					$validator = new $className($params);
+
+					$form_value = $this->formHandler->getAttribute($key, "value")->getValue();
+
+					$validator->setTranslator($this->translator);
+					$valid = $validator->isValid($form_value);
+					$this->setValid($valid);
+
+					if (!$valid)
+					{
+						if (!in_array($key, array_keys($this->messages)))
+							$this->messages[$key] = array();
+
+						$this->messages[$key] = array_merge($this->messages[$key], $validator->getMessages());
+					}
+				}
+			}
+		}
 	}
 }
