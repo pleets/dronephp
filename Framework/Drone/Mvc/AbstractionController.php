@@ -122,6 +122,30 @@ abstract class AbstractionController
 	}
 
 	/**
+	 * Returns json contents
+	 *
+	 * @return array
+	 */
+	public function getJson()
+	{
+		if ($_SERVER['REQUEST_METHOD'] != 'JSON')
+			throw new Exception("Request method is not JSON");
+
+		$input =  file_get_contents('php://input');
+		$array = explode("&", $input);
+
+		$result = array();
+
+		foreach ($array as $value)
+		{
+			$io = explode("=", $value);
+			$result[$io[0]] = $io[1];
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Sets the terminal mode
 	 *
 	 * @param boolean $terminal
