@@ -1,18 +1,18 @@
 <?php
 
-return array(
-    'router' => array(
-        'routes' => array(
-        	'App' => array(
+return [
+    'router' => [
+        'routes' => [
+        	'App' => [
         		'module' => 'App',
         		'controller' => 'Dashboard',
         		'view' => 'index'
-        	)
-        ),
-    ),
-    'view_manager' => array(
-        'template_map' => array(
+        	]
+        ],
+    ],
+    'view_manager' => [
+        'template_map' => [
             'default'	=> __DIR__ . '/../view/layout/layout.phtml',
-        ),
-    ),
-);
+        ],
+    ],
+];
