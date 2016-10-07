@@ -11,6 +11,9 @@
         "zendframework/zend-validator": "2.8.*",
         "zendframework/zend-filter": "2.7.*",
         "zendframework/zend-i18n": "2.7.*",
+        "zendframework/zend-i18n-resources": "2.5.*",
+        "zendframework/zend-mvc": "3.0.*",
+        "zendframework/zend-mvc-i18n": "1.0.*",
         "zendframework/zend-uri": "2.5.*"
 	},
 		"autoload": {

@@ -99,6 +99,23 @@ class FormValidator
 	{
 		$this->formHandler = $formHandler;
 		$this->options = (is_array($options)) ? $options : array();
+
+		$config = include('config/application.config.php');
+		$locale = $config["environment"]["locale"];
+
+		$i18nTranslator = \Zend\I18n\Translator\Translator::factory(
+		    [
+		        'locale'  => "$locale",
+		        'translation_files' => [
+		        	[
+		        		"type" => 'phparray',
+		        		"filename" => "vendor\zendframework\zend-i18n-resources\languages/$locale/Zend_Validate.php"
+		        	]
+		        ]
+		    ]
+		);
+
+		$this->translator = new \Zend\Mvc\I18n\Translator($i18nTranslator);
 	}
 
     /**
@@ -207,6 +224,7 @@ class FormValidator
 
 				if (in_array($name, ['required', 'digits', 'minlength', 'maxlength', 'type', 'min', 'max', 'date', 'step']))
 				{
+					$validator->setTranslator($this->translator);
 					$valid = $validator->isValid($form_value);
 					$this->setValid($valid);
 
@@ -239,7 +257,12 @@ class FormValidator
 						$className = "\Zend\Validator\'" . $class;
 
 						if (!class_exists($className))
-							throw new Exception("The class '$className' does not exists");
+						{
+							$className = "\Zend\I18n\Validator\\" . $class;
+
+							if (!class_exists($className))
+								throw new Exception("The class '$userInputClass' or '$className' does not exists");
+						}
 
 						$validator = new $className($params);
 
