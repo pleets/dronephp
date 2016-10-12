@@ -146,11 +146,10 @@ class Application
      * Loads user classes in each module
      *
      * @param array $modules
-     * @param array $module
      *
 	 * @return null
      */
-	private function loadModules($modules, $module)
+	private function loadModules($modules)
 	{
 		$fileSystem = new Shell();
 
@@ -160,31 +159,26 @@ class Application
 
 			foreach ($modules as $module)
 			{
-				/* Load only Pleets componentes when the current module is Pleets */
-				if ($mod == 'Pleets' && $module != 'Pleets')
-					continue;
-				else {
-					// First include the Module class
-					include("module/".$module."/Module.php");
+				// First include the Module class
+				include("module/".$module."/Module.php");
 
-					$controllers = $fileSystem->ls("module/".$module."/source/controller");
+				$controllers = $fileSystem->ls("module/".$module."/source/controller");
 
-					// Load controllers for each module
-					foreach ($controllers as $controller)
-					{
-						if (!in_array($controller, array('.', '..')))
-							include("module/".$module."/source/controller/" . $controller);
-					}
-
-					$models = $fileSystem->ls("module/".$module."/source/model");
-
-					// Load models for each module
-					foreach ($models as $model)
-					{
-						if (!in_array($model, array('.', '..')))
-							include("module/".$module."/source/model/" . $model);
-				    }
+				// Load controllers for each module
+				foreach ($controllers as $controller)
+				{
+					if (!in_array($controller, array('.', '..')))
+						include("module/".$module."/source/controller/" . $controller);
 				}
+
+				$models = $fileSystem->ls("module/".$module."/source/model");
+
+				// Load models for each module
+				foreach ($models as $model)
+				{
+					if (!in_array($model, array('.', '..')))
+						include("module/".$module."/source/model/" . $model);
+			    }
 			}
 		}
 		else
