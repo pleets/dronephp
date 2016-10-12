@@ -137,8 +137,11 @@ class Application
 		# load routes from modules
 		foreach ($this->modules as $module)
 		{
-			$module_config_file = require "module/$module/config/module.config.php";
-			$this->getRouter()->addRoute($module_config_file["router"]["routes"]);
+			if (file_exists("module/$module/config/module.config.php"))
+			{
+				$module_config_file = require "module/$module/config/module.config.php";
+				$this->getRouter()->addRoute($module_config_file["router"]["routes"]);
+			}
 		}
 	}
 
@@ -161,7 +164,8 @@ class Application
 			foreach ($modules as $module)
 			{
 				// First include the Module class
-				include("module/".$module."/Module.php");
+				if (file_exists("module/".$module."/Module.php"))
+					include("module/".$module."/Module.php");
 
 				$controllers = $fileSystem->ls("module/".$module."/source/controller");
 
