@@ -146,10 +146,11 @@ class Application
      * Loads user classes in each module
      *
      * @param array $modules
+     * @param array $module
      *
 	 * @return null
      */
-	private function loadModules($modules)
+	private function loadModules($modules, $module)
 	{
 		$fileSystem = new Shell();
 
