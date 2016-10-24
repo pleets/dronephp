@@ -225,8 +225,20 @@ class FormValidator
 				if (in_array($name, ['required', 'digits', 'minlength', 'maxlength', 'type', 'min', 'max', 'date', 'step']))
 				{
 					$validator->setTranslator($this->translator);
-					$valid = $validator->isValid($form_value);
-					$this->setValid($valid);
+
+					if (gettype($form_value) == 'array')
+					{
+						foreach ($form_value as $val)
+						{
+							$valid = $validator->isValid($val);
+							$this->setValid($valid);
+						}
+					}
+					else
+					{
+						$valid = $validator->isValid($form_value);
+						$this->setValid($valid);
+					}
 
 					if (!$valid)
 					{
