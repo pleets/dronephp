@@ -232,20 +232,28 @@ class FormValidator
 						{
 							$valid = $validator->isValid($val);
 							$this->setValid($valid);
+
+							if (!$valid)
+							{
+								if (!in_array($key, array_keys($this->messages)))
+									$this->messages[$key] = [];
+
+								$this->messages[$key] = array_merge($this->messages[$key], $validator->getMessages());
+							}
 						}
 					}
 					else
 					{
 						$valid = $validator->isValid($form_value);
 						$this->setValid($valid);
-					}
 
-					if (!$valid)
-					{
-						if (!in_array($key, array_keys($this->messages)))
-							$this->messages[$key] = array();
+						if (!$valid)
+						{
+							if (!in_array($key, array_keys($this->messages)))
+								$this->messages[$key] = [];
 
-						$this->messages[$key] = array_merge($this->messages[$key], $validator->getOption("messages"));
+							$this->messages[$key] = array_merge($this->messages[$key], $validator->getMessages());
+						}
 					}
 				}
 			}
