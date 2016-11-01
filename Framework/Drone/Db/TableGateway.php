@@ -159,9 +159,9 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             foreach ($where as $key => $value)
             {
                 if (is_string($value))
-                    $condition = "$key = '$value'";
-
-                $parsed_where[] = "$key = $value";
+                    $parsed_where[] = "$key = '$value'";
+                else
+                    $parsed_where[] = "$key = $value";
             }
 
             $where = "WHERE " . implode(" AND ", $parsed_where);
