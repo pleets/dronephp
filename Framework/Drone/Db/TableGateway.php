@@ -34,6 +34,16 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
     }
 
     /**
+     * Returns the entity
+     *
+     * @return Drone_Db_Entity
+     */
+    public function getEntity()
+    {
+        return $this->entity;
+    }
+
+    /**
      * Select statement
      *
      * @param array $where
