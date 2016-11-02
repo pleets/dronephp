@@ -10,6 +10,7 @@
 namespace Drone\Db;
 
 use Drone\Db\Entity;
+use Drone\Sql\Platform\SQLFunction;
 
 class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 {
@@ -93,6 +94,8 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                 $value = "'$value'";
             if (is_null($value))
                 $value = "null";
+            if ($value instanceof SQLFunction)
+                $value = $value->getStatement();
 
             $data[$key] = $value;
         }
