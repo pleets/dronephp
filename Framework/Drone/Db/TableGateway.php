@@ -87,6 +87,9 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      */
     public function insert($data)
     {
+        if (!count($data))
+            throw new Exception("Missing values for INSERT statement!");
+
         foreach ($data as $key => $value)
         {
             if (is_string($value))
@@ -120,6 +123,9 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
     public function update($set, $where)
     {
         $parsed_set = array();
+
+        if (!count($set))
+            throw new Exception("Missing SET arguments!");
 
         foreach ($set as $key => $value)
         {
@@ -177,7 +183,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             $where = "\r\nWHERE \r\n\t" . implode(" AND\r\n\t", $parsed_where);
         }
         else
-            throw new Exception("You cannot delete rows without WHERE clause!");
+            throw new Exception("You cannot delete rows without WHERE clause!. Use TRUNCATE statement instead.");
 
         $table = $this->entity->getTableName();
 
