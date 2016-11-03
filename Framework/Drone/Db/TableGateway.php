@@ -174,15 +174,14 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                     $parsed_where[] = "$key = $value";
             }
 
-            $where = "WHERE " . implode(" AND ", $parsed_where);
+            $where = "\r\nWHERE \r\n\t" . implode(" AND\r\n\t", $parsed_where);
         }
         else
             throw new Exception("You cannot delete rows without WHERE clause!");
 
         $table = $this->entity->getTableName();
 
-        $sql = "DELETE
-                FROM {$table} $where";
+        $sql = "DELETE FROM {$this->tableName} $where";
 
         return $this->getDb()->query($sql);
     }
