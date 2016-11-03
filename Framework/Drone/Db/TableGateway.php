@@ -65,15 +65,14 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                     $parsed_where[] = "$key = $value";
             }
 
-            $where = "WHERE " . implode(" AND ", $parsed_where);
+            $where = "WHERE \r\n\t" . implode(" AND\r\n\t", $parsed_where);
         }
         else
             $where = "";
 
         $table = $this->entity->getTableName();
 
-        $sql = "SELECT *
-                FROM {$table} $where";
+        $sql = "SELECT * \r\nFROM {$table}\r\n$where";
 
         $result = $this->getDb()->query($sql);
         return $this->getDb()->getArrayResult();
