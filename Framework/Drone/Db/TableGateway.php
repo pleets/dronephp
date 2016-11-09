@@ -195,7 +195,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $table = $this->entity->getTableName();
 
-        $sql = "DELETE FROM {$this->tableName} $where";
+        $sql = "DELETE FROM {$table} $where";
 
         return $this->getDb()->query($sql);
     }
