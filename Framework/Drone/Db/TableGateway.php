@@ -61,6 +61,8 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             {
                 if (is_string($value))
                     $parsed_where[] = "$key = '$value'";
+                elseif ($value instanceof SQLFunction)
+                    $parsed_where[] = "$key = " . $value->getStatement();
                 else
                     $parsed_where[] = "$key = $value";
             }
@@ -178,6 +180,8 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             {
                 if (is_string($value))
                     $parsed_where[] = "$key = '$value'";
+                elseif ($value instanceof SQLFunction)
+                    $parsed_where[] = "$key = " . $value->getStatement();
                 else
                     $parsed_where[] = "$key = $value";
             }
