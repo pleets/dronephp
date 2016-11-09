@@ -133,6 +133,8 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                 $value = "'$value'";
             if (is_null($value))
                 $value = "null";
+            if ($value instanceof SQLFunction)
+                $value = $value->getStatement();
 
             $parsed_set[] = "$key = $value";
         }
