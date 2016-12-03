@@ -274,7 +274,7 @@ class FormValidator
 				{
 					foreach ($options["validators"] as $class => $params)
 					{
-						$className = "\Zend\Validator\'" . $class;
+						$className = "\Zend\Validator\\" . $class;
 
 						if (!class_exists($className))
 						{
