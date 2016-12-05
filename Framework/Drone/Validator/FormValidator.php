@@ -289,15 +289,35 @@ class FormValidator
 						$form_value = $this->formHandler->getAttribute($key, "value")->getValue();
 
 						$validator->setTranslator($this->translator);
-						$valid = $validator->isValid($form_value);
-						$this->setValid($valid);
 
-						if (!$valid)
+						if (gettype($form_value) == 'array')
 						{
-							if (!in_array($key, array_keys($this->messages)))
-								$this->messages[$key] = array();
+							foreach ($form_value as $val)
+							{
+								$valid = $validator->isValid($val);
+								$this->setValid($valid);
 
-							$this->messages[$key] = array_merge($this->messages[$key], $validator->getMessages());
+								if (!$valid)
+								{
+									if (!in_array($key, array_keys($this->messages)))
+										$this->messages[$key] = [];
+
+									$this->messages[$key] = array_merge($this->messages[$key], $validator->getMessages());
+								}
+							}
+						}
+						else
+						{
+							$valid = $validator->isValid($form_value);
+							$this->setValid($valid);
+
+							if (!$valid)
+							{
+								if (!in_array($key, array_keys($this->messages)))
+									$this->messages[$key] = [];
+
+								$this->messages[$key] = array_merge($this->messages[$key], $validator->getMessages());
+							}
 						}
 					}
 				}
