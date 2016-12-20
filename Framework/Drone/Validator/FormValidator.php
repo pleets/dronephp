@@ -33,7 +33,7 @@ class FormValidator
     /**
      * @var array
      */
-	private $messages = array();
+	private $messages = [];
 
     /**
      * @var Drone\Dom\Element\Form
