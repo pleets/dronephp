@@ -225,36 +225,7 @@ class FormValidator
 				if (in_array($name, ['required', 'digits', 'minlength', 'maxlength', 'type', 'min', 'max', 'date', 'step']))
 				{
 					$validator->setTranslator($this->translator);
-
-					if (gettype($form_value) == 'array')
-					{
-						foreach ($form_value as $val)
-						{
-							$valid = $validator->isValid($val);
-							$this->setValid($valid);
-
-							if (!$valid)
-							{
-								if (!in_array($key, array_keys($this->messages)))
-									$this->messages[$key] = [];
-
-								$this->messages[$key] = array_merge($this->messages[$key], $validator->getMessages());
-							}
-						}
-					}
-					else
-					{
-						$valid = $validator->isValid($form_value);
-						$this->setValid($valid);
-
-						if (!$valid)
-						{
-							if (!in_array($key, array_keys($this->messages)))
-								$this->messages[$key] = [];
-
-							$this->messages[$key] = array_merge($this->messages[$key], $validator->getMessages());
-						}
-					}
+					$this->_validate($validator, $form_value, $key);
 				}
 			}
 		}
@@ -289,38 +260,41 @@ class FormValidator
 						$form_value = $this->formHandler->getAttribute($key, "value")->getValue();
 
 						$validator->setTranslator($this->translator);
-
-						if (gettype($form_value) == 'array')
-						{
-							foreach ($form_value as $val)
-							{
-								$valid = $validator->isValid($val);
-								$this->setValid($valid);
-
-								if (!$valid)
-								{
-									if (!in_array($key, array_keys($this->messages)))
-										$this->messages[$key] = [];
-
-									$this->messages[$key] = array_merge($this->messages[$key], $validator->getMessages());
-								}
-							}
-						}
-						else
-						{
-							$valid = $validator->isValid($form_value);
-							$this->setValid($valid);
-
-							if (!$valid)
-							{
-								if (!in_array($key, array_keys($this->messages)))
-									$this->messages[$key] = [];
-
-								$this->messages[$key] = array_merge($this->messages[$key], $validator->getMessages());
-							}
-						}
+						$this->_validate($validator, $form_value, $key);
 					}
 				}
+			}
+		}
+	}
+
+    /**
+     * Checks all rules
+     *
+     *  Supports n-dimensional arrays (name='example[][]')
+     *
+     * @return null
+     */
+	private function _validate($validator, $form_value, $key)
+	{
+		if (gettype($form_value) != 'array')
+		{
+			$val = $form_value;
+
+			$valid = $validator->isValid($val);
+			$this->setValid($valid);
+
+			if (!$valid)
+			{
+				if (!in_array($key, array_keys($this->messages)))
+					$this->messages[$key] = array();
+
+				$this->messages[$key] = array_merge($this->messages[$key], $validator->getMessages());
+			}
+		}
+		else {
+			foreach ($form_value as $val)
+			{
+				$this->_validate($validator, $val, $key);
 			}
 		}
 	}
