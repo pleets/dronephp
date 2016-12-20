@@ -141,6 +141,8 @@ class FormValidator
 				$all_attribs[$attr->getName()] = $attr->getValue();
 			}
 
+			$required = array_key_exists('required', $all_attribs) ? $all_attribs["required"] : false;
+
 			foreach ($attributes as $name => $attr)
 			{
 				$name = $attr->getName();
@@ -225,7 +227,7 @@ class FormValidator
 				if (in_array($name, ['required', 'digits', 'minlength', 'maxlength', 'type', 'min', 'max', 'date', 'step']))
 				{
 					$validator->setTranslator($this->translator);
-					$this->_validate($validator, $form_value, $key);
+					$this->_validate($validator, $form_value, $key, $required);
 				}
 			}
 		}
@@ -260,7 +262,7 @@ class FormValidator
 						$form_value = $this->formHandler->getAttribute($key, "value")->getValue();
 
 						$validator->setTranslator($this->translator);
-						$this->_validate($validator, $form_value, $key);
+						$this->_validate($validator, $form_value, $key, $required);
 					}
 				}
 			}
@@ -280,6 +282,14 @@ class FormValidator
 		{
 			$val = $form_value;
 
+			# Check if the value is required. If it is, check the other rules.
+			$v = new Zend_Validate_NotEmpty();
+			$v->setTranslator($this->translator);
+			$notEmpty = $v->isValid($val);
+
+			if (!$required && !$notEmpty)
+				return null;
+
 			$valid = $validator->isValid($val);
 			$this->setValid($valid);
 
@@ -294,7 +304,7 @@ class FormValidator
 		else {
 			foreach ($form_value as $val)
 			{
-				$this->_validate($validator, $val, $key);
+				$this->_validate($validator, $val, $key, $required);
 			}
 		}
 	}
