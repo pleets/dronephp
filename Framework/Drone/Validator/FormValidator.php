@@ -288,7 +288,7 @@ class FormValidator
 			$val = $form_value;
 
 			# Check if the value is required. If it is, check the other rules.
-			$v = new Zend_Validate_NotEmpty();
+			$v = new NotEmpty();
 			$v->setTranslator($this->translator);
 			$notEmpty = $v->isValid($val);
 
