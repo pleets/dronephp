@@ -14,7 +14,8 @@
         "zendframework/zend-i18n-resources": "2.5.*",
         "zendframework/zend-mvc": "3.0.*",
         "zendframework/zend-mvc-i18n": "1.0.*",
-        "zendframework/zend-uri": "2.5.*"
+        "zendframework/zend-uri": "2.5.*",
+        "zendframework/zend-crypt": "3.2.*"
 	},
 		"autoload": {
 		"psr-0": {"": "src/"}
