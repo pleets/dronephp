@@ -118,7 +118,7 @@ class SQLServer extends Driver implements DriverInterface
             }
 
             if (count($this->errors))
-                throw new Exception($errors[0]["message"], $[0]["code"]);
+                throw new Exception($errors[0]["message"], $errors[0]["code"]);
             else
                 throw new Exception("Unknown error!");
         }
