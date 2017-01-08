@@ -9,6 +9,8 @@
 
 namespace Drone\Db;
 
+use Exception;
+
 abstract class AbstractTableGateway
 {
     /**
