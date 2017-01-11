@@ -33,6 +33,9 @@ class Oracle extends Driver implements DriverInterface
      */
     public function __construct($options)
     {
+        if (!extension_loaded('oci8'))
+            throw new Exception("The Oci8 extension is not loaded");
+
         if (!array_key_exists("Dbchar", $options))
             $options["dbchar"] = "AL32UTF8";
 
@@ -68,6 +71,9 @@ class Oracle extends Driver implements DriverInterface
      */
     public function reconnect()
     {
+        if (!extension_loaded('oci8'))
+            throw new Exception("The Oci8 extension is not loaded");
+
         $connection_string = (is_null($this->dbhost) || empty($this->dbhost)) ? $this->dbname : $this->dbhost ."/". $this->dbname;
         $this->dbconn = @oci_connect($this->dbuser,  $this->dbpass, $connection_string, $this->dbchar);
 

@@ -33,6 +33,9 @@ class SQLServer extends Driver implements DriverInterface
      */
     public function __construct($options)
     {
+        if (!extension_loaded('sqlsrv'))
+            throw new Exception("The Sqlsrv extension is not loaded");
+
         if (!array_key_exists("Dbchar", $options))
             $options["dbchar"] = "SQLSRV_ENC_CHAR";
 
@@ -71,6 +74,9 @@ class SQLServer extends Driver implements DriverInterface
      */
     public function reconnect()
     {
+        if (!extension_loaded('sqlsrv'))
+            throw new Exception("The Sqlsrv extension is not loaded");
+
         $db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar);
         $this->dbconn = sqlsrv_connect($this->dbhost, $db_info);
 
