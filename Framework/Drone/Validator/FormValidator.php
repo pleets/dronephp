@@ -125,6 +125,8 @@ class FormValidator
      */
 	public function validate()
 	{
+		$this->setValid(true);
+
 		$attribs = $this->formHandler->getAttributes();
 
 		foreach ($attribs as $key => $attributes)
