@@ -16,7 +16,7 @@ class Catcher
     /**
      * Output filename
      *
-     * The catched events/vars are stored as json format
+     * Catched events/vars stored as json format
      *
      * @var string
      */
