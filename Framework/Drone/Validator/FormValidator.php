@@ -19,7 +19,7 @@ use Zend\Validator\EmailAddress;
 use Zend\Validator\Date;
 use Zend\Validator\Uri;
 
-use Drone\Dom\Element\Form as HtmlForm;
+use Drone\Dom\Element\Form;
 
 use Exception;
 
@@ -35,12 +35,14 @@ class FormValidator
 	private $valid;
 
     /**
+     * Validation messages
+     *
      * @var array
      */
 	private $messages = [];
 
     /**
-     * @var Drone\Dom\Element\Form
+     * @var Form
      */
 	private $formHandler;
 
@@ -97,9 +99,9 @@ class FormValidator
     /**
      * Constructor
      *
-     * @param HtmlForm $formHandler
+     * @param Form $formHandler
      */
-	public function __construct(HtmlForm $formHandler, $options)
+	public function __construct(Form $formHandler, $options)
 	{
 		$this->formHandler = $formHandler;
 		$this->options = (is_array($options)) ? $options : array();
