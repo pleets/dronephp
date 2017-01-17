@@ -26,6 +26,10 @@ use Exception;
 class FormValidator
 {
     /**
+     * The result of latest validation
+     *
+     * It's null before validate() execution
+     *
      * @var boolean|null
      */
 	private $valid;
