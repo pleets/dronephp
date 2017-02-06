@@ -10,6 +10,7 @@
 namespace Drone\Mvc;
 
 use Drone\LayoutManager\Layout;
+use Exception;
 
 abstract class AbstractionController
 {

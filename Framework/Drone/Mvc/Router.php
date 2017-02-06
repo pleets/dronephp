@@ -9,7 +9,7 @@
 
 namespace Drone\Mvc;
 
-use Exception as Exception;
+use Exception;
 
 class Router
 {

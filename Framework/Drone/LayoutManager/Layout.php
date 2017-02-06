@@ -10,6 +10,7 @@
 namespace Drone\LayoutManager;
 
 use Drone\Mvc\AbstractionController;
+use Exception;
 
 class Layout
 {
@@ -78,7 +79,7 @@ class Layout
 		$this->view = $view;
 
 		if (!file_exists($view))
-			throw new \Exception("The 'view' template $view does not exists");
+			throw new Exception("The 'view' template $view does not exists");
 
 		$params = $controller->getParams();
 

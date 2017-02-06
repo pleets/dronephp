@@ -11,6 +11,7 @@ namespace Drone\Db;
 
 use Drone\Db\Entity;
 use Drone\Sql\Platform\SQLFunction;
+use Exception;
 
 class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 {
