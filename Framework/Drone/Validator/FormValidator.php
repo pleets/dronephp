@@ -9,6 +9,7 @@
 
 namespace Drone\Validator;
 
+use Drone\Dom\Element\Form;
 use Zend\Validator\NotEmpty;
 use Zend\Validator\Digits;
 use Zend\Validator\StringLength;
@@ -18,9 +19,6 @@ use Zend\Validator\GreaterThan;
 use Zend\Validator\EmailAddress;
 use Zend\Validator\Date;
 use Zend\Validator\Uri;
-
-use Drone\Dom\Element\Form;
-
 use Exception;
 
 class FormValidator

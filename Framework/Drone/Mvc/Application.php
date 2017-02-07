@@ -9,8 +9,8 @@
 
 namespace Drone\Mvc;
 
-use Exception;
 use Drone\FileSystem\Shell;
+use Exception;
 
 class Application
 {

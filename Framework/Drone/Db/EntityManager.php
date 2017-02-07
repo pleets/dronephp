@@ -11,7 +11,6 @@ namespace Drone\Db;
 
 use Drone\Db\TableGateway;
 use Drone\Db\Entity;
-
 use Exception;
 
 class EntityManager
