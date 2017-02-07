@@ -167,23 +167,7 @@ class Application
 				if (file_exists("module/".$module."/Module.php"))
 					include("module/".$module."/Module.php");
 
-				$controllers = $fileSystem->ls("module/".$module."/source/controller");
-
-				// Load controllers for each module
-				foreach ($controllers as $controller)
-				{
-					if (!in_array($controller, array('.', '..')))
-						include("module/".$module."/source/controller/" . $controller);
-				}
-
-				$models = $fileSystem->ls("module/".$module."/source/model");
-
-				// Load models for each module
-				foreach ($models as $model)
-				{
-					if (!in_array($model, array('.', '..')))
-						include("module/".$module."/source/model/" . $model);
-			    }
+				spl_autoload_register($module . "\Module::loader");
 			}
 		}
 		else

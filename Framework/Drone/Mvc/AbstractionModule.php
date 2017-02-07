@@ -56,4 +56,22 @@ abstract class AbstractionModule
 	{
 		return include 'module/' . $this->getModuleName() . '/config/module.config.php';
 	}
+
+	/**
+	 * Creates an autoloader for module classes
+	 *
+	 * @param string $name
+	 *
+	 * @return null
+	 */
+	public static function loader($name)
+	{
+		$nm = explode('\\', $name);
+		$module = array_shift($nm);
+
+		$class = "module/" . $module . "/source/" . implode("/", $nm) . ".php";
+
+		if (file_exists($class))
+			include $class;
+	}
 }
