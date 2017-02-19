@@ -37,7 +37,7 @@ class MySQL extends Driver implements DriverInterface
         if (!extension_loaded('mysqli'))
             throw new Exception("The Mysqli extension is not loaded");
 
-        if (!array_key_exists("Dbchar", $options))
+        if (!array_key_exists("dbchar", $options))
             $options["dbchar"] = "utf8";
 
         parent::__construct($options);
@@ -60,6 +60,8 @@ class MySQL extends Driver implements DriverInterface
                 else
                     throw new Exception("Unknown error!");
             }
+            else
+                $this->dbconn->set_charset($options["dbchar"]);
         }
     }
 

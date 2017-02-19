@@ -36,7 +36,7 @@ class Oracle extends Driver implements DriverInterface
         if (!extension_loaded('oci8'))
             throw new Exception("The Oci8 extension is not loaded");
 
-        if (!array_key_exists("Dbchar", $options))
+        if (!array_key_exists("dbchar", $options))
             $options["dbchar"] = "AL32UTF8";
 
         parent::__construct($options);
