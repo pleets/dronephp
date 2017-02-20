@@ -113,7 +113,7 @@ class FormValidator
 		        'translation_files' => [
 		        	[
 		        		"type" => 'phparray',
-		        		"filename" => "vendor\zendframework\zend-i18n-resources\languages/$locale/Zend_Validate.php"
+		        		"filename" => "vendor/zendframework/zend-i18n-resources/languages/$locale/Zend_Validate.php"
 		        	]
 		        ]
 		    ]
