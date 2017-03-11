@@ -65,7 +65,7 @@ abstract class Driver
      *
      * @var array
      */
-    protected $errors = array();
+    protected $errors = [];
 
     /**
      * Rows returned on query() method
