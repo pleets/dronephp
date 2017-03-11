@@ -33,7 +33,7 @@ abstract class Entity
      *
      * @param string $tableName
      *
-     * @param null
+     * @return null
      */
     public function setTableName($tableName)
     {

@@ -68,6 +68,7 @@ class MySQL extends Driver implements DriverInterface
     /**
      * Reconnects to database
      *
+     * @throws Exception
      * @return boolean
      */
     public function reconnect()
@@ -93,6 +94,7 @@ class MySQL extends Driver implements DriverInterface
     /**
      * Excecutes a statement
      *
+     * @throws Exception
      * @return boolean
      */
     public function query($sql, $params = [])
@@ -163,7 +165,6 @@ class MySQL extends Driver implements DriverInterface
      * Returns an array with the rows fetched
      *
      * @throws Exception
-     *
      * @return array
      */
     private function toArray()

@@ -86,6 +86,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      *
      * @param array $data
      *
+     * @throws Exception
      * @return boolean
      */
     public function insert($data)
@@ -171,6 +172,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      *
      * @param array $where
      *
+     * @throws Exception
      * @return boolean
      */
     public function delete($where)

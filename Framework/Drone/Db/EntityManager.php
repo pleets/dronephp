@@ -24,8 +24,6 @@ class EntityManager
      * Constructor
      *
      * @param TableGateway $tableGateway
-     *
-     * @return null
      */
     public function __construct(TableGateway $tableGateway)
     {
@@ -84,7 +82,8 @@ class EntityManager
      *
      * @param Entity|array $entity
      *
-     * @return integer
+     * @throws Exception
+     * @return boolean
      */
     public function insert($entity)
     {
@@ -104,7 +103,8 @@ class EntityManager
      * @param Entity|array $entity
      * @param array $where
      *
-     * @return integer
+     * @throws Exception
+     * @return booelan
      */
     public function update($entity, $where)
     {
@@ -123,7 +123,8 @@ class EntityManager
      *
      * @param Entity|array $entity
      *
-     * @return integer
+     * @throws Exception
+     * @return boolean
      */
     public function delete($entity)
     {

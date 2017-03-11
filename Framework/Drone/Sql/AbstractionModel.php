@@ -19,16 +19,16 @@ abstract class AbstractionModel
     private $driver;
 
     /**
-     * Handle
+     * Connection resource
      *
-     * @var object
+     * @var resource
      */
     private $db;
 
     /**
      * All supported drivers
      *
-     * @var string
+     * @var array
      */
     private $availableDrivers;
 
@@ -37,8 +37,6 @@ abstract class AbstractionModel
      *
      * @param string  $abstract_connection_string
      * @param boolean $auto_connect
-     *
-     * @return null
      */
     public function __construct($abstract_connection_string = "default", $auto_connect = true)
     {
@@ -49,12 +47,6 @@ abstract class AbstractionModel
             "Oci8"          => "Drone\Sql\Oracle",
             "Mysqli"        => "Drone\Sql\MySQL",
             "Sqlsrv"        => "Drone\Sql\SQLServer",
-            // Drivers for future implementation
-            //"Pdo_Mysql"     => "",
-            //"Pgsql"         => "",
-            //"Pdo_Sqlite"    => "",
-            //"Pdo_Sqlite"    => "",
-            //"Pdo_Pgsql"     => "",
         );
 
         $drv = $dbsettings[$abstract_connection_string]["driver"];
@@ -81,9 +73,9 @@ abstract class AbstractionModel
     }
 
     /**
-     * Returns the current handle instance
+     * Returns the current connection resource
      *
-     * @return object
+     * @return resource
      */
     public function getDb()
     {
