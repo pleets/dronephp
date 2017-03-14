@@ -7,7 +7,7 @@
  * @license   http://www.dronephp.com/license
  */
 
-namespace Drone\Sql\Platform;
+namespace Drone\Db;
 
 class SQLFunction
 {

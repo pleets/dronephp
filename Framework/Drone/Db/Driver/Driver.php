@@ -7,7 +7,7 @@
  * @license   http://www.dronephp.com/license
  */
 
-namespace Drone\Sql;
+namespace Drone\Db\Driver;
 
 abstract class Driver
 {
@@ -135,6 +135,16 @@ abstract class Driver
     }
 
     /**
+     * Returns the dbname attribute
+     *
+     * @return string
+     */
+    public function getDbname()
+    {
+        return $this->dbname;
+    }
+
+    /**
      * Returns the numRows attribute
      *
      * @return integer
@@ -258,33 +268,53 @@ abstract class Driver
      *
      * @return null
      */
-    public function error($code, $message = null)
+    protected function error($code, $message = null)
     {
         if (!array_key_exists($code, $this->errors))
             $this->errors[$message] = (is_null($message) && array_key_exists($code, $this->messagesTemplates)) ? $this->messagesTemplates[$code] : $message;
     }
 
     /**
+     * Returns true if there is a stablished connection
+     *
+     * @return boolean
+     */
+    public function isConnected()
+    {
+        return (is_resource($this->dbconn) || is_object($this->dbconn));
+    }
+
+    /**
+     * Abstract connect
+     *
+     * @return resource
+     */
+    public abstract function connect();
+
+    /**
      * Abstract commit
      *
      * @return boolean
      */
-    public function commit() {}
+    public abstract function commit();
 
     /**
      * Abstract rollback
      *
      * @return boolean
      */
-    public function rollback() {}
+    public abstract function rollback();
 
     /**
      * Defines start point of a transaction
      *
      * @return boolean
      */
-    public function begin_transaction()
+    public function beginTransaction()
     {
+        if (!$this->isConnected())
+            $this->connect();
+
         if ($this->transac_mode)
         {
             $this->error(self::TRANSAC_STARTED);
@@ -301,7 +331,7 @@ abstract class Driver
      *
      * @return boolean
      */
-    public function end_transaction()
+    public function endTransaction()
     {
         if (is_null($this->transac_result))
         {
@@ -309,9 +339,12 @@ abstract class Driver
             return false;
         }
 
-        if ($this->transac_result)
+        if ($this->transac_result) {
+            var_dump("COMMIT");
             $this->commit();
+        }
         else {
+            var_dump("ROLLBACK");
             $this->rollback();
             return false;
         }

@@ -7,12 +7,12 @@
  * @license   http://www.dronephp.com/license
  */
 
-namespace Drone\Db;
+namespace Drone\Db\TableGateway;
 
-interface EntityManagerInterface
+interface TableGatewayInterface
 {
    public function select($where);
-   public function insert($model);
-   public function update($model, $where);
-   public function delete($model);
+   public function insert($data);
+   public function update($set, $where);
+   public function delete($where);
 }

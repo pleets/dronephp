@@ -7,13 +7,16 @@
  * @license   http://www.dronephp.com/license
  */
 
-namespace Drone\Sql;
+namespace Drone\Db\Driver;
 
 interface DriverInterface
 {
+   public function connect();
    public function reconnect();
+   public function commit();
+   public function rollback();
    public function transaction($array_of_sentences);
-   public function begin_transaction();
-   public function end_transaction();
-   public function cancel();
+   public function beginTransaction();
+   public function endTransaction();
+   public function disconnect();
 }

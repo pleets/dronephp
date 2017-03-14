@@ -7,10 +7,10 @@
  * @license   http://www.dronephp.com/license
  */
 
-namespace Drone\Db;
+namespace Drone\Db\TableGateway;
 
 use Drone\Db\Entity;
-use Drone\Sql\Platform\SQLFunction;
+use Drone\Db\Platform\SQLFunction;
 use Exception;
 
 class TableGateway extends AbstractTableGateway implements TableGatewayInterface
@@ -23,19 +23,6 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
     private $entity;
 
     /**
-     * Constructor
-     *
-     * @param Entity $entity
-     *
-     * @return null
-     */
-    public function __construct(Entity $entity, $auto_connect = true)
-    {
-        parent::__construct("default", $auto_connect);
-        $this->entity = $entity;
-    }
-
-    /**
      * Returns the entity
      *
      * @return Entity
@@ -43,6 +30,17 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
     public function getEntity()
     {
         return $this->entity;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param Entity $entity
+     */
+    public function __construct(Entity $entity, $auto_connect = true)
+    {
+        parent::__construct("default", $auto_connect);
+        $this->entity = $entity;
     }
 
     /**
@@ -77,8 +75,8 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "SELECT * \r\nFROM {$table}\r\n$where";
 
-        $result = $this->getDb()->query($sql);
-        return $this->getDb()->getArrayResult();
+        $result = $this->getDriver()->getDb()->execute($sql);
+        return $this->getDriver()->getDb()->getArrayResult();
     }
 
     /**
@@ -113,7 +111,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "INSERT INTO {$table} \r\n(\r\n\t$cols\r\n) \r\nVALUES \r\n(\r\n\t$vals\r\n)";
 
-        return $this->getDb()->query($sql);
+        return $this->getDriver()->getDb()->execute($sql);
     }
 
     /**
@@ -164,7 +162,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "UPDATE {$table} \r\nSET \r\n\t$parsed_set \r\nWHERE \r\n\t$parsed_where";
 
-        return $this->getDb()->query($sql);
+        return $this->getDriver()->getDb()->execute($sql);
     }
 
     /**
@@ -200,6 +198,6 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "DELETE FROM {$table} $where";
 
-        return $this->getDb()->query($sql);
+        return $this->getDriver()->getDb()->execute($sql);
     }
 }

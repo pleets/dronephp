@@ -7,13 +7,12 @@
  * @license   http://www.dronephp.com/license
  */
 
-namespace Drone\Db;
+namespace Drone\Db\TableGateway;
 
-use Drone\Db\TableGateway;
 use Drone\Db\Entity;
 use Exception;
 
-class EntityManager
+class EntityAdapter
 {
     /**
      * @var TableGateway $tableGateway

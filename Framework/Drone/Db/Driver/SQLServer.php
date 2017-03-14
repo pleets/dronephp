@@ -7,11 +7,11 @@
  * @license   http://www.dronephp.com/license
  */
 
-namespace Drone\Sql;
+namespace Drone\Db\Driver;
 
 use Exception;
 
-class Oracle extends Driver implements DriverInterface
+class SQLServer extends Driver implements DriverInterface
 {
     /**
      * @return array
@@ -33,36 +33,48 @@ class Oracle extends Driver implements DriverInterface
      */
     public function __construct($options)
     {
-        if (!extension_loaded('oci8'))
-            throw new Exception("The Oci8 extension is not loaded");
-
         if (!array_key_exists("dbchar", $options))
-            $options["dbchar"] = "AL32UTF8";
+            $options["dbchar"] = "SQLSRV_ENC_CHAR";
 
         parent::__construct($options);
 
         $auto_connect = array_key_exists('auto_connect', $options) ? $options["auto_connect"] : true;
 
         if ($auto_connect)
+            $this->connect();
+	}
+
+    /**
+     * Connects to database
+     *
+     * @throws Exception
+     * @return boolean
+     */
+    public function connect()
+    {
+        if (!extension_loaded('sqlsrv'))
+            throw new Exception("The Sqlsrv extension is not loaded");
+
+        $db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar);
+        $this->dbconn = sqlsrv_connect($this->dbhost, $db_info);
+
+        if ($this->dbconn === false)
         {
-            $connection_string = (is_null($this->dbhost) || empty($this->dbhost)) ? $this->dbname : $this->dbhost ."/". $this->dbname;
-            $this->dbconn = @oci_connect($this->dbuser,  $this->dbpass, $connection_string, $this->dbchar);
+            $errors = sqlsrv_errors();
 
-            if ($this->dbconn === false)
+            foreach ($errors as $error)
             {
-                $error = oci_error();
-
                 $this->error(
                     $error["code"], $error["message"]
                 );
-
-                if (count($this->errors))
-                    throw new Exception($error["message"], $error["code"]);
-                else
-                    throw new Exception("Unknown error!");
             }
+
+            if (count($this->errors))
+                throw new Exception($errors[0]["message"], $errors[0]["code"]);
+            else
+                throw new Exception("Unknown error!");
         }
-	}
+    }
 
     /**
      * Reconnects to database
@@ -72,24 +84,8 @@ class Oracle extends Driver implements DriverInterface
      */
     public function reconnect()
     {
-        if (!extension_loaded('oci8'))
-            throw new Exception("The Oci8 extension is not loaded");
-
-        $connection_string = (is_null($this->dbhost) || empty($this->dbhost)) ? $this->dbname : $this->dbhost ."/". $this->dbname;
-        $this->dbconn = @oci_connect($this->dbuser,  $this->dbpass, $connection_string, $this->dbchar);
-
-        if ($this->dbconn === false)
-        {
-            $error = oci_error();
-
-            $this->error(
-                $error["code"], $error["message"]
-            );
-
-            return false;
-        }
-
-        return true;
+        $this->disconnect();
+        $this->connect();
     }
 
     /**
@@ -98,7 +94,7 @@ class Oracle extends Driver implements DriverInterface
      * @throws Exception
      * @return boolean
      */
-    public function query($sql, Array $params = array())
+    public function execute($sql, Array $params = [])
     {
         $this->numRows = 0;
         $this->numFields = 0;
@@ -106,40 +102,30 @@ class Oracle extends Driver implements DriverInterface
 
         $this->arrayResult = null;
 
-        $this->result = $stid = oci_parse($this->dbconn, $sql);
+        $this->result = sqlsrv_query($this->dbconn, $sql, $params, array( "Scrollable" => SQLSRV_CURSOR_KEYSET ));
 
-        # Bound variables
-        if (count($params))
+        if (!$this->result)
         {
-            foreach ($params as $var => $value)
+            $errors = sqlsrv_errors();
+
+            foreach ($errors as $error)
             {
-                oci_bind_by_name($stid, $var, $value);
+                $this->error(
+                    $error["code"], $error["message"]
+                );
             }
-        }
-
-        $r = ($this->transac_mode) ? @oci_execute($stid, OCI_NO_AUTO_COMMIT) : @oci_execute($stid,  OCI_COMMIT_ON_SUCCESS);
-
-        if (!$r)
-        {
-            $error = oci_error($this->result);
-
-            $this->error(
-                $error["code"], $error["message"]
-            );
 
             if (count($this->errors))
-                throw new Exception($error["message"], $error["code"]);
+                throw new Exception($errors[0]["message"], $errors[0]["code"]);
             else
                 throw new Exception("Unknown error!");
         }
 
-        # This should be before of getArrayResult() because oci_fetch() is incremental.
-        $this->rowsAffected = oci_num_rows($stid);
+        $this->getArrayResult();
 
-        $rows = $this->getArrayResult();
-
-        $this->numRows = count($rows);
-        $this->numFields = oci_num_fields($stid);
+        $this->numRows = sqlsrv_num_rows($this->result);
+        $this->numFields = sqlsrv_num_fields($this->result);
+        $this->rowsAffected = sqlsrv_rows_affected($this->result);
 
         if ($this->transac_mode)
             $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
@@ -154,14 +140,14 @@ class Oracle extends Driver implements DriverInterface
      */
     public function transaction($querys)
     {
-        $this->begin_transaction();
+        $this->beginTransaction();
 
         foreach ($querys as $sql)
         {
-            $this->query($sql);
+            $this->execute($sql);
         }
 
-        return $this->end_transaction();
+        $this->endTransaction();
     }
 
     /**
@@ -171,7 +157,7 @@ class Oracle extends Driver implements DriverInterface
      */
     public function commit()
     {
-        return oci_commit($this->dbconn);
+        return sqlsrv_commit($this->dbconn);
     }
 
     /**
@@ -181,7 +167,31 @@ class Oracle extends Driver implements DriverInterface
      */
     public function rollback()
     {
-        return oci_rollback($this->dbconn);
+        return sqlsrv_rollback($this->dbconn);
+    }
+
+    /**
+     * Defines start point of a transaction
+     *
+     * @return boolean
+     */
+    public function beginTransaction()
+    {
+        if (sqlsrv_begin_transaction($this->dbconn) === false)
+        {
+            $errors = sqlsrv_errors();
+
+            foreach ($errors as $error)
+            {
+                $this->error(
+                    $error["code"], $error["message"]
+                );
+            }
+
+            return false;
+        }
+
+        return parent::beginTransaction();
     }
 
     /**
@@ -189,9 +199,9 @@ class Oracle extends Driver implements DriverInterface
      *
      * @return boolean
      */
-    public function cancel()
+    public function disconnect()
     {
-        oci_cancel($this->result);
+        sqlsrv_cancel($this->result);
     }
 
     /**
@@ -206,7 +216,7 @@ class Oracle extends Driver implements DriverInterface
 
         if ($this->result)
         {
-            while ( ($row = @oci_fetch_array($this->result, OCI_BOTH + OCI_RETURN_NULLS)) !== false )
+            while ($row = sqlsrv_fetch_array($this->result))
             {
                 $data[] = $row;
             }
@@ -222,6 +232,6 @@ class Oracle extends Driver implements DriverInterface
 	public function __destruct()
     {
         if ($this->dbconn)
-		    oci_close($this->dbconn);
+		    sqlsrv_close($this->dbconn);
 	}
 }

@@ -7,7 +7,7 @@
  * @license   http://www.dronephp.com/license
  */
 
-namespace Drone\Sql;
+namespace Drone\Db\Driver;
 
 use mysqli;
 use Exception;
@@ -34,9 +34,6 @@ class MySQL extends Driver implements DriverInterface
      */
     public function __construct($options)
     {
-        if (!extension_loaded('mysqli'))
-            throw new Exception("The Mysqli extension is not loaded");
-
         if (!array_key_exists("dbchar", $options))
             $options["dbchar"] = "utf8";
 
@@ -45,24 +42,36 @@ class MySQL extends Driver implements DriverInterface
         $auto_connect = array_key_exists('auto_connect', $options) ? $options["auto_connect"] : true;
 
         if ($auto_connect)
+            $this->connect();
+    }
+
+    /**
+     * Connects to database
+     *
+     * @throws Exception
+     * @return boolean
+     */
+    public function connect()
+    {
+        if (!extension_loaded('mysqli'))
+            throw new Exception("The Mysqli extension is not loaded");
+
+        $this->dbconn = @new mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname);
+
+        if ($this->dbconn->connect_errno)
         {
-            $this->dbconn = @new mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname);
+            $this->error(
+                $this->dbconn->connect_errno,
+                $this->dbconn->connect_error
+            );
 
-            if ($this->dbconn->connect_errno)
-            {
-                $this->error(
-                    $this->dbconn->connect_errno,
-                    $this->dbconn->connect_error
-                );
-
-                if (count($this->errors))
-                    throw new Exception($this->dbconn->connect_error, $this->dbconn->connect_errno);
-                else
-                    throw new Exception("Unknown error!");
-            }
+            if (count($this->errors))
+                throw new Exception($this->dbconn->connect_error, $this->dbconn->connect_errno);
             else
-                $this->dbconn->set_charset($options["dbchar"]);
+                throw new Exception("Unknown error!");
         }
+        else
+            $this->dbconn->set_charset($this->dbchar);
     }
 
     /**
@@ -73,22 +82,8 @@ class MySQL extends Driver implements DriverInterface
      */
     public function reconnect()
     {
-        if (!extension_loaded('mysqli'))
-            throw new Exception("The Mysqli extension is not loaded");
-
-        $this->dbconn = new mysqli($this->dbhost,$this->dbuser,$this->dbpass,$this->dbname);
-
-        if ($this->dbconn->connect_errno === false)
-        {
-            $this->error(
-                $this->dbconn->connect_errno,
-                $this->dbconn->connect_error
-            );
-
-            return false;
-        }
-
-        return true;
+        $this->disconnect();
+        $this->connect();
     }
 
     /**
@@ -97,7 +92,7 @@ class MySQL extends Driver implements DriverInterface
      * @throws Exception
      * @return boolean
      */
-    public function query($sql, $params = [])
+    public function execute($sql, Array $params = [])
     {
         $this->numRows = 0;
         $this->numFields = 0;
@@ -141,14 +136,45 @@ class MySQL extends Driver implements DriverInterface
      */
     public function transaction($querys)
     {
-        $this->begin_transaction();
+        $this->beginTransaction();
 
         foreach ($querys as $sql)
         {
-            $this->query($sql);
+            $this->execute($sql);
         }
 
-        return $this->end_transaction();
+        return $this->endTransaction();
+    }
+
+    /**
+     * Commit definition
+     *
+     * @return boolean
+     */
+    public function commit()
+    {
+        return $this->dbconn->commit();
+    }
+
+    /**
+     * Rollback definition
+     *
+     * @return boolean
+     */
+    public function rollback()
+    {
+        return $this->dbconn->rollback();
+    }
+
+    /**
+     * Begins a transaction in SQLServer
+     *
+     * @return boolean
+     */
+    public function beginTransaction()
+    {
+        parent::beginTransaction();
+        return $this->dbconn->autocommit(false);
     }
 
     /**
@@ -156,7 +182,7 @@ class MySQL extends Driver implements DriverInterface
      *
      * @return boolean
      */
-    public function cancel()
+    public function disconnect()
     {
         $this->dbconn->close();
     }
