@@ -78,7 +78,7 @@ class Layout
 		$this->controller = $controller;
 		$this->view = $view;
 
-		if (!file_exists($view))
+		if (!file_exists($view) && !$controller->getTerminal())
 			throw new Exception("The 'view' template $view does not exists");
 
 		$params = $controller->getParams();
