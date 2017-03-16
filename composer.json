@@ -7,6 +7,16 @@
         "PHP"
     ],
     "homepage": "http://www.dronephp.com",
+    "support": {
+        "issues": "https://github.com/Pleets/DronePHP/issues",
+        "source": "https://github.com/Pleets/DronePHP"
+    },
+    "authors": [
+        {
+            "name": "Darío Rivera",
+            "email": "fermius.us@gmail.com"
+        }
+    ],
 	"require": {
         "php": "^5.6 || ^7.0",
         "zendframework/zend-validator": "2.8.*",
@@ -18,7 +28,9 @@
         "zendframework/zend-uri": "2.5.*",
         "zendframework/zend-crypt": "3.2.*"
 	},
-		"autoload": {
-		"psr-0": {"": "src/"}
+	"autoload": {
+        "psr-4": {
+            "Drone\\": "src/"
+        }
 	}
 }
