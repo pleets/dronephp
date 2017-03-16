@@ -156,6 +156,12 @@ class Router
      */
 	public function addRoute($route)
 	{
+        $key = array_keys($route);
+        $key = array_shift($key);
+
+        if (array_key_exists($key, $this->routes))
+            throw new Exception("The key '$key' was already defined as route");
+
 		$this->routes = array_merge($this->routes, $route);
 	}
 }
