@@ -74,18 +74,8 @@ class SQLServer extends Driver implements DriverInterface
             else
                 throw new Exception("Unknown error!");
         }
-    }
 
-    /**
-     * Reconnects to database
-     *
-     * @throws Exception
-     * @return boolean
-     */
-    public function reconnect()
-    {
-        $this->disconnect();
-        $this->connect();
+        return true;
     }
 
     /**

@@ -292,6 +292,18 @@ abstract class Driver
     public abstract function connect();
 
     /**
+     * Reconnects to the database
+     *
+     * @throws Exception
+     * @return boolean
+     */
+    public function reconnect()
+    {
+        $this->disconnect();
+        return $this->connect();
+    }
+
+    /**
      * Abstract commit
      *
      * @return boolean

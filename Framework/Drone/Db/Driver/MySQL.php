@@ -72,18 +72,8 @@ class MySQL extends Driver implements DriverInterface
         }
         else
             $this->dbconn->set_charset($this->dbchar);
-    }
 
-    /**
-     * Reconnects to database
-     *
-     * @throws Exception
-     * @return boolean
-     */
-    public function reconnect()
-    {
-        $this->disconnect();
-        $this->connect();
+        return true;
     }
 
     /**
