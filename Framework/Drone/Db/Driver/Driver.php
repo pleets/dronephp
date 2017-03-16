@@ -351,12 +351,9 @@ abstract class Driver
             return false;
         }
 
-        if ($this->transac_result) {
-            var_dump("COMMIT");
+        if ($this->transac_result)
             $this->commit();
-        }
         else {
-            var_dump("ROLLBACK");
             $this->rollback();
             return false;
         }
