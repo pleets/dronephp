@@ -75,7 +75,7 @@ class DriverAdapter
     public function __construct($connection_identifier = "default", $auto_connect = true)
     {
         # Take connection parameters from configuration file
-		$dbsettings = include(__DIR__ . "/../../../../config/database.config.php");
+        $dbsettings = include("config/database.config.php");
 
         # driver => className
         $this->availableDrivers = [
