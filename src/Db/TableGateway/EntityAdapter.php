@@ -10,7 +10,9 @@
 namespace Drone\Db\TableGateway;
 
 use Drone\Db\Entity;
+use Drone\Db\SQLFunction;
 use Exception;
+use DateTime;
 
 class EntityAdapter
 {
@@ -91,6 +93,8 @@ class EntityAdapter
         else if (!is_array($entity))
             throw new Exception("Invalid type given. Drone\Db\Entity or Array expected");
 
+        $this->parseEntity($entity);
+
         $result = $this->tableGateway->insert($entity);
 
         return $result;
@@ -111,6 +115,8 @@ class EntityAdapter
             $entity = get_object_vars($entity);
         else if (!is_array($entity))
             throw new Exception("Invalid type given. Drone\Db\Entity or Array expected");
+
+        $this->parseEntity($entity);
 
         $result = $this->tableGateway->update($entity, $where);
 
@@ -135,5 +141,38 @@ class EntityAdapter
         $result = $this->tableGateway->delete($entity);
 
         return $result;
+    }
+
+    /**
+     * Converts several objects to SQLFunction objects
+     *
+     * @param array $entity
+     *
+     * @return array
+     */
+    private function parseEntity(&$entity)
+    {
+        $drv = $this->getTableGateway()->getDriver()->getDriver();
+
+        foreach ($entity as $field => $value)
+        {
+            if ($value instanceof DateTime)
+            {
+                switch ($drv)
+                {
+                    case 'Oci8':
+                        $entity[$field] = new SQLFunction('TO_DATE', array($value->format('Y-m-d'), 'YYYY-MM-DD'));
+                        break;
+                    case 'Mysqli':
+                        $entity[$field] = new SQLFunction('STR_TO_DATE', array($value->format('Y-m-d'), '%Y-%m-%d'));
+                        break;
+                    case 'Sqlsrv':
+                        $entity[$field] = new SQLFunction('CONVERT', array('DATETIME', $value->format('Y-m-d')));
+                        break;
+                }
+            }
+        }
+
+        return $entity;
     }
 }
