@@ -10,6 +10,7 @@
 namespace Drone\Mvc;
 
 use Drone\LayoutManager\Layout;
+use Drone\Mvc\PageNotFoundException;
 use Exception;
 
 abstract class AbstractionController
@@ -218,7 +219,7 @@ abstract class AbstractionController
 			}
 			else {
 				$class = __CLASS__;
-				throw new \Exception("The '$method' method doesn't exists in the $class control class");
+				throw new PageNotFoundException("The '$method' method doesn't exists in the $class control class");
 			}
 		}
 	}
