@@ -258,7 +258,7 @@ abstract class Driver
             if (property_exists(__CLASS__, strtolower($option)) && method_exists($this, 'set'.$option))
                 $this->{'set'.$option}($value);
         }
-	}
+    }
 
     /**
      * Adds an error

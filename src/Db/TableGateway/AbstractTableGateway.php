@@ -41,5 +41,5 @@ abstract class AbstractTableGateway
     {
         if (!isset(self::$driver))
             self::$driver = new DriverAdapter($connection_identifier, $auto_connect);
-	}
+    }
 }

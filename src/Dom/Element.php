@@ -26,7 +26,7 @@ abstract class Element
     /**
      * @var array
      */
-	protected $attributes;
+    protected $attributes;
 
     /**
      * Gets all attributes of the element
@@ -53,10 +53,10 @@ abstract class Element
      *
      * @return boolean
      */
-	public function getEndTag()
-	{
-		return $this->endTag;
-	}
+    public function getEndTag()
+    {
+        return $this->endTag;
+    }
 
     /**
      * Sets the startTag attribute
@@ -110,8 +110,8 @@ abstract class Element
      *
      * @return null
      */
-	public function setAttribute($label, $name, $value)
-	{
+    public function setAttribute($label, $name, $value)
+    {
         $attribs = $this->getAttributes();
 
         if (array_key_exists($label, $attribs))
@@ -125,7 +125,7 @@ abstract class Element
         else {
             $this->attributes[$label][] = new Attribute($name, $value);
         }
-	}
+    }
 
     /**
      * Adds all attributes passed as parameter
@@ -152,12 +152,12 @@ abstract class Element
      *
      * @param array $options
      */
-	public function __construct($options)
-	{
+    public function __construct($options)
+    {
         if (!array_key_exists('endTag', $options))
             $this->setEndTag(false);
 
-		foreach ($options as $key => $value)
+        foreach ($options as $key => $value)
         {
             switch ($key)
             {
@@ -173,6 +173,6 @@ abstract class Element
                     $this->setEndTag($value);
                     break;
             }
-		}
-	}
+        }
+    }
 }

@@ -96,5 +96,5 @@ class DriverAdapter
         }
         else
             throw new Exception("The Database driver does not exists");
-	}
+    }
 }

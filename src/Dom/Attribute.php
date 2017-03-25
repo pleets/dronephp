@@ -19,7 +19,7 @@ class Attribute
     /**
      * @var mixed
      */
-	private $value;
+    private $value;
 
     /**
      * Gets the name attribute
@@ -48,10 +48,10 @@ class Attribute
      *
      * @return null
      */
-	public function setValue($value)
-	{
-		$this->value = $value;
-	}
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
 
     /**
      * Constructor
@@ -59,9 +59,9 @@ class Attribute
      * @param string $name
      * @param mixed  $value
      */
-	public function __construct($name, $value = null)
-	{
+    public function __construct($name, $value = null)
+    {
         $this->name = $name;
-		$this->value = $value;
-	}
+        $this->value = $value;
+    }
 }

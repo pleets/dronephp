@@ -19,24 +19,24 @@ class Form extends Element
      *
      * @param array $options
      */
-	public function __construct($options)
-	{
-		$options["startTag"] = 'form';
-		$options["endTag"] = true;
+    public function __construct($options)
+    {
+        $options["startTag"] = 'form';
+        $options["endTag"] = true;
 
-		parent::__construct($options);
-	}
+        parent::__construct($options);
+    }
 
     /**
      * Fills the form with all passed values
      *
      * @param array $values
      */
-	public function fill($values)
-	{
-		foreach ($values as $label => $value)
-		{
-			$this->setAttribute($label, "value", $value);
-		}
-	}
+    public function fill($values)
+    {
+        foreach ($values as $label => $value)
+        {
+            $this->setAttribute($label, "value", $value);
+        }
+    }
 }

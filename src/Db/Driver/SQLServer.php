@@ -42,7 +42,7 @@ class SQLServer extends Driver implements DriverInterface
 
         if ($auto_connect)
             $this->connect();
-	}
+    }
 
     /**
      * Connects to database
@@ -219,9 +219,9 @@ class SQLServer extends Driver implements DriverInterface
         return $data;
     }
 
-	public function __destruct()
+    public function __destruct()
     {
         if ($this->dbconn)
-		    sqlsrv_close($this->dbconn);
-	}
+            sqlsrv_close($this->dbconn);
+    }
 }

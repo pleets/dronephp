@@ -143,7 +143,6 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $parsed_set = implode(",\r\n\t", $parsed_set);
 
-
         $parsed_where = array();
 
         foreach ($where as $key => $value)
