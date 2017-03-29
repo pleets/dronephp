@@ -174,7 +174,10 @@ class Oracle extends Driver implements DriverInterface
      */
     public function disconnect()
     {
-        oci_cancel($this->result);
+        if ($this->dbconn)
+            return oci_close($this->dbconn);
+
+        return true;
     }
 
     /**

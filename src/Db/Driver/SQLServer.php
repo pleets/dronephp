@@ -191,7 +191,10 @@ class SQLServer extends Driver implements DriverInterface
      */
     public function disconnect()
     {
-        sqlsrv_cancel($this->result);
+        if ($this->dbconn)
+            return sqlsrv_close($this->dbconn);
+
+        return true;
     }
 
     /**

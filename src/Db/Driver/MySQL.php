@@ -174,7 +174,10 @@ class MySQL extends Driver implements DriverInterface
      */
     public function disconnect()
     {
-        $this->dbconn->close();
+        if ($this->dbconn !== false)
+            return $this->dbconn->close();
+
+        return true;
     }
 
     /**
