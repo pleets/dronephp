@@ -39,7 +39,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      */
     public function __construct(Entity $entity, $auto_connect = true)
     {
-        parent::__construct("default", $auto_connect);
+        parent::__construct($entity->getConnectionIdentifier(), $auto_connect);
         $this->entity = $entity;
     }
 
