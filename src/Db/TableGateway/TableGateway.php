@@ -62,6 +62,18 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                     $parsed_where[] = "$key = '$value'";
                 elseif ($value instanceof SQLFunction)
                     $parsed_where[] = "$key = " . $value->getStatement();
+                elseif (is_array($value))
+                {
+                    $parsed_in = [];
+
+                    foreach ($value as $in_value)
+                    {
+                        if (is_string($in_value))
+                            $parsed_in[] = "'$in_value'";
+                    }
+
+                    $parsed_where[] = "$key IN (" . implode(", ", $parsed_in) . ")";
+                }
                 else
                     $parsed_where[] = "$key = $value";
             }
@@ -131,19 +143,31 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         foreach ($set as $key => $value)
         {
-            if (is_string($value))
-                $value = "'$value'";
-            elseif (is_null($value))
-                $value = "null";
+            if (is_null($value))
+                $parsed_set = "$key = null";
+            elseif (is_string($value))
+                $parsed_set[] = "$key = '$value'";
             elseif ($value instanceof SQLFunction)
-                $value = $value->getStatement();
+                $parsed_set[] = "$key = " . $value->getStatement();
+            elseif (is_array($value))
+            {
+                $parsed_in = [];
 
-            $parsed_set[] = "$key = $value";
+                foreach ($value as $in_value)
+                {
+                    if (is_string($in_value))
+                        $parsed_in[] = "'$in_value'";
+                }
+
+                $parsed_set[] = "$key IN (" . implode(", ", $parsed_in) . ")";
+            }
+            else
+                $parsed_set[] = "$key = $value";
         }
 
         $parsed_set = implode(",\r\n\t", $parsed_set);
 
-        $parsed_where = array();
+        $parsed_where = [];
 
         foreach ($where as $key => $value)
         {
@@ -151,6 +175,18 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                 $parsed_where[] = "$key = '$value'";
             elseif ($value instanceof SQLFunction)
                 $parsed_where[] = "$key = " . $value->getStatement();
+            elseif (is_array($value))
+            {
+                $parsed_in = [];
+
+                foreach ($value as $in_value)
+                {
+                    if (is_string($in_value))
+                        $parsed_in[] = "'$in_value'";
+                }
+
+                $parsed_where[] = "$key IN (" . implode(", ", $parsed_in) . ")";
+            }
             else
                 $parsed_where[] = "$key = $value";
         }
@@ -184,6 +220,18 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                     $parsed_where[] = "$key = '$value'";
                 elseif ($value instanceof SQLFunction)
                     $parsed_where[] = "$key = " . $value->getStatement();
+                elseif (is_array($value))
+                {
+                    $parsed_in = [];
+
+                    foreach ($value as $in_value)
+                    {
+                        if (is_string($in_value))
+                            $parsed_in[] = "'$in_value'";
+                    }
+
+                    $parsed_where[] = "$key IN (" . implode(", ", $parsed_in) . ")";
+                }
                 else
                     $parsed_where[] = "$key = $value";
             }
