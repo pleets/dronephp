@@ -144,7 +144,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
         foreach ($set as $key => $value)
         {
             if (is_null($value))
-                $parsed_set = "$key = null";
+                $parsed_set[] = "$key = null";
             elseif (is_string($value))
                 $parsed_set[] = "$key = '$value'";
             elseif ($value instanceof SQLFunction)
