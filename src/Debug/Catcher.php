@@ -13,6 +13,21 @@ use Exception;
 
 class Catcher
 {
+    /**#@+
+     * Transaction constants
+     * @var string
+     */
+    const PERMISSION_DENIED = 'permissionDenied';
+
+    /**
+     * Validation failure message template definitions
+     *
+     * @var array
+     */
+    protected $messagesTemplates = [
+        self::PERMISSION_DENIED => 'Failed to open stream: %file%, Permission Denied!'
+    ];
+
     /**
      * Output filename
      *
@@ -21,6 +36,13 @@ class Catcher
      * @var string
      */
     protected $output;
+
+    /**
+     * Failure messages
+     *
+     * @var array
+     */
+    protected $errors = [];
 
     /**
      * Returns the output filename
@@ -33,6 +55,16 @@ class Catcher
     }
 
     /**
+     * Returns an array with all failure messages
+     *
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    /**
      * Sets output attribute
      *
      * @param string
@@ -42,6 +74,25 @@ class Catcher
     public function setOutput($value)
     {
         return $this->output = $value;
+    }
+
+    /**
+     * Adds an error
+     *
+     * @param string $code
+     * @param string $message
+     *
+     * @return null
+     */
+    protected function error($code, $message = null)
+    {
+        if (!array_key_exists($code, $this->errors))
+            $this->errors[$code] = (array_key_exists($code, $this->messagesTemplates))
+                ?
+                    is_null($message)
+                        ? $this->messagesTemplates[$code]
+                        : preg_replace('/%[a-zA-Z]*%/', $message, $this->messagesTemplates[$code])
+                : $message;
     }
 
     /**
@@ -59,9 +110,15 @@ class Catcher
             "object"  => serialize($e)
         );
 
-        $hd = fopen($this->output, "w");
-        fwrite($hd, json_encode($data));
-        fclose($hd);
+        $hd = @fopen($this->output, "w");
+
+        if (!$hd || !@fwrite($hd, json_encode($data)))
+        {
+            $this->error(self::PERMISSION_DENIED, $this->output);
+            return false;
+        }
+
+        @fclose($hd);
 
         return $id;
     }
