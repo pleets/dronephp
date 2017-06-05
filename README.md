@@ -1,8 +1,8 @@
 <p align="center">
 <a href="https://travis-ci.org/pleets/dronephp"><img src="https://travis-ci.org/pleets/dronephp.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/dronephp/framework"><img src="https://poser.pugx.org/pleets/dronephp/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/dronephp/framework"><img src="https://poser.pugx.org/pleets/dronephp/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/dronephp/framework"><img src="https://poser.pugx.org/pleets/dronephp/license.svg" alt="License"></a>
+<a href="https://packagist.org/packages/pleets/dronephp"><img src="https://poser.pugx.org/pleets/dronephp/d/total.svg" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/pleets/dronephp"><img src="https://poser.pugx.org/pleets/dronephp/v/stable.svg" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/pleets/dronephp"><img src="https://poser.pugx.org/pleets/dronephp/license.svg" alt="License"></a>
 </p>
 
 # DronePHP
