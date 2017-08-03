@@ -19,6 +19,11 @@ abstract class Entity
     private $tableName;
 
     /**
+     * @var array
+     */
+    private $changedFields = [];
+
+    /**
      * @var string
      */
     private $connectionIdentifier = "default";
@@ -31,6 +36,16 @@ abstract class Entity
     public function getTableName()
     {
         return $this->tableName;
+    }
+
+    /**
+     * Returns a list with the fields changed
+     *
+     * @return string
+     */
+    public function getChangedFields()
+    {
+        return $this->changedFields;
     }
 
     /**
@@ -81,9 +96,31 @@ abstract class Entity
         foreach ($data as $prop => $value)
         {
             if (property_exists($this, $prop))
+            {
                 $this->$prop = $value;
+
+                if (!in_array($prop, $this->changedFields))
+                    $this->changedFields[] = $prop;
+            }
             else
                 throw new Exception("The property '$prop' does not exists in the class '$class'");
+        }
+    }
+
+    /**
+     * Constructor
+     *
+     * @param array $data
+     *
+     * @return null
+     */
+    public function __construct($data)
+    {
+        $class = get_class($this);
+
+        foreach ($data as $prop => $value)
+        {
+            $this->$prop = $value;
         }
     }
 }

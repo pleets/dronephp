@@ -59,7 +59,7 @@ class EntityAdapter
 
         foreach ($result as $row)
         {
-            $filtered_array = array();
+            $filtered_array = [];
 
             foreach ($row as $key => $value)
             {
@@ -69,8 +69,7 @@ class EntityAdapter
 
             $user_entity = get_class($this->tableGateway->getEntity());
 
-            $entity = new $user_entity();
-            $entity->exchangeArray($filtered_array);
+            $entity = new $user_entity($filtered_array);
 
             $array_result[] = $entity;
         }
@@ -112,7 +111,20 @@ class EntityAdapter
     public function update($entity, $where)
     {
         if ($entity instanceof Entity)
+        {
+            $changedFields = $entity->getChangedFields();
             $entity = get_object_vars($entity);
+
+            $fieldsToModify = [];
+
+            foreach ($entity as $key => $value)
+            {
+                if (in_array($key, $changedFields))
+                    $fieldsToModify[$key] = $value;
+            }
+
+            $entity = $fieldsToModify;
+        }
         else if (!is_array($entity))
             throw new Exception("Invalid type given. Drone\Db\Entity or Array expected");
 

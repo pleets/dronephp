@@ -56,11 +56,15 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
         {
             $parsed_where = [];
 
+            $bind_values = [];
+
+            $k = 0;
+
             foreach ($where as $key => $value)
             {
-                if (is_string($value))
-                    $parsed_where[] = "$key = '$value'";
-                elseif (is_null($value))
+                $k++;
+
+                if (is_null($value))
                     $parsed_where[] = "$key IS NULL";
                 elseif ($value instanceof SQLFunction)
                     $parsed_where[] = "$key = " . $value->getStatement();
@@ -70,14 +74,19 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
                     foreach ($value as $in_value)
                     {
-                        if (is_string($in_value))
-                            $parsed_in[] = "'$in_value'";
+                        $parsed_in[] = ":$k";
+                        $bind_values[":$k"] = $value;
+
+                        $k++;
                     }
 
                     $parsed_where[] = "$key IN (" . implode(", ", $parsed_in) . ")";
                 }
                 else
-                    $parsed_where[] = "$key = $value";
+                {
+                    $parsed_where[] = "$key = :$k";
+                    $bind_values[":$k"] = $value;
+                }
             }
 
             $where = "WHERE \r\n\t" . implode(" AND\r\n\t", $parsed_where);
@@ -89,7 +98,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "SELECT * \r\nFROM {$table}\r\n$where";
 
-        $result = $this->getDriver()->getDb()->execute($sql);
+        $result = $this->getDriver()->getDb()->execute($sql, $bind_values);
         return $this->getDriver()->getDb()->getArrayResult();
     }
 
@@ -106,14 +115,22 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
         if (!count($data))
             throw new Exception("Missing values for INSERT statement!");
 
+        $bind_values = [];
+
+        $k = 0;
+
         foreach ($data as $key => $value)
         {
-            if (is_string($value))
-                $value = "'$value'";
-            elseif (is_null($value))
+            $k++;
+
+            if (is_null($value))
                 $value = "NULL";
             elseif ($value instanceof SQLFunction)
                 $value = $value->getStatement();
+            else {
+                $bind_values[":$k"] = $value;
+                $value = ":$k";
+            }
 
             $data[$key] = $value;
         }
@@ -125,7 +142,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "INSERT INTO {$table} \r\n(\r\n\t$cols\r\n) \r\nVALUES \r\n(\r\n\t$vals\r\n)";
 
-        return $this->getDriver()->getDb()->execute($sql);
+        return $this->getDriver()->getDb()->execute($sql, $bind_values);
     }
 
     /**
@@ -138,17 +155,21 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      */
     public function update($set, $where)
     {
-        $parsed_set = array();
+        $parsed_set = [];
 
         if (!count($set))
             throw new Exception("Missing SET arguments!");
 
+        $bind_values = [];
+
+        $k = 0;
+
         foreach ($set as $key => $value)
         {
+            $k++;
+
             if (is_null($value))
                 $parsed_set[] = "$key = NULL";
-            elseif (is_string($value))
-                $parsed_set[] = "$key = '$value'";
             elseif ($value instanceof SQLFunction)
                 $parsed_set[] = "$key = " . $value->getStatement();
             elseif (is_array($value))
@@ -158,24 +179,32 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                 foreach ($value as $in_value)
                 {
                     if (is_string($in_value))
-                        $parsed_in[] = "'$in_value'";
+                        $parsed_in[] = ":$k";
+
+                    $bind_values[":$k"] = $in_value;
+
+                    $k++;
                 }
 
                 $parsed_set[] = "$key IN (" . implode(", ", $parsed_in) . ")";
             }
             else
-                $parsed_set[] = "$key = $value";
+            {
+                $parsed_set[] = "$key = :$k";
+                $bind_values[":$k"] = $value;
+            }
         }
 
+        $parsed_set_array = $parsed_set;
         $parsed_set = implode(",\r\n\t", $parsed_set);
 
         $parsed_where = [];
 
         foreach ($where as $key => $value)
         {
-            if (is_string($value))
-                $parsed_where[] = "$key = '$value'";
-            elseif (is_null($value))
+            $k++;
+
+            if (is_null($value))
                 $parsed_where[] = "$key IS NULL";
             elseif ($value instanceof SQLFunction)
                 $parsed_where[] = "$key = " . $value->getStatement();
@@ -185,14 +214,19 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
                 foreach ($value as $in_value)
                 {
-                    if (is_string($in_value))
-                        $parsed_in[] = "'$in_value'";
+                    $parsed_in[] = ":$k";
+                    $bind_values[":$k"] = $in_value;
+
+                    $k++;
                 }
 
                 $parsed_where[] = "$key IN (" . implode(", ", $parsed_in) . ")";
             }
             else
-                $parsed_where[] = "$key = $value";
+            {
+                $parsed_where[] = "$key = :$k";
+                $bind_values[":$k"] = $value;
+            }
         }
 
         $parsed_where = implode(" AND\r\n\t", $parsed_where);
@@ -201,7 +235,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "UPDATE {$table} \r\nSET \r\n\t$parsed_set \r\nWHERE \r\n\t$parsed_where";
 
-        return $this->getDriver()->getDb()->execute($sql);
+        return $this->getDriver()->getDb()->execute($sql, $bind_values);
     }
 
     /**
@@ -218,11 +252,15 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
         {
             $parsed_where = [];
 
+            $bind_values = [];
+
+            $k = 0;
+
             foreach ($where as $key => $value)
             {
-                if (is_string($value))
-                    $parsed_where[] = "$key = '$value'";
-                elseif (is_null($value))
+                $k++;
+
+                if (is_null($value))
                     $parsed_where[] = "$key IS NULL";
                 elseif ($value instanceof SQLFunction)
                     $parsed_where[] = "$key = " . $value->getStatement();
@@ -232,14 +270,19 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
                     foreach ($value as $in_value)
                     {
-                        if (is_string($in_value))
-                            $parsed_in[] = "'$in_value'";
+                        $parsed_in[] = ":$k";
+                        $bind_values[":$k"] = $value;
+
+                        $k++;
                     }
 
                     $parsed_where[] = "$key IN (" . implode(", ", $parsed_in) . ")";
                 }
                 else
-                    $parsed_where[] = "$key = $value";
+                {
+                    $parsed_where[] = "$key = :$k";
+                    $bind_values[":$k"] = $value;
+                }
             }
 
             $where = "\r\nWHERE \r\n\t" . implode(" AND\r\n\t", $parsed_where);
@@ -251,6 +294,6 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "DELETE FROM {$table} $where";
 
-        return $this->getDriver()->getDb()->execute($sql);
+        return $this->getDriver()->getDb()->execute($sql, $bind_values);
     }
 }
