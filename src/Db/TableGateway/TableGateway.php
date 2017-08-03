@@ -75,7 +75,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                     foreach ($value as $in_value)
                     {
                         $parsed_in[] = ":$k";
-                        $bind_values[":$k"] = $value;
+                        $bind_values[":$k"] = $in_value;
 
                         $k++;
                     }
