@@ -52,11 +52,11 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      */
     public function select($where = [])
     {
+        $bind_values = [];
+
         if (count($where))
         {
             $parsed_where = [];
-
-            $bind_values = [];
 
             $k = 0;
 
@@ -98,7 +98,8 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "SELECT * \r\nFROM {$table}\r\n$where";
 
-        $result = $this->getDriver()->getDb()->execute($sql, $bind_values);
+        $result = (count($bind_values)) ? $this->getDriver()->getDb()->execute($sql, $bind_values) : $this->getDriver()->getDb()->execute($sql);
+
         return $this->getDriver()->getDb()->getArrayResult();
     }
 
