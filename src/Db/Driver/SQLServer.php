@@ -92,15 +92,10 @@ class SQLServer extends Driver implements DriverInterface
 
         $this->arrayResult = null;
 
-/*echo "<pre>";
-var_dump($sql);
-var_dump($params);
-echo "</pre>";*/
-
         # Bound variables
-        if (count($params)) 
+        if (count($params))
         {
-            $this->result = sqlsrv_prepare($this->dbconn, $sql, $params);    
+            $this->result = sqlsrv_prepare($this->dbconn, $sql, $params);
             $r = sqlsrv_execute($this->result);
         }
         else

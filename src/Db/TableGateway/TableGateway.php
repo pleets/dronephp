@@ -76,13 +76,13 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
                     foreach ($value as $in_value)
                     {
-                        switch ($driver) 
+                        switch ($driver)
                         {
                             case 'Oci8':
                                 $parsed_in[] = ":$k";
                                 $bind_values[":$k"] = $in_value;
                                 break;
-                            
+
                             case 'Mysqli' || 'Sqlsrv':
                                 $parsed_in[] = "?";
                                 $bind_values[] = $in_value;
@@ -96,7 +96,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                 }
                 else
                 {
-                    switch ($driver) 
+                    switch ($driver)
                     {
                         case 'Oci8':
                             $parsed_where[] = "$key = :$k";
@@ -153,7 +153,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             # insert NULL values cause problems when BEFORE INSERT triggers are
             # defined to assigns values over fields. For SQLServer is better not
             # pass NULL values
-            if ($driver == 'Sqlsrv' && is_null($value)) 
+            if ($driver == 'Sqlsrv' && is_null($value))
             {
                 $null_keys[] = $key;
                 continue;
@@ -165,7 +165,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                 $value = $value->getStatement();
             else {
 
-                switch ($driver) 
+                switch ($driver)
                 {
                     case 'Oci8':
                         $bind_values[":$k"] = $value;
@@ -176,7 +176,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                         $bind_values[] = $value;
                         $value = "?";
                         break;
-                }                
+                }
             }
 
             $data[$key] = $value;
@@ -232,7 +232,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
                 foreach ($value as $in_value)
                 {
-                    switch ($driver) 
+                    switch ($driver)
                     {
                         case 'Oci8':
 
@@ -256,7 +256,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             }
             else
             {
-                switch ($driver) 
+                switch ($driver)
                 {
                     case 'Oci8':
                         $parsed_set[] = "$key = :$k";
@@ -290,13 +290,13 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
                 foreach ($value as $in_value)
                 {
-                    switch ($driver) 
+                    switch ($driver)
                     {
                         case 'Oci8':
                             $parsed_in[] = ":$k";
                             $bind_values[":$k"] = $in_value;
                             break;
-                        
+
                         case 'Mysqli' || 'Sqlsrv':
                             $parsed_in[] = "?";
                             $bind_values[] = $in_value;
@@ -310,7 +310,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             }
             else
             {
-                switch ($driver) 
+                switch ($driver)
                 {
                     case 'Oci8':
                         $parsed_where[] = "$key = :$k";
@@ -368,13 +368,13 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
                     foreach ($value as $in_value)
                     {
-                        switch ($driver) 
+                        switch ($driver)
                         {
                             case 'Oci8':
                                 $parsed_in[] = ":$k";
                                 $bind_values[":$k"] = $in_value;
                                 break;
-                            
+
                             case 'Mysqli' || 'Sqlsrv':
                                 $parsed_in[] = "?";
                                 $bind_values[] = $in_value;
@@ -388,7 +388,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                 }
                 else
                 {
-                    switch ($driver) 
+                    switch ($driver)
                     {
                         case 'Oci8':
                             $parsed_where[] = "$key = :$k";
