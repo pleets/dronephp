@@ -34,7 +34,7 @@ class SQLServer extends Driver implements DriverInterface
     public function __construct($options)
     {
         if (!array_key_exists("dbchar", $options))
-            $options["dbchar"] = "SQLSRV_ENC_CHAR";
+            $options["dbchar"] = "UTF-8";
 
         parent::__construct($options);
 
@@ -92,9 +92,21 @@ class SQLServer extends Driver implements DriverInterface
 
         $this->arrayResult = null;
 
-        $this->result = sqlsrv_query($this->dbconn, $sql, $params, array( "Scrollable" => SQLSRV_CURSOR_KEYSET ));
+/*echo "<pre>";
+var_dump($sql);
+var_dump($params);
+echo "</pre>";*/
 
-        if (!$this->result)
+        # Bound variables
+        if (count($params)) 
+        {
+            $this->result = sqlsrv_prepare($this->dbconn, $sql, $params);    
+            $r = sqlsrv_execute($this->result);
+        }
+        else
+            $r = $this->result = sqlsrv_query($this->dbconn, $sql, $params, array( "Scrollable" => SQLSRV_CURSOR_KEYSET ));
+
+        if (!$r)
         {
             $errors = sqlsrv_errors();
 
