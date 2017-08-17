@@ -60,13 +60,22 @@ class MySQL extends Driver implements DriverInterface
 
         if ($this->dbconn->connect_errno)
         {
+            $errno = $this->dbconn->connect_errno;
+            $error = $this->dbconn->connect_error;
+
+            /*
+             * Sets $this->dbconn to NULL after trying to connect!. If NULL is not assigned to $this->dbconn,
+             * a Warning message (Property access is not allowed yet) is showed after property is called.
+             */
+            $this->dbconn = null;
+
             $this->error(
-                $this->dbconn->connect_errno,
-                $this->dbconn->connect_error
+                $errno,
+                $error
             );
 
             if (count($this->errors))
-                throw new Exception($this->dbconn->connect_error, $this->dbconn->connect_errno);
+                throw new Exception($error, $errno);
             else
                 throw new Exception("Unknown error!");
         }
@@ -101,7 +110,7 @@ class MySQL extends Driver implements DriverInterface
             $bind_values = [];
             $bind_types = "";
 
-            for ($i = 0; $i < $n_params; $i++) 
+            for ($i = 0; $i < $n_params; $i++)
             {
                 if (is_string($param_values[$i]))
                     $bind_types .= 's';
@@ -122,7 +131,7 @@ class MySQL extends Driver implements DriverInterface
             if ($r)
             {
                 if (is_object($stmt) && get_class($stmt) == 'mysqli_stmt')
-                    $this->result = $this->result->get_result();                
+                    $this->result = $this->result->get_result();
             }
         }
         else
@@ -243,7 +252,7 @@ class MySQL extends Driver implements DriverInterface
 
     public function __destruct()
     {
-        if ($this->dbconn !== false)
+        if ($this->dbconn !== false && !is_null($this->dbconn))
             $this->dbconn->close();
     }
 }
