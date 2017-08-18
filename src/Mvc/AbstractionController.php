@@ -284,6 +284,18 @@ abstract class AbstractionController
     }
 
     /**
+     * Checks if the current request is GET
+     *
+     * @return boolean
+     */
+    public function isGet()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "GET")
+            return true;
+        return false;
+    }
+
+    /**
      * Parses requests parameters
      *
      * Searches for URI formed as follows /var1/value1/var2/value2
