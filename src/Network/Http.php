@@ -9,11 +9,9 @@
 
 namespace Drone\Network;
 
-use Exception;
-
 class Http
 {
-    /**#@+
+    /**
      * Status codes
      * As per http://php.net/manual/en/function.header.php, See the » HTTP/1.1 specification
      *
@@ -67,7 +65,7 @@ class Http
      *
      * @var array
      */
-    protected $httpStatusCodes = array(
+    protected $httpStatusCodes = [
         self::HTTP_CONTINUE                        => 'Continue',
         self::HTTP_SWITCHING_PROTOCOLS             => 'Switching Protocols',
         self::HTTP_OK                              => 'OK',
@@ -108,12 +106,14 @@ class Http
         self::HTTP_SERVICE_UNAVAILABLE             => 'Service Unavailable',
         self::HTTP_GATEWAY_TIMEOUT                 => 'Gateway Time-out',
         self::HTTP_VERSION_NOT_SUPPORTED           => 'HTTP Version not supported'
-    );
+    ];
 
     /**
      * Gets the HTTP Status description from the code
      *
      * @param integer $code
+     *
+     * @throws LogicException
      *
      * @return string
      */
@@ -122,7 +122,7 @@ class Http
         $codes = $this->httpStatusCodes;
 
         if (!in_array($code, array_keys($codes)))
-            throw new Exception("Status code not supported");
+            throw new \LogicException("Status code not supported");
 
         return $this->httpStatusCodes[$code];
     }
