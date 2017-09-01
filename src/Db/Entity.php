@@ -9,8 +9,6 @@
 
 namespace Drone\Db;
 
-use Exception;
-
 abstract class Entity
 {
     /**
@@ -103,7 +101,7 @@ abstract class Entity
                     $this->changedFields[] = $prop;
             }
             else
-                throw new Exception("The property '$prop' does not exists in the class '$class'");
+                throw new \LogicException("The property '$prop' does not exists in the class '$class'");
         }
     }
 

@@ -9,27 +9,16 @@
 
 namespace Drone\Db\Driver;
 
-use Exception;
-
 class SQLServer extends Driver implements DriverInterface
 {
-    /**
-     * @return array
-     */
-    public function getArrayResult()
-    {
-        if ($this->arrayResult)
-            return $this->arrayResult;
-
-        return $this->toArray();
-    }
+    use \Drone\Error\ErrorTrait;
 
     /**
      * Constructor for Oracle driver
      *
      * @param array $options
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function __construct($options)
     {
@@ -47,13 +36,14 @@ class SQLServer extends Driver implements DriverInterface
     /**
      * Connects to database
      *
-     * @throws Exception
+     * @throws RuntimeException
+     *
      * @return boolean
      */
     public function connect()
     {
         if (!extension_loaded('sqlsrv'))
-            throw new Exception("The Sqlsrv extension is not loaded");
+            throw new \RuntimeException("The Sqlsrv extension is not loaded");
 
         $db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar);
         $this->dbconn = sqlsrv_connect($this->dbhost, $db_info);
@@ -64,15 +54,10 @@ class SQLServer extends Driver implements DriverInterface
 
             foreach ($errors as $error)
             {
-                $this->error(
-                    $error["code"], $error["message"]
-                );
+                $this->error($error["code"], $error["message"]);
             }
 
-            if (count($this->errors))
-                throw new Exception($errors[0]["message"], $errors[0]["code"]);
-            else
-                throw new Exception("Unknown error!");
+            return false;
         }
 
         return true;
@@ -81,7 +66,6 @@ class SQLServer extends Driver implements DriverInterface
     /**
      * Excecutes a statement
      *
-     * @throws Exception
      * @return boolean
      */
     public function execute($sql, Array $params = [])
@@ -107,15 +91,10 @@ class SQLServer extends Driver implements DriverInterface
 
             foreach ($errors as $error)
             {
-                $this->error(
-                    $error["code"], $error["message"]
-                );
+                $this->error($error["code"], $error["message"]);
             }
 
-            if (count($this->errors))
-                throw new Exception($errors[0]["message"], $errors[0]["code"]);
-            else
-                throw new Exception("Unknown error!");
+            return false;
         }
 
         $this->getArrayResult();
@@ -128,23 +107,6 @@ class SQLServer extends Driver implements DriverInterface
             $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
 
         return $this->result;
-    }
-
-    /**
-     * Excecutes multiple statements as transaction
-     *
-     * @return boolean
-     */
-    public function transaction($querys)
-    {
-        $this->beginTransaction();
-
-        foreach ($querys as $sql)
-        {
-            $this->execute($sql);
-        }
-
-        $this->endTransaction();
     }
 
     /**
@@ -180,9 +142,7 @@ class SQLServer extends Driver implements DriverInterface
 
             foreach ($errors as $error)
             {
-                $this->error(
-                    $error["code"], $error["message"]
-                );
+                $this->error($error["code"], $error["message"]);
             }
 
             return false;
@@ -207,10 +167,11 @@ class SQLServer extends Driver implements DriverInterface
     /**
      * Returns an array with the rows fetched
      *
-     * @throws Exception
+     * @throws LogicException
+     *
      * @return array
      */
-    private function toArray()
+    protected function toArray()
     {
         $data = array();
 
@@ -222,7 +183,14 @@ class SQLServer extends Driver implements DriverInterface
             }
         }
         else
-            throw new Exception('There are not data in the buffer!');
+            /*
+             * "This kind of exception should lead directly to a fix in your code"
+             * So much production tests tell us this error is throwed because developers
+             * execute toArray() before execute().
+             *
+             * Ref: http://php.net/manual/en/class.logicexception.php
+             */
+            throw new \LogicException('There are not data in the buffer!');
 
         $this->arrayResult = $data;
 

@@ -11,8 +11,8 @@ namespace Drone\Db\TableGateway;
 
 interface TableGatewayInterface
 {
-   public function select($where);
-   public function insert($data);
-   public function update($set, $where);
-   public function delete($where);
+   public function select(Array $where);
+   public function insert(Array $data);
+   public function update(Array $set, Array $where);
+   public function delete(Array $where);
 }

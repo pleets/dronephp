@@ -48,14 +48,14 @@ class EntityAdapter
      *
      * @return Entity[]
      */
-    public function select($where)
+    public function select(Array $where)
     {
         $result = $this->tableGateway->select($where);
 
         if (!count($result))
             return $result;
 
-        $array_result = array();
+        $array_result = [];
 
         foreach ($result as $row)
         {
@@ -82,7 +82,8 @@ class EntityAdapter
      *
      * @param Entity|array $entity
      *
-     * @throws Exception
+     * @throws InvalidArgumentException
+     *
      * @return boolean
      */
     public function insert($entity)
@@ -90,7 +91,7 @@ class EntityAdapter
         if ($entity instanceof Entity)
             $entity = get_object_vars($entity);
         else if (!is_array($entity))
-            throw new Exception("Invalid type given. Drone\Db\Entity or Array expected");
+            throw new \InvalidArgumentException("Invalid type given. Drone\Db\Entity or Array expected");
 
         $this->parseEntity($entity);
 
@@ -105,7 +106,8 @@ class EntityAdapter
      * @param Entity|array $entity
      * @param array $where
      *
-     * @throws Exception
+     * @throws InvalidArgumentException
+     *
      * @return booelan
      */
     public function update($entity, $where)
@@ -126,7 +128,7 @@ class EntityAdapter
             $entity = $fieldsToModify;
         }
         else if (!is_array($entity))
-            throw new Exception("Invalid type given. Drone\Db\Entity or Array expected");
+            throw new \InvalidArgumentException("Invalid type given. Drone\Db\Entity or Array expected");
 
         $this->parseEntity($entity);
 
@@ -140,7 +142,8 @@ class EntityAdapter
      *
      * @param Entity|array $entity
      *
-     * @throws Exception
+     * @throws InvalidArgumentException
+     *
      * @return boolean
      */
     public function delete($entity)
@@ -148,7 +151,7 @@ class EntityAdapter
         if ($entity instanceof Entity)
             $entity = get_object_vars($entity);
         else if (!is_array($entity))
-            throw new Exception("Invalid type given. Drone\Db\Entity or Array expected");
+            throw new \InvalidArgumentException("Invalid type given. Drone\Db\Entity or Array expected");
 
         $result = $this->tableGateway->delete($entity);
 
@@ -162,24 +165,24 @@ class EntityAdapter
      *
      * @return array
      */
-    private function parseEntity(&$entity)
+    private function parseEntity(Array &$entity)
     {
         $drv = $this->getTableGateway()->getDriver()->getDriver();
 
         foreach ($entity as $field => $value)
         {
-            if ($value instanceof DateTime)
+            if ($value instanceof \DateTime)
             {
                 switch ($drv)
                 {
                     case 'Oci8':
-                        $entity[$field] = new SQLFunction('TO_DATE', array($value->format('Y-m-d'), 'YYYY-MM-DD'));
+                        $entity[$field] = new SQLFunction('TO_DATE', [$value->format('Y-m-d'), 'YYYY-MM-DD']);
                         break;
                     case 'Mysqli':
-                        $entity[$field] = new SQLFunction('STR_TO_DATE', array($value->format('Y-m-d'), '%Y-%m-%d'));
+                        $entity[$field] = new SQLFunction('STR_TO_DATE', [$value->format('Y-m-d'), '%Y-%m-%d']);
                         break;
                     case 'Sqlsrv':
-                        $entity[$field] = new SQLFunction('CONVERT', array('DATETIME', $value->format('Y-m-d')));
+                        $entity[$field] = new SQLFunction('CONVERT', ['DATETIME', $value->format('Y-m-d')]);
                         break;
                 }
             }

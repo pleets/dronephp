@@ -9,28 +9,16 @@
 
 namespace Drone\Db\Driver;
 
-use mysqli;
-use Exception;
-
-class MySQL extends Driver implements DriverInterface
+class MySQL extends AbstractDriver implements DriverInterface
 {
-    /**
-     * @return array
-     */
-    public function getArrayResult()
-    {
-        if ($this->arrayResult)
-            return $this->arrayResult;
-
-        return $this->toArray();
-    }
+    use \Drone\Error\ErrorTrait;
 
     /**
      * Constructor for MySql driver
      *
      * @param array $options
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function __construct($options)
     {
@@ -48,36 +36,27 @@ class MySQL extends Driver implements DriverInterface
     /**
      * Connects to database
      *
-     * @throws Exception
+     * @throws RuntimeException
+     *
      * @return boolean
      */
     public function connect()
     {
         if (!extension_loaded('mysqli'))
-            throw new Exception("The Mysqli extension is not loaded");
+            throw new \RuntimeException("The Mysqli extension is not loaded");
 
-        $this->dbconn = @new mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname);
+        $this->dbconn = @new \mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname);
 
         if ($this->dbconn->connect_errno)
         {
-            $errno = $this->dbconn->connect_errno;
-            $error = $this->dbconn->connect_error;
-
             /*
              * Sets $this->dbconn to NULL after trying to connect!. If NULL is not assigned to $this->dbconn,
              * a Warning message (Property access is not allowed yet) is showed after property is called.
              */
             $this->dbconn = null;
+            $this->error($this->dbconn->connect_errno, $this->dbconn->connect_error);
 
-            $this->error(
-                $errno,
-                $error
-            );
-
-            if (count($this->errors))
-                throw new Exception($error, $errno);
-            else
-                throw new Exception("Unknown error!");
+            return false;
         }
         else
             $this->dbconn->set_charset($this->dbchar);
@@ -88,7 +67,6 @@ class MySQL extends Driver implements DriverInterface
     /**
      * Excecutes a statement
      *
-     * @throws Exception
      * @return boolean
      */
     public function execute($sql, Array $params = [])
@@ -139,14 +117,8 @@ class MySQL extends Driver implements DriverInterface
 
         if (!$r)
         {
-            $this->error(
-                100, $this->dbconn->error
-            );
-
-            if (count($this->errors))
-                throw new Exception($this->dbconn->error, 100);
-            else
-                throw new Exception("Unknown error!");
+            $this->error($this->dbconn->error);
+            return false;
         }
 
         if (is_object($this->result) && property_exists($this->result, 'num_rows'))
@@ -162,23 +134,6 @@ class MySQL extends Driver implements DriverInterface
             $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
 
         return $this->result;
-    }
-
-    /**
-     * Excecutes multiple statements as transaction
-     *
-     * @return boolean
-     */
-    public function transaction($querys)
-    {
-        $this->beginTransaction();
-
-        foreach ($querys as $sql)
-        {
-            $this->execute($sql);
-        }
-
-        return $this->endTransaction();
     }
 
     /**
@@ -228,10 +183,11 @@ class MySQL extends Driver implements DriverInterface
     /**
      * Returns an array with the rows fetched
      *
-     * @throws Exception
+     * @throws LogicException
+     *
      * @return array
      */
-    private function toArray()
+    protected function toArray()
     {
         $data = [];
 
@@ -243,7 +199,14 @@ class MySQL extends Driver implements DriverInterface
             }
         }
         else
-            throw new Exception('There are not data in the buffer!');
+            /*
+             * "This kind of exception should lead directly to a fix in your code"
+             * So much production tests tell us this error is throwed because developers
+             * execute toArray() before execute().
+             *
+             * Ref: http://php.net/manual/en/class.logicexception.php
+             */
+            throw new \LogicException('There are not data in the buffer!');
 
         $this->arrayResult = $data;
 

@@ -9,27 +9,16 @@
 
 namespace Drone\Db\Driver;
 
-use Exception;
-
-class Oracle extends Driver implements DriverInterface
+class Oracle extends AbstractDriver implements DriverInterface
 {
-    /**
-     * @return array
-     */
-    public function getArrayResult()
-    {
-        if ($this->arrayResult)
-            return $this->arrayResult;
-
-        return $this->toArray();
-    }
+    use \Drone\Error\ErrorTrait;
 
     /**
      * Constructor for Oracle driver
      *
      * @param array $options
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function __construct($options)
     {
@@ -47,13 +36,14 @@ class Oracle extends Driver implements DriverInterface
     /**
      * Connects to database
      *
-     * @throws Exception
+     * @throws RuntimeException
+     *
      * @return boolean
      */
     public function connect()
     {
         if (!extension_loaded('oci8'))
-            throw new Exception("The Oci8 extension is not loaded");
+            throw new \RuntimeException("The Oci8 extension is not loaded");
 
         $connection_string = (is_null($this->dbhost) || empty($this->dbhost)) ? $this->dbname : $this->dbhost ."/". $this->dbname;
         $this->dbconn = @oci_connect($this->dbuser,  $this->dbpass, $connection_string, $this->dbchar);
@@ -61,15 +51,9 @@ class Oracle extends Driver implements DriverInterface
         if ($this->dbconn === false)
         {
             $error = oci_error();
+            $this->error($error["code"], $error["message"]);
 
-            $this->error(
-                $error["code"], $error["message"]
-            );
-
-            if (count($this->errors))
-                throw new Exception($error["message"], $error["code"]);
-            else
-                throw new Exception("Unknown error!");
+            return false;
         }
 
         return true;
@@ -78,7 +62,6 @@ class Oracle extends Driver implements DriverInterface
     /**
      * Excecutes a statement
      *
-     * @throws Exception
      * @return boolean
      */
     public function execute($sql, Array $params = [])
@@ -108,15 +91,8 @@ class Oracle extends Driver implements DriverInterface
         if (!$r)
         {
             $error = oci_error($this->result);
-
-            $this->error(
-                $error["code"], $error["message"]
-            );
-
-            if (count($this->errors))
-                throw new Exception($error["message"], $error["code"]);
-            else
-                throw new Exception("Unknown error!");
+            $this->error($error["code"], $error["message"]);
+            return false;
         }
 
         # This should be before of getArrayResult() because oci_fetch() is incremental.
@@ -131,23 +107,6 @@ class Oracle extends Driver implements DriverInterface
             $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
 
         return $this->result;
-    }
-
-    /**
-     * Excecutes multiple statements as transaction
-     *
-     * @return boolean
-     */
-    public function transaction($querys)
-    {
-        $this->beginTransaction();
-
-        foreach ($querys as $sql)
-        {
-            $this->execute($sql);
-        }
-
-        return $this->endTransaction();
     }
 
     /**
@@ -186,10 +145,11 @@ class Oracle extends Driver implements DriverInterface
     /**
      * Returns an array with the rows fetched
      *
-     * @throws Exception
+     * @throws LogicException
+     *
      * @return array
      */
-    private function toArray()
+    protected function toArray()
     {
         $data = array();
 
@@ -201,7 +161,14 @@ class Oracle extends Driver implements DriverInterface
             }
         }
         else
-            throw new Exception('There are not data in the buffer!');
+            /*
+             * "This kind of exception should lead directly to a fix in your code"
+             * So much production tests tell us this error is throwed because developers
+             * execute toArray() before execute().
+             *
+             * Ref: http://php.net/manual/en/class.logicexception.php
+             */
+            throw new \LogicException('There are not data in the buffer!');
 
         $this->arrayResult = $data;
 

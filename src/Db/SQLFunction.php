@@ -53,7 +53,7 @@ class SQLFunction
      *
      * @return null
      */
-    public function __construct($function, $args)
+    public function __construct($function, Array $args)
     {
         $this->function  = $function;
         $this->arguments = $args;

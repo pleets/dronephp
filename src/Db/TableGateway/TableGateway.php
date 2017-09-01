@@ -11,7 +11,7 @@ namespace Drone\Db\TableGateway;
 
 use Drone\Db\Entity;
 use Drone\Db\SQLFunction;
-use Exception;
+use Drone\Exception;
 
 class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 {
@@ -50,11 +50,11 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      *
      * @return array With all results
      */
-    public function select($where = [])
+    public function select(Array $where = [])
     {
         $bind_values = [];
 
-        $driver = $this->getDriver()->getDriver();
+        $driver = $this->getDriver()->getDriverName();
 
         if (count($where))
         {
@@ -130,17 +130,18 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      *
      * @param array $data
      *
-     * @throws Exception
+     * @throws LogicException
+     *
      * @return boolean
      */
-    public function insert($data)
+    public function insert(Array $data)
     {
         if (!count($data))
-            throw new Exception("Missing values for INSERT statement!");
+            throw new \LogicException("Missing values for INSERT statement!");
 
         $bind_values = [];
 
-        $driver = $this->getDriver()->getDriver();
+        $driver = $this->getDriver()->getDriverName();
 
         $k = 0;
 
@@ -203,18 +204,24 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      * @param array $set
      * @param array $where
      *
+     * @throws LogicException
+     * @throws SecurityException
+     *
      * @return boolean
      */
-    public function update($set, $where)
+    public function update(Array $set, Array $where)
     {
         $parsed_set = [];
 
         if (!count($set))
-            throw new Exception("Missing SET arguments!");
+            throw new \LogicException("You cannot delete rows without SET clause");
+
+        if (!count($set))
+            throw new SecurityException("You cannot update rows without WHERE clause!");
 
         $bind_values = [];
 
-        $driver = $this->getDriver()->getDriver();
+        $driver = $this->getDriver()->getDriverName();
 
         $k = 0;
 
@@ -339,10 +346,11 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      *
      * @param array $where
      *
-     * @throws Exception
+     * @throws SecurityException
+     *
      * @return boolean
      */
-    public function delete($where)
+    public function delete(Array $where)
     {
         if (count($where))
         {
@@ -350,7 +358,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
             $bind_values = [];
 
-            $driver = $this->getDriver()->getDriver();
+            $driver = $this->getDriver()->getDriverName();
 
             $k = 0;
 
@@ -406,7 +414,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             $where = "\r\nWHERE \r\n\t" . implode(" AND\r\n\t", $parsed_where);
         }
         else
-            throw new Exception("You cannot delete rows without WHERE clause!. Use TRUNCATE statement instead.");
+            throw new SecurityException("You cannot delete rows without WHERE clause!. Use TRUNCATE statement instead.");
 
         $table = $this->entity->getTableName();
 

@@ -9,8 +9,6 @@
 
 namespace Drone\Db\Driver;
 
-use Exception;
-
 class DriverAdapter
 {
     /**
@@ -18,12 +16,12 @@ class DriverAdapter
      *
      * @var string
      */
-    private $driver;
+    private $driverName;
 
     /**
      * Connection resource
      *
-     * @var resource
+     * @var resource|object
      */
     private $db;
 
@@ -35,19 +33,19 @@ class DriverAdapter
     private $availableDrivers;
 
     /**
-     * Returns the current driver
+     * Returns the current driver identifier
      *
      * @return string
      */
-    public function getDriver()
+    public function getDriverName()
     {
-        return $this->driver;
+        return $this->driverName;
     }
 
     /**
-     * Returns the current connection resource
+     * Returns the current connection resource or object
      *
-     * @return resource
+     * @return resource|object
      */
     public function getDb()
     {
@@ -70,7 +68,7 @@ class DriverAdapter
      * @param string|array  $connection_identifier
      * @param boolean       $auto_connect
      *
-     * @throws Exception
+     * @throws RuntimeException
      */
     public function __construct($connection_identifier = "default", $auto_connect = true)
     {
@@ -86,6 +84,9 @@ class DriverAdapter
         else
         {
             # Take connection parameters from configuration file
+            if (!file_exists("config/database.config.php"))
+                throw new \RuntimeException("config/data.base.config.php is missing!");
+
             $dbsettings = include("config/database.config.php");
             $connection_array = $dbsettings[$connection_identifier];
         }
@@ -101,6 +102,6 @@ class DriverAdapter
             $this->db = new $driver[$drv]($connection_array);
         }
         else
-            throw new Exception("The Database driver does not exists");
+            throw new \RuntimeException("The Database driver does not exists");
     }
 }

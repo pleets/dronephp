@@ -10,7 +10,6 @@
 namespace Drone\Db\TableGateway;
 
 use Drone\Db\Driver\DriverAdapter;
-use Exception;
 
 abstract class AbstractTableGateway
 {
