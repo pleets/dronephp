@@ -12,7 +12,6 @@ namespace Drone\Mvc;
 use Drone\LayoutManager\Layout;
 use Drone\Mvc\PageNotFoundException;
 use ReflectionMethod;
-use Exception;
 
 abstract class AbstractionController
 {
@@ -33,7 +32,7 @@ abstract class AbstractionController
     /**
      * Current parameters
      *
-     * @var string
+     * @var array
      */
     private $params;
 
@@ -94,7 +93,7 @@ abstract class AbstractionController
     /**
      * Returns all parameters
      *
-     * @return string
+     * @return array
      */
     public function getParams()
     {
@@ -127,12 +126,14 @@ abstract class AbstractionController
     /**
      * Returns json contents
      *
+     * @throws LogicException
+     *
      * @return array
      */
     public function getJson()
     {
         if ($_SERVER['REQUEST_METHOD'] != 'JSON')
-            throw new Exception("Request method is not JSON");
+            throw new \LogicException("Request method is not JSON");
 
         $input =  file_get_contents('php://input');
         $array = explode("&", $input);
@@ -190,6 +191,8 @@ abstract class AbstractionController
      * @param string $module
      * @param string $method
      * @param string $basePath
+     *
+     * @throws PageNotFoundException
      */
     public function __construct($module, $method, $basePath)
     {
