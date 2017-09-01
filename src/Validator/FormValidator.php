@@ -19,7 +19,6 @@ use Zend\Validator\GreaterThan;
 use Zend\Validator\EmailAddress;
 use Zend\Validator\Date;
 use Zend\Validator\Uri;
-use Exception;
 
 class FormValidator
 {
@@ -84,12 +83,14 @@ class FormValidator
      *
      * @param string $option
      *
+     * @throws LogicException
+     *
      * @return mixed
      */
     public function getOption($key, $name)
     {
         if (!array_key_exists($key, $this->options))
-            throw new Exception("The option '$key' does not exists");
+            throw new \LogicException("The option '$key' does not exists");
 
         return array_key_exists($name, $this->options[$key]) ? $this->options[$key][$name] : null;
     }
@@ -125,6 +126,9 @@ class FormValidator
     /**
      * Checks all form rules
      *
+     * @throws LogicException
+     * @throws RuntimeException
+     *
      * @return null
      */
     public function validate()
@@ -136,7 +140,7 @@ class FormValidator
         foreach ($attribs as $key => $attributes)
         {
             if (!array_key_exists($key, $attribs))
-                throw new Exception("The field '$key' does not exists!");
+                throw new \LogicException("The field '$key' does not exists!");
 
             $label = (array_key_exists('label', array_keys($this->options))) ? $attributes["label"] : $key;
 
@@ -205,7 +209,7 @@ class FormValidator
                         if (array_key_exists('type', $all_attribs) && in_array($all_attribs['type'], ['number', 'range']))
                             $validator = new GreaterThan(['min' => $value, 'inclusive' => true]);
                         else
-                            throw new Exception("The input type must be 'range' or 'number'");
+                            throw new \LogicException("The input type must be 'range' or 'number'");
 
                         break;
 
@@ -214,7 +218,7 @@ class FormValidator
                         if (array_key_exists('type', $all_attribs) && in_array($all_attribs['type'], ['number', 'range']))
                             $validator = new LessThan(['max' => $value, 'inclusive' => true]);
                         else
-                            throw new Exception("The input type must be 'range' or 'number'");
+                            throw new \LogicException("The input type must be 'range' or 'number'");
 
                         break;
 
@@ -225,7 +229,7 @@ class FormValidator
                         if (array_key_exists('type', $all_attribs) && in_array($all_attribs['type'], ['range']))
                             $validator = new Step(['baseValue' => $baseValue, 'step' => $value]);
                         else
-                            throw new Exception("The input type must be 'range'");
+                            throw new \LogicException("The input type must be 'range'");
 
                         break;
                 }
@@ -260,7 +264,7 @@ class FormValidator
                             $className = "\Zend\I18n\Validator\\" . $class;
 
                             if (!class_exists($className))
-                                throw new Exception("The class '$userInputClass' or '$className' does not exists");
+                                throw new \RuntimeException("The class '$userInputClass' or '$className' does not exists");
                         }
 
                         $validator = new $className($params);
