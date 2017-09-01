@@ -7,9 +7,11 @@
  * @license   http://www.dronephp.com/license
  */
 
-namespace Drone\Dom;
+namespace Drone\Dom\Element;
 
-abstract class Element
+use Drone\Dom\Attribute;
+
+abstract class AbstractElement
 {
     /**
      * @var string

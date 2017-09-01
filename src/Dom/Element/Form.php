@@ -9,17 +9,14 @@
 
 namespace Drone\Dom\Element;
 
-use Drone\Dom\Element;
-use Exception;
-
-class Form extends Element
+class Form extends AbstractElement
 {
     /**
      * Constructor
      *
      * @param array $options
      */
-    public function __construct($options)
+    public function __construct(Array $options)
     {
         $options["startTag"] = 'form';
         $options["endTag"] = true;
@@ -32,7 +29,7 @@ class Form extends Element
      *
      * @param array $values
      */
-    public function fill($values)
+    public function fill(Array $values)
     {
         foreach ($values as $label => $value)
         {
