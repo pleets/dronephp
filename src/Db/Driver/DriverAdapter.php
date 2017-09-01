@@ -98,7 +98,7 @@ class DriverAdapter
         {
             $driver = $this->getAvailableDrivers();
 
-            $this->driver = $drv;
+            $this->driverName = $drv;
             $this->db = new $driver[$drv]($connection_array);
         }
         else
