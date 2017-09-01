@@ -9,6 +9,8 @@
 
 namespace Drone\Exception;
 
+use Drone\Error\Errno;
+
 class Exception extends \Exception
 {
     use \Drone\Error\ErrorTrait;
@@ -57,26 +59,42 @@ class Exception extends \Exception
     /**
      * Stores the exception
      *
-     * @return string
+     * By default exceptions are stores in the specific JSON file << $this->outputFile >>
+     *
+     * @return string|boolean
      */
     public function store()
     {
         # simple way to generate a unique id
         $id = time() . uniqid();
 
-        # creates a new array with exceptions or gets the current collector
-        $data = (file_exists($this->outputFile)) ? json_decode(file_get_contents($this->outputFile), true) : [];
+        $data = [];
 
-        $e = $this;
+        if (file_exists($this->outputFile))
+        {
+            $string = file_get_contents($this->outputFile);
+
+            if (!empty($string))
+            {
+                $data   = json_decode($string, true);
+
+                # json_encode can be return TRUE, FALSE or NULL (http://php.net/manual/en/function.json-decode.php)
+                if (is_null($data) || $data === false)
+                {
+                    $this->error(Errno::JSON_DECODE_ERROR, $this->outputFile);
+                    return false;
+                }
+            }
+        }
 
         $data[$id] = [
-            "message" => $e->getMessage(),
-            "object"  => serialize($e)
+            "message" => $this->getMessage(),
+            "object"  => serialize($this)
         ];
 
         if (($encoded_data = json_encode($data)) === false)
         {
-            $this->error("Failed to parse error to JSON object!");
+            $this->error(Errno::JSON_ENCODE_ERROR, $this->outputFile);
             return false;
         }
 
@@ -84,7 +102,7 @@ class Exception extends \Exception
 
         if (!$hd || !@fwrite($hd, $encoded_data))
         {
-            $this->error(\Drone\Error\Errno::EACCES, $this->outputFile);
+            $this->error(Errno::FILE_PERMISSION_DENIED, $this->outputFile);
             return false;
         }
 

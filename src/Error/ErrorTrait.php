@@ -16,8 +16,17 @@ trait ErrorTrait
      *
      * @var array
      */
-    protected $messagesTemplates = [
-        13 => 'Failed to open stream: \'%file%\', Permission Denied!',
+    protected $standardErrors = [
+
+        # File errros
+        1 => 'Failed to open stream: \'%file%\', Permission Denied!',
+        2 => 'No such file or directory %file%',
+        3 => 'File exists %file%',
+        4 => 'Stream \'%file%\' is Not a directory',
+
+        # JSON errors
+        10 => 'Failed to decode JSON file \'%file%\'',
+        11 => 'Failed to encode JSON file \'%file%\'',
     ];
 
     /**
@@ -48,11 +57,11 @@ trait ErrorTrait
     protected function error($code, $message = null)
     {
         if (!array_key_exists($code, $this->errors))
-            $this->errors[$code] = (array_key_exists($code, $this->messagesTemplates))
+            $this->errors[$code] = (array_key_exists($code, $this->standardErrors))
                 ?
                     is_null($message)
-                        ? $this->messagesTemplates[$code]
-                        : preg_replace('/%[a-zA-Z]*%/', $message, $this->messagesTemplates[$code])
+                        ? $this->standardErrors[$code]
+                        : preg_replace('/%[a-zA-Z]*%/', $message, $this->standardErrors[$code])
                 : $message;
     }
 }

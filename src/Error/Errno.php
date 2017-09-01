@@ -11,9 +11,21 @@ namespace Drone\Error;
 
 class Errno
 {
-    /**#@+
-     * Common error definitions
-     * @var string
+    /**
+     * Common file errors
+     *
+     * @var integer
      */
-    const EACCES = 13;
+	const FILE_PERMISSION_DENIED = 1;
+	const FILE_NOT_FOUND         = 2;
+	const FILE_EXISTS            = 3;
+	const NOT_DIRECTORY          = 4;
+
+    /**
+     * Common JSON errors
+     *
+     * @var integer
+     */
+	const JSON_DECODE_ERROR      = 10;
+	const JSON_ENCODE_ERROR      = 11;
 }
