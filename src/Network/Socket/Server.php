@@ -1,4 +1,11 @@
 <?php
+/**
+ * DronePHP (http://www.dronephp.com)
+ *
+ * @link      http://github.com/Pleets/DronePHP
+ * @copyright Copyright (c) 2016-2017 Pleets. (http://www.pleets.org)
+ * @license   http://www.dronephp.com/license
+ */
 
 namespace Drone\Socket;
 
@@ -15,12 +22,12 @@ class Server extends AbstractSocket
      */
 	public function read($socket)
 	{
-		if (($message = @socket_read($socket, 1024)) === false) 
+		if (($message = @socket_read($socket, 1024)) === false)
 		{
-            $errno = socket_last_error();            
-            $this->error($errno, socket_strerror($errno));
+			$errno = socket_last_error();
+			$this->error($errno, socket_strerror($errno));
 
-            throw new \RuntimeException("Could not read message from client socket");
+			throw new \RuntimeException("Could not read message from client socket");
 		}
 
 		return $message;
@@ -38,12 +45,12 @@ class Server extends AbstractSocket
      */
 	public function send($socket, $message)
 	{
-		if (($bytes = @socket_write($socket, $message, strlen($message))) === false) 
+		if (($bytes = @socket_write($socket, $message, strlen($message))) === false)
 		{
-            $errno = socket_last_error();            
-            $this->error($errno, socket_strerror($errno));
+			$errno = socket_last_error();
+			$this->error($errno, socket_strerror($errno));
 
-            throw new \RuntimeException("Could not send message to the client socket");
+			throw new \RuntimeException("Could not send message to the client socket");
 		}
 
 		return $bytes;
@@ -71,12 +78,12 @@ class Server extends AbstractSocket
 
 		$listener = false;
 
-		if (!($listener = @socket_listen($this->socket, 30))) 
+		if (!($listener = @socket_listen($this->socket, 30)))
 		{
-            $errno = socket_last_error();            
-            $this->error($errno, socket_strerror($errno));
+			$errno = socket_last_error();
+			$this->error($errno, socket_strerror($errno));
 
-            throw new \RuntimeException("Could not set socket to listen");
+			throw new \RuntimeException("Could not set socket to listen");
 		}
 		else {
 
@@ -87,12 +94,12 @@ class Server extends AbstractSocket
 
 			$socket = $this->socket;
 
-			if (!($spawn = @socket_accept($this->socket))) 
+			if (!($spawn = @socket_accept($this->socket)))
 			{
-	            $errno = socket_last_error();
-	            $this->error($errno, socket_strerror($errno));
+				$errno = socket_last_error();
+				$this->error($errno, socket_strerror($errno));
 
-	            throw new \RuntimeException("Could not accept incoming connection");
+				throw new \RuntimeException("Could not accept incoming connection");
 			}
 
 			$input = $this->read($spawn);

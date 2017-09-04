@@ -1,4 +1,11 @@
 <?php
+/**
+ * DronePHP (http://www.dronephp.com)
+ *
+ * @link      http://github.com/Pleets/DronePHP
+ * @copyright Copyright (c) 2016-2017 Pleets. (http://www.pleets.org)
+ * @license   http://www.dronephp.com/license
+ */
 
 namespace Drone\Socket;
 
@@ -14,7 +21,7 @@ abstract class AbstractSocket
     /**
      * @var integer
      */
-	protected $port;
+    protected $port;
 
     /**
      * Socket resource
@@ -86,21 +93,21 @@ abstract class AbstractSocket
      *
      * @param array $options
      */
-	public function __construct($options)
-	{
+    public function __construct($options)
+    {
         foreach ($options as $option => $value)
         {
             if (property_exists(__CLASS__, strtolower($option)) && method_exists($this, 'set'.$option))
-                $this->{'set'.$option}($value);
+            $this->{'set'.$option}($value);
         }
 
-		if (!($this->socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP)))
-		{
+        if (!($this->socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP)))
+        {
             $errno = socket_last_error();
             $this->error($errno, socket_strerror($errno));
 
             throw new \RuntimeException("Could not create the socket");
-		}
+        }
 	}
 
     /**
@@ -110,14 +117,14 @@ abstract class AbstractSocket
      */
     public function bind()
     {
-        if (!($bind = @socket_bind($this->socket, $this->host, $this->port))) 
+        if (!($bind = @socket_bind($this->socket, $this->host, $this->port)))
         {
             $errno = socket_last_error();
             $this->error($errno, socket_strerror($errno));
             return false;
         }
 
-        return $bind; 
+        return $bind;
     }
 
     /**
@@ -127,6 +134,6 @@ abstract class AbstractSocket
      */
 	public function close()
 	{
-		return socket_close($this->socket);
+        return socket_close($this->socket);
 	}
 }

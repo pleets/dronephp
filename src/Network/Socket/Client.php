@@ -1,46 +1,49 @@
 <?php
+/**
+ * DronePHP (http://www.dronephp.com)
+ *
+ * @link      http://github.com/Pleets/DronePHP
+ * @copyright Copyright (c) 2016-2017 Pleets. (http://www.pleets.org)
+ * @license   http://www.dronephp.com/license
+ */
 
 namespace Drone\Socket;
-
-use Exception;
 
 class Client extends AbstractSocket
 {
     /**
      * Connects to socket server
      *
-     * @throws Exception
-     *
      * @return boolean
      */
-	public function connect()
-	{
-		if (!($connected = @socket_connect($this->socket, $this->host, $this->port)))
-		{
+    public function connect()
+    {
+        if (!($connected = @socket_connect($this->socket, $this->host, $this->port)))
+        {
             $errno = socket_last_error();
             $this->error(socket_last_error(), socket_strerror($errno));
             return false;
-		}
+        }
 
-		return $connected;
-	}
+        return $connected;
+    }
 
     /**
      * Reads a message from server
      *
      * @return string|boolean
      */
-	public function read()
-	{
-		if (($message = @socket_read($this->socket, 1024)) === false) 
-		{
+    public function read()
+    {
+        if (($message = @socket_read($this->socket, 1024)) === false)
+        {
             $errno = socket_last_error();
             $this->error(socket_last_error(), socket_strerror($errno));
             return false;
-		}
+        }
 
-		return $message;
-	}
+        return $message;
+    }
 
     /**
      * Sends a message to server socket
@@ -49,15 +52,15 @@ class Client extends AbstractSocket
      *
      * @return integer|boolean
      */
-	public function send($message)
-	{
-		if (($bytes = @socket_write($this->socket, $message, strlen($message))) === false) 
-		{
+    public function send($message)
+    {
+        if (($bytes = @socket_write($this->socket, $message, strlen($message))) === false)
+        {
             $errno = socket_last_error();
             $this->error(socket_last_error(), socket_strerror($errno));
             return false;
-		}
+        }
 
-		return $bytes;
-	}	
+        return $bytes;
+    }
 }
