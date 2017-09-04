@@ -16,7 +16,7 @@ class Server extends AbstractSocket
      *
      * @param resource
      *
-     * @throws Exception
+     * @throws RuntimeException
      *
      * @return string
      */
