@@ -19,7 +19,7 @@ class Oracle extends AbstractDriver implements DriverInterface
      *
      * @param array $options
      *
-     * @throws RuntimeException
+     * @throws RuntimeException if connect() found an error
      */
     public function __construct($options)
     {
@@ -39,7 +39,7 @@ class Oracle extends AbstractDriver implements DriverInterface
      *
      * @throws RuntimeException
      *
-     * @return boolean
+     * @return resource
      */
     public function connect()
     {
@@ -54,16 +54,21 @@ class Oracle extends AbstractDriver implements DriverInterface
             $error = oci_error();
             $this->error($error["code"], $error["message"]);
 
-            return false;
+            throw new \RuntimeException("Could not connect to Database");
         }
 
-        return true;
+        return $this->dbconn;
     }
 
     /**
      * Excecutes a statement
      *
-     * @return boolean
+     * @param string $sql
+     * @param array $params
+     *
+     * @throws RuntimeException
+     *
+     * @return resource
      */
     public function execute($sql, Array $params = [])
     {
@@ -93,7 +98,8 @@ class Oracle extends AbstractDriver implements DriverInterface
         {
             $error = oci_error($this->result);
             $this->error($error["code"], $error["message"]);
-            return false;
+
+            throw new \RuntimeException("Could not execute query");
         }
 
         # This should be before of getArrayResult() because oci_fetch() is incremental.
@@ -133,14 +139,14 @@ class Oracle extends AbstractDriver implements DriverInterface
     /**
      * Closes the connection
      *
+     * @throws LogicException
+     *
      * @return boolean
      */
     public function disconnect()
     {
-        if ($this->dbconn)
-            return oci_close($this->dbconn);
-
-        return true;
+        parent::disconnect();
+        return oci_close($this->dbconn);
     }
 
     /**

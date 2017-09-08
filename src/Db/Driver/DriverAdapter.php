@@ -22,7 +22,7 @@ class DriverAdapter
     /**
      * Connection resource
      *
-     * @var resource|object
+     * @var AbstractDriver
      */
     private $db;
 
@@ -44,9 +44,9 @@ class DriverAdapter
     }
 
     /**
-     * Returns the current connection resource or object
+     * Returns the AbstractDriver
      *
-     * @return resource|object
+     * @return AbstractDriver
      */
     public function getDb()
     {

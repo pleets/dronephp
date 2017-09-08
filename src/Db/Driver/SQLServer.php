@@ -19,7 +19,7 @@ class SQLServer extends Driver implements DriverInterface
      *
      * @param array $options
      *
-     * @throws RuntimeException
+     * @throws RuntimeException if connect() found an error
      */
     public function __construct($options)
     {
@@ -39,7 +39,7 @@ class SQLServer extends Driver implements DriverInterface
      *
      * @throws RuntimeException
      *
-     * @return boolean
+     * @return resource
      */
     public function connect()
     {
@@ -58,16 +58,21 @@ class SQLServer extends Driver implements DriverInterface
                 $this->error($error["code"], $error["message"]);
             }
 
-            return false;
+            throw new \RuntimeException("Could not connect to Database");
         }
 
-        return true;
+        return $this->dbconn;
     }
 
     /**
      * Excecutes a statement
      *
-     * @return boolean
+     * @param string $sql
+     * @param params $params
+     *
+     * @throws RuntimeException
+     *
+     * @return resource
      */
     public function execute($sql, Array $params = [])
     {
@@ -95,7 +100,7 @@ class SQLServer extends Driver implements DriverInterface
                 $this->error($error["code"], $error["message"]);
             }
 
-            return false;
+            throw new \RuntimeException("Could not execute query");
         }
 
         $this->getArrayResult();
@@ -133,7 +138,10 @@ class SQLServer extends Driver implements DriverInterface
     /**
      * Defines start point of a transaction
      *
-     * @return boolean
+     * @throws RuntimeException
+     * @throws LogicException if transaction was already started
+     *
+     * @return null
      */
     public function beginTransaction()
     {
@@ -146,10 +154,10 @@ class SQLServer extends Driver implements DriverInterface
                 $this->error($error["code"], $error["message"]);
             }
 
-            return false;
+            throw new \RuntimeException("Could not begin transaction");
         }
 
-        return parent::beginTransaction();
+        parent::beginTransaction();
     }
 
     /**
@@ -159,10 +167,8 @@ class SQLServer extends Driver implements DriverInterface
      */
     public function disconnect()
     {
-        if ($this->dbconn)
-            return sqlsrv_close($this->dbconn);
-
-        return true;
+        parent::disconnect();
+        return sqlsrv_close($this->dbconn);
     }
 
     /**

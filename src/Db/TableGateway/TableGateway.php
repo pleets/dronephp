@@ -131,9 +131,10 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      *
      * @param array $data
      *
+     * @throws RuntimeException from internal execute()
      * @throws LogicException
      *
-     * @return boolean
+     * @return resource|object
      */
     public function insert(Array $data)
     {
@@ -205,10 +206,11 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      * @param array $set
      * @param array $where
      *
+     * @throws RuntimeException from internal execute()
      * @throws LogicException
      * @throws SecurityException
      *
-     * @return boolean
+     * @return resource|object
      */
     public function update(Array $set, Array $where)
     {
@@ -347,9 +349,10 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      *
      * @param array $where
      *
+     * @throws RuntimeException from internal execute()
      * @throws SecurityException
      *
-     * @return boolean
+     * @return resource|object
      */
     public function delete(Array $where)
     {

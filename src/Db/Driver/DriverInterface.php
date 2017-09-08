@@ -14,9 +14,9 @@ interface DriverInterface
 {
    public function connect();
    public function reconnect();
+   public function execute($sql);
    public function commit();
    public function rollback();
-   public function transaction($array_of_sentences);
    public function beginTransaction();
    public function endTransaction();
    public function disconnect();

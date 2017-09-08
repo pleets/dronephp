@@ -155,6 +155,8 @@ class Router
      *
      * @param Array $route
      *
+     * @throws LogicException
+     *
      * @return string
      */
     public function addRoute(Array $route)

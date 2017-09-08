@@ -12,7 +12,6 @@ namespace Drone\Mvc;
 
 use Drone\LayoutManager\Layout;
 use Drone\Mvc\PageNotFoundException;
-use ReflectionMethod;
 
 abstract class AbstractionController
 {
@@ -215,7 +214,7 @@ abstract class AbstractionController
             {
                 $class = __CLASS__;
 
-                $reflection = new ReflectionMethod($this, $method);
+                $reflection = new \ReflectionMethod($this, $method);
 
                 if (!$reflection->isPublic())
                     throw new PageNotFoundException("The method '$method' is not public in the control class '$class'");

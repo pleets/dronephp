@@ -69,6 +69,8 @@ class Layout
     /**
      * Constructor
      *
+     * @throws PageNotFoundException
+     *
      * @param AbstractionController
      */
     public function __construct(AbstractionController $controller)

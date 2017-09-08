@@ -19,7 +19,7 @@ class MySQL extends AbstractDriver implements DriverInterface
      *
      * @param array $options
      *
-     * @throws RuntimeException
+     * @throws RuntimeException if connect() found an error
      */
     public function __construct($options)
     {
@@ -39,7 +39,7 @@ class MySQL extends AbstractDriver implements DriverInterface
      *
      * @throws RuntimeException
      *
-     * @return boolean
+     * @return mysqli
      */
     public function connect()
     {
@@ -57,18 +57,23 @@ class MySQL extends AbstractDriver implements DriverInterface
             $this->dbconn = null;
             $this->error($this->dbconn->connect_errno, $this->dbconn->connect_error);
 
-            return false;
+            throw new \RuntimeException("Could not connect to Database");
         }
         else
             $this->dbconn->set_charset($this->dbchar);
 
-        return true;
+        return $this->dbconn;
     }
 
     /**
      * Excecutes a statement
      *
-     * @return boolean
+     * @param string $sql
+     * @param array $params
+     *
+     * @throws RuntimeException
+     *
+     * @return resource
      */
     public function execute($sql, Array $params = [])
     {
@@ -118,8 +123,8 @@ class MySQL extends AbstractDriver implements DriverInterface
 
         if (!$r)
         {
-            $this->error($this->dbconn->error);
-            return false;
+            $this->error($this->dbconn->errno, $this->dbconn->error);
+            throw new \RuntimeException("Could not execute query");
         }
 
         if (is_object($this->result) && property_exists($this->result, 'num_rows'))
@@ -160,12 +165,15 @@ class MySQL extends AbstractDriver implements DriverInterface
     /**
      * Begins a transaction in SQLServer
      *
-     * @return boolean
+     * @throws RuntimeException
+     * @throws LogicException if transaction was already started
+     *
+     * @return null
      */
     public function beginTransaction()
     {
         parent::beginTransaction();
-        return $this->dbconn->autocommit(false);
+        $this->dbconn->autocommit(false);
     }
 
     /**
@@ -175,10 +183,8 @@ class MySQL extends AbstractDriver implements DriverInterface
      */
     public function disconnect()
     {
-        if ($this->dbconn !== false && !is_null($this->dbconn))
-            return $this->dbconn->close();
-
-        return true;
+        parent::disconnect();
+        return $this->dbconn->close();
     }
 
     /**

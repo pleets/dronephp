@@ -47,21 +47,21 @@ abstract class AbstractDriver
     protected $dbconn;
 
     /**
-     * Rows returned on query() method
+     * Rows returned on execute() method
      *
      * @var integer
      */
     protected $numRows;
 
     /**
-     * Fields returned on query() method
+     * Fields returned on execute() method
      *
      * @var integer
      */
     protected $numFields;
 
     /**
-     * Rows affected returned on query() method
+     * Rows affected returned on execute() method
      *
      * @var integer
      */
@@ -156,6 +156,8 @@ abstract class AbstractDriver
     /**
      * Returns an array with all results of the last execute statement
      *
+     * @throws LogicException if toArray() is executed before execute()
+     *
      * @return array
      */
     public function getArrayResult()
@@ -231,6 +233,8 @@ abstract class AbstractDriver
      *
      * All modifiable attributes (i.e. with setter method) can be passed as key
      *
+     * @throws RuntimeException
+     *
      * @param array $options
      */
     public function __construct($options)
@@ -255,19 +259,37 @@ abstract class AbstractDriver
     /**
      * Abstract connect
      *
-     * @return resource
+     * @throws RuntimeException
+     *
+     * @return resource|object
      */
     public abstract function connect();
 
     /**
+     * Abstract execute
+     *
+     * @param string $sql
+     * @param array $params to bind
+     *
+     * @throws RuntimeException
+     *
+     * @return resource|object
+     */
+    public abstract function execute($sql, Array $params = []);
+
+    /**
      * Reconnects to the database
      *
-     * @throws Exception
+     * @throws RuntimeException
+     * @throws LogicException
      *
-     * @return boolean
+     * @return resource|object
      */
     public function reconnect()
     {
+        if (!$this->isConnected())
+            throw new \LogicException("Connection was not established, however it's trying to reconnect");
+
         $this->disconnect();
         return $this->connect();
     }
@@ -287,9 +309,25 @@ abstract class AbstractDriver
     public abstract function rollback();
 
     /**
-     * Defines start point of a transaction
+     * Abstract disconnect
+     *
+     * @throws LogicException
      *
      * @return boolean
+     */
+    public function disconnect()
+    {
+        if (!$this->isConnected())
+            throw new \LogicException("Connection was not established, however it's trying to disconnect");
+    }
+
+    /**
+     * Defines start point of a transaction
+     *
+     * @throws RuntimeException
+     * @throws LogicException if transaction was already started
+     *
+     * @return null
      */
     public function beginTransaction()
     {
@@ -297,49 +335,36 @@ abstract class AbstractDriver
             $this->connect();
 
         if ($this->transac_mode)
-        {
-            $this->error(self::DB_TRANSACTION_STARTED);
-            return false;
-        }
+            throw new \LogicException(self::DB_TRANSACTION_STARTED);
 
         $this->transac_mode = true;
-
-        return true;
     }
 
     /**
      * Defines end point of a transaction
      *
-     * @return boolean
+     * @throws RuntimeException
+     * @throws LogicException if transaction has not been started or it's empty
+     *
+     * @return null
      */
     public function endTransaction()
     {
         if (!$this->transac_mode)
-        {
-            $this->error(self::DB_TRANSACTION_NOT_STARTED);
-            return false;
-        }
+            throw new \LogicException(self::DB_TRANSACTION_NOT_STARTED);
 
         if (is_null($this->transac_result))
-        {
-            $this->error(self::DB_TRANSACTION_EMPTY);
-            return false;
-        }
+            throw new \LogicException(self::DB_TRANSACTION_EMPTY);
 
         if ($this->transac_result)
             $this->commit();
         else
-        {
             $this->rollback();
-            return false;
-        }
 
         $this->result = $this->transac_result;
 
         $this->transac_result = null;
         $this->transac_mode = false;
-
-        return true;
     }
 
     /**
@@ -349,14 +374,19 @@ abstract class AbstractDriver
      * The toArray() method must take the latest result from an execute statement
      * and convert it to an array. To get this array getArrayResult() has been implemented.
      *
-     * @return resource
+     * @throws LogicException if execute() was not executed before this.
+     *
+     * @return array
      */
     protected abstract function toArray();
 
     /**
      * Excecutes multiple statements as transaction
      *
-     * @return boolean
+     * @throws RuntimeException
+     * @throws LogicException
+     *
+     * @return null
      */
     public function transaction($querys)
     {
@@ -367,6 +397,6 @@ abstract class AbstractDriver
             $this->execute($sql);
         }
 
-        return $this->endTransaction();
+        $this->endTransaction();
     }
 }

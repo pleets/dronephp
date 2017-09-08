@@ -12,8 +12,6 @@ namespace Drone\Db\TableGateway;
 
 use Drone\Db\Entity;
 use Drone\Db\SQLFunction;
-use Exception;
-use DateTime;
 
 class EntityAdapter
 {
@@ -85,7 +83,7 @@ class EntityAdapter
      *
      * @throws InvalidArgumentException
      *
-     * @return boolean
+     * @return resource|object
      */
     public function insert($entity)
     {
@@ -96,9 +94,7 @@ class EntityAdapter
 
         $this->parseEntity($entity);
 
-        $result = $this->tableGateway->insert($entity);
-
-        return $result;
+        return $this->tableGateway->insert($entity);
     }
 
     /**
@@ -107,9 +103,10 @@ class EntityAdapter
      * @param Entity|array $entity
      * @param array $where
      *
+     * @throws RuntimeException from internal execute()
      * @throws InvalidArgumentException
      *
-     * @return booelan
+     * @return resource|boolean
      */
     public function update($entity, $where)
     {
@@ -133,9 +130,7 @@ class EntityAdapter
 
         $this->parseEntity($entity);
 
-        $result = $this->tableGateway->update($entity, $where);
-
-        return $result;
+        return $this->tableGateway->update($entity, $where);
     }
 
     /**
@@ -143,6 +138,7 @@ class EntityAdapter
      *
      * @param Entity|array $entity
      *
+     * @throws RuntimeException from internal execute()
      * @throws InvalidArgumentException
      *
      * @return boolean
@@ -154,9 +150,7 @@ class EntityAdapter
         else if (!is_array($entity))
             throw new \InvalidArgumentException("Invalid type given. Drone\Db\Entity or Array expected");
 
-        $result = $this->tableGateway->delete($entity);
-
-        return $result;
+        return $this->tableGateway->delete($entity);
     }
 
     /**
