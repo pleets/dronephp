@@ -10,6 +10,11 @@
 
 namespace Drone\Db\Driver;
 
+/**
+ * SQLServer class
+ *
+ * This is a database driver class to connect to SQLServer
+ */
 class SQLServer extends Driver implements DriverInterface
 {
     use \Drone\Error\ErrorTrait;
@@ -204,6 +209,11 @@ class SQLServer extends Driver implements DriverInterface
         return $data;
     }
 
+    /**
+     * By default __destruct() disconnects to database
+     *
+     * @return null
+     */
     public function __destruct()
     {
         if ($this->dbconn)

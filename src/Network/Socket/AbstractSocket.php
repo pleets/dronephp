@@ -10,6 +10,12 @@
 
 namespace Drone\Socket;
 
+/**
+ * AbstractSocket class
+ *
+ * This class defines some standard functions to interact with sockets.
+ * Client and Server behaviors must be implemented.
+ */
 abstract class AbstractSocket
 {
     use \Drone\Error\ErrorTrait;

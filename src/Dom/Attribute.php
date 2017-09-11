@@ -10,6 +10,11 @@
 
 namespace Drone\Dom;
 
+/**
+ * Attribute class
+ *
+ * To represent html attribute
+ */
 class Attribute
 {
     /**

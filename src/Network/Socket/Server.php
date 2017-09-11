@@ -10,6 +10,11 @@
 
 namespace Drone\Socket;
 
+/**
+ * Server class
+ *
+ * Server socket implementation
+ */
 class Server extends AbstractSocket
 {
     /**
@@ -60,7 +65,7 @@ class Server extends AbstractSocket
     /**
      * Sets socket to listening
      *
-     * @param array $handlers
+     * @param array $eventHandlers
      *
      * @throws RuntimeException
      *

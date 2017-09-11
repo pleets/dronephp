@@ -12,6 +12,12 @@ namespace Drone\Mvc;
 
 use Drone\Mvc\AbstractionController;
 
+/**
+ * AbstractionModule class
+ *
+ * This is an abstract class required for each mvc module. The first code execution
+ * in a route is the module, after the module loads the controller.
+ */
 abstract class AbstractionModule
 {
     /**

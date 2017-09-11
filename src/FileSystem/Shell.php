@@ -12,6 +12,11 @@ namespace Drone\FileSystem;
 
 use Exception;
 
+/**
+ * Shell class
+ *
+ * This class represents a system terminal
+ */
 class Shell implements ShellInterface
 {
     /**

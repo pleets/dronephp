@@ -13,6 +13,11 @@ namespace Drone\LayoutManager;
 use Drone\Mvc\AbstractionController;
 use Drone\Mvc\Exception;
 
+/**
+ * Layout class
+ *
+ * This class manages templates from views
+ */
 class Layout
 {
     /**
@@ -59,7 +64,9 @@ class Layout
     /**
      * Sets the document title
      *
-     * @return string
+     * @param string $title
+     *
+     * @return null
      */
     public function setTitle($title)
     {
@@ -111,7 +118,7 @@ class Layout
      *
      * This param is sent through the controller in a return statement
      *
-     * @param string
+     * @param string $paramName
      *
      * @return mixed
      */

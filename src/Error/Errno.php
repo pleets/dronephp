@@ -10,6 +10,11 @@
 
 namespace Drone\Error;
 
+/**
+ * Errno class
+ *
+ * This class defines some constant names to ErrorTrait class
+ */
 class Errno
 {
     /**
@@ -39,6 +44,13 @@ class Errno
     const DB_TRANSACTION_NOT_STARTED = 21;
     const DB_TRANSACTION_EMPTY       = 22;
 
+    /**
+     * Returns the constant name from a given code
+     *
+     * @param integer $code
+     *
+     * @return string
+     */
     public static function getErrorCodeName($code)
     {
         $currentClass = new \ReflectionClass('\Drone\Error\Errno');

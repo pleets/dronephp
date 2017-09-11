@@ -10,6 +10,11 @@
 
 namespace Drone\Db;
 
+/**
+ * Entity class
+ *
+ * This class represents an abstract database entity, often a table
+ */
 abstract class Entity
 {
     /**

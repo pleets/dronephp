@@ -10,6 +10,11 @@
 
 namespace Drone\Error;
 
+/**
+ * ErrorTrait trait
+ *
+ * Standard error management for some classes
+ */
 trait ErrorTrait
 {
     /**

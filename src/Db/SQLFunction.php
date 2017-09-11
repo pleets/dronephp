@@ -10,6 +10,12 @@
 
 namespace Drone\Db;
 
+/**
+ * SQLFunction class
+ *
+ * This class could be used to build specific querys that requires
+ * specific database functions that data mapper does not support
+ */
 class SQLFunction
 {
     /**

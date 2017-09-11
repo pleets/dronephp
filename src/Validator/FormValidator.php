@@ -21,6 +21,12 @@ use Zend\Validator\EmailAddress;
 use Zend\Validator\Date;
 use Zend\Validator\Uri;
 
+/**
+ * FormValidator class
+ *
+ * Form validation implements Zend validator to check html form parameters.
+ * n-dimensional arrays (name='example[][]') are supported.
+ */
 class FormValidator
 {
     /**
@@ -72,6 +78,8 @@ class FormValidator
     /**
      * Sets valid atribute after each validation
      *
+     * @param boolean $valid
+     *
      * @return boolean
      */
     public function setValid($valid)
@@ -82,7 +90,8 @@ class FormValidator
     /**
      * Gets an option
      *
-     * @param string $option
+     * @param string $key
+     * @param string $name
      *
      * @throws LogicException
      *
@@ -100,6 +109,7 @@ class FormValidator
      * Constructor
      *
      * @param Form $formHandler
+     * @param array $options
      */
     public function __construct(Form $formHandler, $options)
     {

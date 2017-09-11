@@ -12,6 +12,12 @@ namespace Drone\Exception;
 
 use Drone\Error\Errno;
 
+/**
+ * Exception class
+ *
+ * This is a standard exception that implements StorableTrait. Developers can use
+ * this exception to separate controller exceptions in the business logic.
+ */
 class Exception extends \Exception
 {
     use \Drone\Exception\StorableTrait;
@@ -19,7 +25,9 @@ class Exception extends \Exception
     /**
      * Constructor
      *
-     * @param array $data
+     * @param string         $message
+     * @param integer        $code
+     * @param Exception|null $previous
      *
      * @return null
      */

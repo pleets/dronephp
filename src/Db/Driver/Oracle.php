@@ -10,6 +10,11 @@
 
 namespace Drone\Db\Driver;
 
+/**
+ * Oracle class
+ *
+ * This is a database driver class to connect to Oracle
+ */
 class Oracle extends AbstractDriver implements DriverInterface
 {
     use \Drone\Error\ErrorTrait;
@@ -182,6 +187,11 @@ class Oracle extends AbstractDriver implements DriverInterface
         return $data;
     }
 
+    /**
+     * By default __destruct() disconnects to database
+     *
+     * @return null
+     */
     public function __destruct()
     {
         if ($this->dbconn)

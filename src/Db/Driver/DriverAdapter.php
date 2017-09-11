@@ -10,6 +10,11 @@
 
 namespace Drone\Db\Driver;
 
+/**
+ * DriverAdapter Class
+ *
+ * This class makes a database connection with a specified driver
+ */
 class DriverAdapter
 {
     /**

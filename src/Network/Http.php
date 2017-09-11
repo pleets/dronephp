@@ -10,6 +10,11 @@
 
 namespace Drone\Network;
 
+/**
+ * Http class
+ *
+ * Helper class to send http headers
+ */
 class Http
 {
     /**

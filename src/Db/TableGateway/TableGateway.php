@@ -14,6 +14,11 @@ use Drone\Db\Entity;
 use Drone\Db\SQLFunction;
 use Drone\Exception;
 
+/**
+ * TableGateway class
+ *
+ * This class is a query builder for CRUD (create, read, update, delete)
+ */
 class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 {
     /**
@@ -37,6 +42,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      * Constructor
      *
      * @param Entity $entity
+     * @param boolean $auto_connect
      */
     public function __construct(Entity $entity, $auto_connect = true)
     {

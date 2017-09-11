@@ -10,6 +10,11 @@
 
 namespace Drone\Network;
 
+/**
+ * Server class
+ *
+ * Helper class to get some information about server
+ */
 class Server
 {
     /**

@@ -12,6 +12,11 @@ namespace Drone\Db\TableGateway;
 
 use Drone\Db\Driver\DriverAdapter;
 
+/**
+ * AbstractTableGateway class
+ *
+ * This class stores statically different connections from a TableGateway
+ */
 abstract class AbstractTableGateway
 {
     /**

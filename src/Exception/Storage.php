@@ -44,7 +44,6 @@ class Storage
      * Stores the exception serializing the object
      *
      * @param Exception $exception
-     * @param string    $outputFile
      *
      * @return string|boolean
      */

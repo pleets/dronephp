@@ -12,6 +12,11 @@ namespace Drone\Mvc;
 
 use Drone\FileSystem\Shell;
 
+/**
+ * Application class
+ *
+ * This is the main class for mvc pattern
+ */
 class Application
 {
     /**

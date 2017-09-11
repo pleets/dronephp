@@ -10,6 +10,11 @@
 
 namespace Drone\Db\Driver;
 
+/**
+ * MySQL class
+ *
+ * This is a database driver class to connect to MySQL
+ */
 class MySQL extends AbstractDriver implements DriverInterface
 {
     use \Drone\Error\ErrorTrait;
@@ -220,6 +225,11 @@ class MySQL extends AbstractDriver implements DriverInterface
         return $data;
     }
 
+    /**
+     * By default __destruct() disconnects to database
+     *
+     * @return null
+     */
     public function __destruct()
     {
         if ($this->dbconn !== false && !is_null($this->dbconn))

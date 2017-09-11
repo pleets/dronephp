@@ -13,6 +13,11 @@ namespace Drone\Mvc;
 use Drone\LayoutManager\Layout;
 use Drone\Mvc\PageNotFoundException;
 
+/**
+ * AbstractionController class
+ *
+ * This class manges the interaction between models and views
+ */
 abstract class AbstractionController
 {
     /**
@@ -238,6 +243,8 @@ abstract class AbstractionController
     /**
      * Gets a particular parameter
      *
+     * @param string $param
+     *
      * @return string
      */
     public function getParam($param)
@@ -248,6 +255,8 @@ abstract class AbstractionController
 
     /**
      * Checks if a parameter exists
+     *
+     * @param string $param
      *
      * @return boolean
      */
@@ -302,6 +311,8 @@ abstract class AbstractionController
      * Parses requests parameters
      *
      * Searches for URI formed as follows /var1/value1/var2/value2
+     *
+     * @param string $get
      *
      * @return null
      */

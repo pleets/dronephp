@@ -12,6 +12,11 @@ namespace Drone\Mvc;
 
 use Drone\Mvc\PageNotFoundException;
 
+/**
+ * Router class
+ *
+ * This class build the route and calls to specific application controller
+ */
 class Router
 {
     /**

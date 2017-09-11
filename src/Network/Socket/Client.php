@@ -10,6 +10,11 @@
 
 namespace Drone\Socket;
 
+/**
+ * Client class
+ *
+ * Client socket implementation
+ */
 class Client extends AbstractSocket
 {
     /**

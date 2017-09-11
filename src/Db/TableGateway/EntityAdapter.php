@@ -13,6 +13,11 @@ namespace Drone\Db\TableGateway;
 use Drone\Db\Entity;
 use Drone\Db\SQLFunction;
 
+/**
+ * EntityAdapter class
+ *
+ * This class allows to persist objects to database (Data Mapper pattern)
+ */
 class EntityAdapter
 {
     /**

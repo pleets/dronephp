@@ -10,6 +10,11 @@
 
 namespace Drone\Db\Driver;
 
+/**
+ * AbstractDriver Class
+ *
+ * This class defines standard behavior for database drivers
+ */
 abstract class AbstractDriver
 {
     use \Drone\Error\ErrorTrait;
@@ -386,9 +391,11 @@ abstract class AbstractDriver
      * @throws RuntimeException
      * @throws LogicException
      *
+     * @param array $querys
+     *
      * @return null
      */
-    public function transaction($querys)
+    public function transaction(Array $querys)
     {
         $this->beginTransaction();
 

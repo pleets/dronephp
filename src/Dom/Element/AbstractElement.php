@@ -12,6 +12,11 @@ namespace Drone\Dom\Element;
 
 use Drone\Dom\Attribute;
 
+/**
+ * AbstractElement class
+ *
+ * To represent an abstract html element
+ */
 abstract class AbstractElement
 {
     /**

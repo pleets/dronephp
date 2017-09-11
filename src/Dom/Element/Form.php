@@ -10,6 +10,11 @@
 
 namespace Drone\Dom\Element;
 
+/**
+ * Form class
+ *
+ * Represents a html Form element
+ */
 class Form extends AbstractElement
 {
     /**
