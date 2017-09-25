@@ -17,8 +17,6 @@ namespace Drone\Db\Driver;
  */
 class SQLServer extends Driver implements DriverInterface
 {
-    use \Drone\Error\ErrorTrait;
-
     /**
      * Constructor for Oracle driver
      *

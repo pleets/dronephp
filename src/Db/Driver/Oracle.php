@@ -17,8 +17,6 @@ namespace Drone\Db\Driver;
  */
 class Oracle extends AbstractDriver implements DriverInterface
 {
-    use \Drone\Error\ErrorTrait;
-
     /**
      * Constructor for Oracle driver
      *

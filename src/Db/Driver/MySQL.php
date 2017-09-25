@@ -17,8 +17,6 @@ namespace Drone\Db\Driver;
  */
 class MySQL extends AbstractDriver implements DriverInterface
 {
-    use \Drone\Error\ErrorTrait;
-
     /**
      * Constructor for MySql driver
      *
