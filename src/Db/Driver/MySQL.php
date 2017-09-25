@@ -58,9 +58,7 @@ class MySQL extends AbstractDriver implements DriverInterface
              * (Property access is not allowed yet) is showed after property is called with
              * $this->dbconn->errno and $this->dbconn->error.
              */
-            $this->error(mysqli_connect_errno(), mysqli_connect_error());
-
-            throw new \RuntimeException("Could not connect to Database");
+            throw new Exception\ConnectionException(mysqli_connect_error(), mysqli_connect_errno());
         }
         else
             $this->dbconn->set_charset($this->dbchar);

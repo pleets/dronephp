@@ -55,9 +55,7 @@ class Oracle extends AbstractDriver implements DriverInterface
         if ($this->dbconn === false)
         {
             $error = oci_error();
-            $this->error($error["code"], $error["message"]);
-
-            throw new \RuntimeException("Could not connect to Database");
+            throw new Exception\ConnectionException($error["message"], $error["code"]);
         }
 
         return $this->dbconn;

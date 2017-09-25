@@ -56,12 +56,14 @@ class SQLServer extends Driver implements DriverInterface
         {
             $errors = sqlsrv_errors();
 
+            $previousException;
+
             foreach ($errors as $error)
             {
-                $this->error($error["code"], $error["message"]);
+                $previousException = new Exception\ConnectionException($error["message"], $error["code"], $previousException);
             }
 
-            throw new \RuntimeException("Could not connect to Database");
+            throw $previousException;
         }
 
         return $this->dbconn;
