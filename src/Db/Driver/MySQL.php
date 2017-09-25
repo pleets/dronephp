@@ -56,11 +56,11 @@ class MySQL extends AbstractDriver implements DriverInterface
         if ($this->dbconn->connect_errno)
         {
             /*
-             * Sets $this->dbconn to NULL after trying to connect!. If NULL is not assigned to $this->dbconn,
-             * a Warning message (Property access is not allowed yet) is showed after property is called.
+             * Use ever mysqli_connect_errno() and mysqli_connect_error(). A Warning message
+             * (Property access is not allowed yet) is showed after property is called with
+             * $this->dbconn->errno and $this->dbconn->error.
              */
-            $this->dbconn = null;
-            $this->error($this->dbconn->connect_errno, $this->dbconn->connect_error);
+            $this->error(mysqli_connect_errno(), mysqli_connect_error());
 
             throw new \RuntimeException("Could not connect to Database");
         }
@@ -232,7 +232,8 @@ class MySQL extends AbstractDriver implements DriverInterface
      */
     public function __destruct()
     {
+        # prevent "Property access is not allowed yet" with @ on failure connections
         if ($this->dbconn !== false && !is_null($this->dbconn))
-            $this->dbconn->close();
+            @$this->dbconn->close();
     }
 }
