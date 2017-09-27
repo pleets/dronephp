@@ -76,6 +76,25 @@ class Storage
             "object"  => serialize($exception)
         ];
 
+        if (!function_exists('mb_detect_encoding'))
+            throw new \RuntimeException("mbstring library is not installed!");
+
+        /*
+         * Encodes to UTF8 all messages. It ensures JSON encoding.
+         */
+        try {
+
+            if (!mb_detect_encoding($data[$id]["message"], 'UTF-8', true))
+                $data[$id]["message"] = utf8_encode($data[$id]["message"]);
+
+            $class  = get_class($exception);
+            throw new $class($data[$id]["message"]);
+        }
+        catch (\Exception $e)
+        {
+            $data[$id]["object"] = $e;
+        }
+
         if (($encoded_data = json_encode($data)) === false)
         {
             $this->error(Errno::JSON_ENCODE_ERROR, $this->outputFile);
