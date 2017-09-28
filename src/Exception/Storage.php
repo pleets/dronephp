@@ -88,6 +88,12 @@ class Storage
         if (!mb_detect_encoding($data[$id]["object"], 'UTF-8', true))
             $data[$id]["object"] = utf8_decode($data[$id]["object"]);
 
+        if (($encoded_data = json_encode($data)) === false)
+        {
+            $this->error(Errno::JSON_ENCODE_ERROR, $this->outputFile);
+            return false;
+        }
+
         $hd = @fopen($this->outputFile, "w+");
 
         if (!$hd || !@fwrite($hd, $encoded_data))
