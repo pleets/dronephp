@@ -49,7 +49,13 @@ class Oracle extends AbstractDriver implements DriverInterface
         if (!extension_loaded('oci8'))
             throw new \RuntimeException("The Oci8 extension is not loaded");
 
-        $connection_string = (is_null($this->dbhost) || empty($this->dbhost)) ? $this->dbname : $this->dbhost ."/". $this->dbname;
+        $connection_string = (is_null($this->dbhost) || empty($this->dbhost))
+            ? $this->dbname
+            :
+                (!is_null($this->dbport))
+                    ? $this->dbhost .":". $this->dbport ."/". $this->dbname
+                    : $this->dbhost ."/". $this->dbname;
+
         $this->dbconn = @oci_connect($this->dbuser,  $this->dbpass, $connection_string, $this->dbchar);
 
         if ($this->dbconn === false)

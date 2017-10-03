@@ -49,6 +49,9 @@ class SQLServer extends Driver implements DriverInterface
         if (!extension_loaded('sqlsrv'))
             throw new \RuntimeException("The Sqlsrv extension is not loaded");
 
+        if (!is_null($this->dbport))
+            $this->dbhost .= ', ' . $this->dbport;
+
         $db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar);
         $this->dbconn = sqlsrv_connect($this->dbhost, $db_info);
 
