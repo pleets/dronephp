@@ -92,6 +92,12 @@ class MySQL extends AbstractDriver implements DriverInterface
         {
             $this->result = $stmt = @$this->dbconn->prepare($sql);
 
+            if (!$stmt)
+            {
+                $this->error($this->dbconn->errno, $this->dbconn->error);
+                throw new \RuntimeException("Could not prepare statement");
+            }
+
             $param_values = array_values($params);
 
             $n_params = count($param_values);
