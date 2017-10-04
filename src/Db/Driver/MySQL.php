@@ -119,7 +119,17 @@ class MySQL extends AbstractDriver implements DriverInterface
             if ($r)
             {
                 if (is_object($stmt) && get_class($stmt) == 'mysqli_stmt')
-                    $this->result = $this->result->get_result();
+                {
+                    $res = $this->result->get_result();
+
+                    /*
+                     * if $res is false then there aren't results.
+                     * It is useful to prevent rollback transactions on insert statements because
+                     * insert statement do not free results.
+                     */
+                    if ($res)
+                        $this->result = $res;
+                }
             }
         }
         else
