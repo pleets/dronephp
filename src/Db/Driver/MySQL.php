@@ -49,7 +49,7 @@ class MySQL extends AbstractDriver implements DriverInterface
         if (!extension_loaded('mysqli'))
             throw new \RuntimeException("The Mysqli extension is not loaded");
 
-        if (!is_null($this->dbport))
+        if (!is_null($this->dbport) && !empty($this->dbport))
             $this->dbconn = @new \mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname, $this->dbport);
         else
             $this->dbconn = @new \mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname);

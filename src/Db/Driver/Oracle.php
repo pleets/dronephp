@@ -52,7 +52,7 @@ class Oracle extends AbstractDriver implements DriverInterface
         $connection_string = (is_null($this->dbhost) || empty($this->dbhost))
             ? $this->dbname
             :
-                (!is_null($this->dbport))
+                (!is_null($this->dbport) && !empty($this->dbport))
                     ? $this->dbhost .":". $this->dbport ."/". $this->dbname
                     : $this->dbhost ."/". $this->dbname;
 
