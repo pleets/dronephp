@@ -87,6 +87,9 @@ class Oracle extends AbstractDriver implements DriverInterface
 
         $this->result = $stid = oci_parse($this->dbconn, $sql);
 
+        if (!$stid)
+            throw new \RuntimeException("Invalid SQL statement");
+
         # Bound variables
         if (count($params))
         {
