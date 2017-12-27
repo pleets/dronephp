@@ -330,7 +330,7 @@ abstract class AbstractDriver
     public function reconnect()
     {
         if (!$this->isConnected())
-            throw new \LogicException("Connection was not established, however it's trying to reconnect");
+            throw new \LogicException("Connection was not established");
 
         $this->disconnect();
         return $this->connect();
@@ -360,7 +360,7 @@ abstract class AbstractDriver
     public function disconnect()
     {
         if (!$this->isConnected())
-            throw new \LogicException("Connection was not established, however it's trying to disconnect");
+            throw new \LogicException("Connection was not established");
     }
 
     /**
