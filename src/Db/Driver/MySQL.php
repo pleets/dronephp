@@ -95,7 +95,7 @@ class MySQL extends AbstractDriver implements DriverInterface
             if (!$stmt)
             {
                 $this->error($this->dbconn->errno, $this->dbconn->error);
-                throw new \RuntimeException("Could not prepare statement");
+                throw new Exception\InvalidQueryException($this->dbconn->error, $this->dbconn->errno);
             }
 
             $param_values = array_values($params);
@@ -144,7 +144,7 @@ class MySQL extends AbstractDriver implements DriverInterface
         if (!$r)
         {
             $this->error($this->dbconn->errno, $this->dbconn->error);
-            throw new \RuntimeException("Could not execute query");
+            throw new Exception\InvalidQueryException($this->dbconn->error, $this->dbconn->errno);
         }
 
         if (is_object($this->result) && property_exists($this->result, 'num_rows'))

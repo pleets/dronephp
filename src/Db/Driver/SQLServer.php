@@ -15,7 +15,7 @@ namespace Drone\Db\Driver;
  *
  * This is a database driver class to connect to SQLServer
  */
-class SQLServer extends AbstractDriver implements DriverInterface
+class SQLServer extends Driver implements DriverInterface
 {
     /**
      * Constructor for Oracle driver
@@ -94,6 +94,19 @@ class SQLServer extends AbstractDriver implements DriverInterface
         if (count($params))
         {
             $this->result = sqlsrv_prepare($this->dbconn, $sql, $params);
+
+            if (!$this->result)
+            {
+                $errors = sqlsrv_errors();
+
+                foreach ($errors as $error)
+                {
+                    $this->error($error["code"], $error["message"]);
+                }
+
+                throw new Exception\InvalidQueryException($error["message"], $error["code"]);
+            }
+
             $r = sqlsrv_execute($this->result);
         }
         else
@@ -108,7 +121,7 @@ class SQLServer extends AbstractDriver implements DriverInterface
                 $this->error($error["code"], $error["message"]);
             }
 
-            throw new \RuntimeException("Could not execute query");
+            throw new Exception\InvalidQueryException($error["message"], $error["code"]);
         }
 
         $this->getArrayResult();

@@ -85,10 +85,28 @@ class Oracle extends AbstractDriver implements DriverInterface
 
         $this->arrayResult = null;
 
-        $this->result = $stid = oci_parse($this->dbconn, $sql);
+        $this->result = $stid = @oci_parse($this->dbconn, $sql);
 
-        if (!$stid)
-            throw new \RuntimeException("Invalid SQL statement");
+        if (!$stid) 
+        {
+            $error = $this->result ? oci_error($this->result) : oci_error();
+
+            if (!$error) 
+            {
+                $error = [
+                    "message" => "Could not prepare statement!"
+                ];
+
+                $this->error($error["message"]);
+            }
+            else
+                $this->error($error["code"], $error["message"]);
+
+            if (array_key_exists("code", $error))
+                throw new Exception\InvalidQueryException($error["message"], $error["code"]);
+            else
+                throw new Exception\InvalidQueryException($error["message"]);
+        }
 
         # Bound variables
         if (count($params))
@@ -109,7 +127,7 @@ class Oracle extends AbstractDriver implements DriverInterface
             $error = oci_error($this->result);
             $this->error($error["code"], $error["message"]);
 
-            throw new \RuntimeException("Could not execute query");
+            throw new Exception\InvalidQueryException($error["message"], $error["code"]);
         }
 
         # This should be before of getArrayResult() because oci_fetch() is incremental.
