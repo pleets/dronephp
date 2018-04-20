@@ -87,11 +87,11 @@ class Oracle extends AbstractDriver implements DriverInterface
 
         $this->result = $stid = @oci_parse($this->dbconn, $sql);
 
-        if (!$stid) 
+        if (!$stid)
         {
             $error = $this->result ? oci_error($this->result) : oci_error();
 
-            if (!$error) 
+            if (!$error)
             {
                 $error = [
                     "message" => "Could not prepare statement!"
@@ -120,7 +120,12 @@ class Oracle extends AbstractDriver implements DriverInterface
             }
         }
 
-        $r = ($this->transac_mode) ? @oci_execute($stid, OCI_NO_AUTO_COMMIT) : @oci_execute($stid,  OCI_COMMIT_ON_SUCCESS);
+        $prev_error_handler = set_error_handler(['\Drone\Error\ErrorHandler', 'errorControlOperator'], E_ALL);
+
+        // may be throw a Fatal error (Ex: Maximum execution time)
+        $r = ($this->transac_mode) ? oci_execute($stid, OCI_NO_AUTO_COMMIT) : oci_execute($stid,  OCI_COMMIT_ON_SUCCESS);
+
+        set_error_handler($prev_error_handler);
 
         if (!$r)
         {

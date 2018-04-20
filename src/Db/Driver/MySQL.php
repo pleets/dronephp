@@ -139,7 +139,14 @@ class MySQL extends AbstractDriver implements DriverInterface
             }
         }
         else
-            $r = $this->result = @$this->dbconn->query($sql);
+        {
+            $prev_error_handler = set_error_handler(['\Drone\Error\ErrorHandler', 'errorControlOperator'], E_ALL);
+
+            // may be throw a Fatal error (Ex: Maximum execution time)
+            $r = $this->result = $this->dbconn->query($sql);
+
+            set_error_handler($prev_error_handler);
+        }
 
         if (!$r)
         {
