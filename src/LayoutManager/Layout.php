@@ -11,7 +11,7 @@
 namespace Drone\LayoutManager;
 
 use Drone\Mvc\AbstractionController;
-use Drone\Mvc\Exception;
+use Drone\Mvc\PageNotFoundException;
 
 /**
  * Layout class
