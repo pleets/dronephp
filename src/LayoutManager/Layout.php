@@ -20,6 +20,8 @@ use Drone\Mvc\PageNotFoundException;
  */
 class Layout
 {
+    use \Drone\Util\ParamTrait;
+
     /**
      * Controller instance
      *
@@ -40,6 +42,13 @@ class Layout
      * @var string
      */
     private $title;
+
+    /**
+     * Base path
+     *
+     * @var string
+     */
+    private $basePath;
 
     /**
      * Returns the instance of current controller
@@ -74,17 +83,41 @@ class Layout
     }
 
     /**
+     * Sets the base path
+     *
+     * @param string $basePath
+     *
+     * @return null
+     */
+    public function setBasePath($path)
+    {
+        $this->basePath = $path;
+    }
+
+    /**
      * Constructor
+     *
+     * @throws PageNotFoundException
+     */
+    public function __construct()
+    {
+        // nothing to do
+    }
+
+    /**
+     * Loads a view from a controller
      *
      * @throws PageNotFoundException
      *
      * @param AbstractionController
      */
-    public function __construct(AbstractionController $controller)
+    public function fromController(AbstractionController $controller)
     {
         // str_replace() is needed in linux systems
         $view = 'module/' . $controller->getModule()->getModuleName() .'/source/view/'. basename(str_replace('\\','/',get_class($controller))) . '/' . $controller->getMethod() . '.phtml';
 
+        $this->setParams($controller->getParams);
+        $this->basePath = $controller->basePath;
         $this->controller = $controller;
         $this->view = $view;
 
@@ -104,6 +137,23 @@ class Layout
     }
 
     /**
+     * Loads a view from a template file
+     *
+     * @throws PageNotFoundException
+     *
+     * @param Drone\Mvc\AbstractionModule $module
+     * @param string $template
+     * @param array $params
+     */
+    public function fromTemplate($module, $template, $params = [])
+    {
+        $this->setParams($params);
+
+        $config = $module->getConfig();
+        include $config["view_manager"]["template_map"][$template];
+    }
+
+    /**
      * Includes the file view
      *
      * @return null
@@ -114,48 +164,12 @@ class Layout
     }
 
     /**
-     * Returns a user param
-     *
-     * This param is sent through the controller in a return statement
-     *
-     * @param string $paramName
-     *
-     * @return mixed
-     */
-    public function param($paramName)
-    {
-        return $this->getController()->getParam($paramName);
-    }
-
-    /**
-     * Checks if a parameters exists
-     *
-     * @param string
-     *
-     * @return boolean
-     */
-    public function isParam($paramName)
-    {
-        return $this->getController()->isParam($paramName);
-    }
-
-    /**
-     * Returns all parameters sent through the controller
-     *
-     * @return array
-     */
-    public function getParams()
-    {
-        return $this->getController()->getParams();
-    }
-
-    /**
      * Returns the base path of the application
      *
      * @return string
      */
     public function basePath()
     {
-        return $this->getController()->basePath;
+        return $this->basePath;
     }
 }
