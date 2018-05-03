@@ -136,7 +136,7 @@ class Application
             error_reporting(-1);
         }
 
-        $this->loadModules($this->modules, $init_parameters["router"]["routes"]["defaults"]["module"]);
+        $this->loadModules($this->modules);
 
         $this->router = new Router($init_parameters["router"]["routes"]);
         $this->router->setBasePath($init_parameters["environment"]["base_path"]);
@@ -153,16 +153,15 @@ class Application
     }
 
     /**
-     * Loads user classes in each module
+     * Loads module classes and autoloading functions
      *
      * @param array $modules
-     * @param array $module
      *
      * @throws RuntimeException
      *
      * @return null
      */
-    private function loadModules($modules, $module)
+    private function loadModules($modules)
     {
         if ($modules)
         {
