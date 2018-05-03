@@ -116,8 +116,8 @@ class Layout
         // str_replace() is needed in linux systems
         $view = 'module/' . $controller->getModule()->getModuleName() .'/source/view/'. basename(str_replace('\\','/',get_class($controller))) . '/' . $controller->getMethod() . '.phtml';
 
-        $this->setParams($controller->getParams);
-        $this->basePath = $controller->basePath;
+        $this->setParams($controller->getParams());
+        $this->basePath = $controller->getBasePath();
         $this->controller = $controller;
         $this->view = $view;
 
