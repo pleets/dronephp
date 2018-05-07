@@ -128,11 +128,8 @@ class Layout
         }
         else
         {
-            if (!file_exists($view))
-                throw new PageNotFoundException("The 'view' template $view does not exists");
-
-                $config = $controller->getModule()->getConfig();
-                include $config["view_manager"]["template_map"][$controller->getLayout()];
+            $config = $controller->getModule()->getConfig();
+            include $config["view_manager"]["template_map"][$controller->getLayout()];
         }
     }
 
@@ -160,6 +157,9 @@ class Layout
      */
     public function content()
     {
+        if (!file_exists($this->view))
+            throw new PageNotFoundException("The 'view' template " . $this->view . " does not exists");
+
         include $this->view;
     }
 
