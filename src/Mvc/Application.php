@@ -57,30 +57,6 @@ class Application
     }
 
     /**
-     * Checks app.config structure
-     *
-     * @param array $required_tree
-     * @param array $parameters
-     *
-     * @throws RuntimeException
-     *
-     * @return null
-     */
-    public function verifyRequiredParameters(Array $required_tree, Array $parameters)
-    {
-        foreach ($required_tree as $key => $value)
-        {
-            $req_keys = array_keys($parameters);
-
-            if (!in_array($key, $req_keys))
-                throw new \RuntimeException("The key '$key' must be in the configuration!", 1);
-
-            if (is_array($value))
-                $this->verifyRequiredParameters($value, $parameters[$key]);
-        }
-    }
-
-    /**
      * Constructor
      *
      * @param array $init_parameters
@@ -88,27 +64,6 @@ class Application
     public function __construct($init_parameters)
     {
         $this->prepare();
-
-        $this->verifyRequiredParameters(
-            array(
-                "modules"       => array(
-                    "{key}"     => "{value}"
-                ),
-                "router"        => array(
-                    "routes"    => array(
-                        'defaults' => array(
-                            'module'        => '{value}',
-                            'controller'    => '{value}',
-                            'view'          => '{value}'
-                        )
-                    )
-                ),
-                "environment"   => array(
-                    "base_path" => "{value}",
-                    "dev_mode"  => "{value}"
-                )
-            ),
-        $init_parameters);
 
         $this->devMode = $init_parameters["environment"]["dev_mode"];
         $this->modules = $init_parameters["modules"];
