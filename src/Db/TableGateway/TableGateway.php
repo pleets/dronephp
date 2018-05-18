@@ -223,7 +223,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
         $parsed_set = [];
 
         if (!count($set))
-            throw new \LogicException("You cannot delete rows without SET clause");
+            throw new \LogicException("You cannot update rows without SET clause");
 
         if (!count($set))
             throw new SecurityException("You cannot update rows without WHERE clause!");
