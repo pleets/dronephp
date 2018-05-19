@@ -10,7 +10,7 @@
 
 namespace Drone\Mvc;
 
-use Drone\Mvc\PageNotFoundException;
+use Drone\Mvc\Exception;
 
 /**
  * Router class
@@ -126,7 +126,7 @@ class Router
     /**
      * Builds the current route and calls the controller
      *
-     * @throws PageNotFoundException
+     * @throws Exception\PageNotFoundException
      *
      * @return  null
      */
@@ -142,7 +142,7 @@ class Router
                     ? $this->routes["defaults"]["module"] : $this->identifiers["module"];
 
         if (!array_key_exists($module, $this->routes))
-            throw new PageNotFoundException("The key '$module' does not exists in routes!");
+            throw new Exception\ModuleNotFoundException("The key '$module' does not exists in routes!");
 
         $controller = (is_null($this->identifiers["controller"]) || empty($this->identifiers["controller"]))
                     ? $this->routes[$module]["controller"] : $this->identifiers["controller"];
@@ -155,7 +155,7 @@ class Router
         if (class_exists($fqn_controller))
             $this->controller = new $fqn_controller($module, $view, $this->basePath);
         else
-            throw new PageNotFoundException("The control class '$fqn_controller' does not exists!");
+            throw new Exception\ControllerNotFoundException("The control class '$fqn_controller' does not exists!");
     }
 
     /**

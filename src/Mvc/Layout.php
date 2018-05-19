@@ -8,10 +8,10 @@
  * @author    Darío Rivera <dario@pleets.org>
  */
 
-namespace Drone\LayoutManager;
+namespace Drone\Mvc;
 
 use Drone\Mvc\AbstractionController;
-use Drone\Mvc\PageNotFoundException;
+use Drone\Mvc\Exception;
 
 /**
  * Layout class
@@ -121,7 +121,7 @@ class Layout
     /**
      * Constructor
      *
-     * @throws PageNotFoundException
+     * @throws Exception\PageNotFoundException
      */
     public function __construct()
     {
@@ -131,19 +131,25 @@ class Layout
     /**
      * Loads a view from a controller
      *
-     * @throws PageNotFoundException
+     * @throws Exception\PageNotFoundException
      *
      * @param AbstractionController
      */
     public function fromController(AbstractionController $controller)
     {
         // str_replace() is needed in linux systems
-        $view = 'module/' . $controller->getModule()->getModuleName() .'/source/view/'. basename(str_replace('\\','/',get_class($controller))) . '/' . $controller->getMethod() . '.phtml';
-
         $this->setParams($controller->getParams());
         $this->basePath = $controller->getBasePath();
         $this->controller = $controller;
-        $this->view = $view;
+
+        if ($controller->getShowView())
+        {
+            $view = 'module/'      . $controller->getModule()->getModuleName() .
+                    '/source/view/'. basename(str_replace('\\','/',get_class($controller))) .
+                    '/'            . $controller->getMethod() . '.phtml';
+
+            $this->view = $view;
+        }
 
         if ($controller->getTerminal())
         {
@@ -152,15 +158,27 @@ class Layout
         }
         else
         {
+            if (!is_null($this->view) && !file_exists($this->view))
+                throw new Exception\ViewNotFoundException("The 'view' template " . $this->view . " does not exists");
+
             $config = $controller->getModule()->getConfig();
-            include $config["view_manager"]["template_map"][$controller->getLayout()];
+
+            if (!array_key_exists($controller->getLayout(), $config["view_manager"]["template_map"]))
+                throw new Exception\PageFoundException("The 'template' " . $template . " was not defined in module.config.php");
+
+            $template = $config["view_manager"]["template_map"][$controller->getLayout()];
+
+            if (!file_exists($template))
+                throw new Exception\PageFoundException("The 'template' " . $template . " does not exists");
+
+            include $template;
         }
     }
 
     /**
      * Loads a view from a template file
      *
-     * @throws PageNotFoundException
+     * @throws Exception\PageNotFoundException
      *
      * @param Drone\Mvc\AbstractionModule $module
      * @param string $template
@@ -179,7 +197,7 @@ class Layout
     public function content()
     {
         if (!file_exists($this->view))
-            throw new PageNotFoundException("The 'view' template " . $this->view . " does not exists");
+            throw new Exception\ViewNotFoundException("The 'view' template " . $this->view . " does not exists");
 
         include $this->view;
     }

@@ -8,7 +8,7 @@
  * @author    Darío Rivera <dario@pleets.org>
  */
 
-namespace Drone\Mvc;
+namespace Drone\Mvc\Exception;
 
 use Exception;
 
