@@ -262,7 +262,12 @@ class FormValidator
                 $isRequired = (!is_null($attrib)) ? $attrib = $attrib->getValue() : false;
 
                 $validator = new NotEmpty();
-                $value = $this->formHandler->getAttribute($key, "value")->getValue();
+                $attribute = $this->formHandler->getAttribute($key, "value");
+
+                if (is_null($attribute))
+                    throw new \LogicException("Missing attribute 'value' in '" . $key . "'.");
+
+                $value = $attribute->getValue();
 
                 if ($isRequired || $validator->isValid($value))
                 {
