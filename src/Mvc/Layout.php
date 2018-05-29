@@ -103,6 +103,10 @@ class Layout
     public function setView($module, $view)
     {
         $config = $module->getConfig();
+
+        if (!array_key_exists($view, $config["view_manager"]["view_map"]) || !file_exists($config["view_manager"]["view_map"][$view]))
+            throw new Exception\ViewNotFoundException("The 'view' template " . $view . " does not exists");
+
         $this->view = $config["view_manager"]["view_map"][$view];
     }
 
