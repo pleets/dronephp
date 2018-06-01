@@ -18,11 +18,7 @@ namespace Drone\Db\Driver;
 class MySQL extends AbstractDriver implements DriverInterface
 {
     /**
-     * Constructor for MySql driver
-     *
-     * @param array $options
-     *
-     * @throws RuntimeException if connect() found an error
+     * {@inheritDoc}
      */
     public function __construct($options)
     {
@@ -41,6 +37,7 @@ class MySQL extends AbstractDriver implements DriverInterface
      * Connects to database
      *
      * @throws RuntimeException
+     * @throws Exception\ConnectionException
      *
      * @return mysqli
      */
@@ -76,6 +73,7 @@ class MySQL extends AbstractDriver implements DriverInterface
      * @param array $params
      *
      * @throws RuntimeException
+     * @throws Exception\InvalidQueryException
      *
      * @return resource
      */
@@ -170,9 +168,7 @@ class MySQL extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * Commit definition
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
     public function commit()
     {
@@ -180,9 +176,7 @@ class MySQL extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * Rollback definition
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
     public function rollback()
     {
@@ -190,28 +184,21 @@ class MySQL extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * Begins a transaction in SQLServer
-     *
-     * @throws RuntimeException
-     * @throws LogicException if transaction was already started
-     *
-     * @return null
-     */
-    public function beginTransaction()
-    {
-        parent::beginTransaction();
-        $this->dbconn->autocommit(false);
-    }
-
-    /**
-     * Closes the connection
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
     public function disconnect()
     {
         parent::disconnect();
         return $this->dbconn->close();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function beginTransaction()
+    {
+        parent::beginTransaction();
+        $this->dbconn->autocommit(false);
     }
 
     /**

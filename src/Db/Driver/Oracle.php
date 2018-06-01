@@ -18,11 +18,7 @@ namespace Drone\Db\Driver;
 class Oracle extends AbstractDriver implements DriverInterface
 {
     /**
-     * Constructor for Oracle driver
-     *
-     * @param array $options
-     *
-     * @throws RuntimeException if connect() found an error
+     * {@inheritDoc}
      */
     public function __construct($options)
     {
@@ -41,6 +37,7 @@ class Oracle extends AbstractDriver implements DriverInterface
      * Connects to database
      *
      * @throws RuntimeException
+     * @throws Exception\ConnectionException
      *
      * @return resource
      */
@@ -73,7 +70,7 @@ class Oracle extends AbstractDriver implements DriverInterface
      * @param string $sql
      * @param array $params
      *
-     * @throws RuntimeException
+     * @throws Exception\InvalidQueryException
      *
      * @return resource
      */
@@ -150,9 +147,7 @@ class Oracle extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * Commit definition
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
     public function commit()
     {
@@ -160,9 +155,7 @@ class Oracle extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * Rollback definition
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
     public function rollback()
     {
@@ -170,11 +163,7 @@ class Oracle extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * Closes the connection
-     *
-     * @throws LogicException
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
     public function disconnect()
     {
@@ -191,7 +180,7 @@ class Oracle extends AbstractDriver implements DriverInterface
      */
     protected function toArray()
     {
-        $data = array();
+        $data = [];
 
         if ($this->result)
         {

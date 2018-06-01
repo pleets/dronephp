@@ -18,11 +18,7 @@ namespace Drone\Db\Driver;
 class SQLServer extends Driver implements DriverInterface
 {
     /**
-     * Constructor for Oracle driver
-     *
-     * @param array $options
-     *
-     * @throws RuntimeException if connect() found an error
+     * {@inheritDoc}
      */
     public function __construct($options)
     {
@@ -41,6 +37,7 @@ class SQLServer extends Driver implements DriverInterface
      * Connects to database
      *
      * @throws RuntimeException
+     * @throws Exception\ConnectionException
      *
      * @return resource
      */
@@ -78,7 +75,7 @@ class SQLServer extends Driver implements DriverInterface
      * @param string $sql
      * @param params $params
      *
-     * @throws RuntimeException
+     * @throws Exception\InvalidQueryException
      *
      * @return resource
      */
@@ -137,9 +134,7 @@ class SQLServer extends Driver implements DriverInterface
     }
 
     /**
-     * Commit definition
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
     public function commit()
     {
@@ -147,9 +142,7 @@ class SQLServer extends Driver implements DriverInterface
     }
 
     /**
-     * Rollback definition
-     *
-     * @return boolean
+     * {@inheritDoc}
      */
     public function rollback()
     {
@@ -157,12 +150,16 @@ class SQLServer extends Driver implements DriverInterface
     }
 
     /**
-     * Defines start point of a transaction
-     *
-     * @throws RuntimeException
-     * @throws LogicException if transaction was already started
-     *
-     * @return null
+     * {@inheritDoc}
+     */
+    public function disconnect()
+    {
+        parent::disconnect();
+        return sqlsrv_close($this->dbconn);
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function beginTransaction()
     {
@@ -182,17 +179,6 @@ class SQLServer extends Driver implements DriverInterface
     }
 
     /**
-     * Closes the connection
-     *
-     * @return boolean
-     */
-    public function disconnect()
-    {
-        parent::disconnect();
-        return sqlsrv_close($this->dbconn);
-    }
-
-    /**
      * Returns an array with the rows fetched
      *
      * @throws LogicException
@@ -201,7 +187,7 @@ class SQLServer extends Driver implements DriverInterface
      */
     protected function toArray()
     {
-        $data = array();
+        $data = [];
 
         if ($this->result)
         {
