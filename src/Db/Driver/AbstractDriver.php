@@ -322,7 +322,6 @@ abstract class AbstractDriver
     /**
      * Reconnects to the database
      *
-     * @throws RuntimeException
      * @throws LogicException
      *
      * @return resource|object
