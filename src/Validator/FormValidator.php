@@ -108,8 +108,9 @@ class FormValidator
     /**
      * Constructor
      *
-     * @param Form $formHandler
-     * @param array $options
+     * @param Form   $formHandler
+     * @param array  $options
+     * @param string $local
      */
     public function __construct(Form $formHandler, $options, $locale = null)
     {
@@ -119,7 +120,7 @@ class FormValidator
         if (is_null($locale))
         {
             $config = include('config/application.config.php');
-            $locale = $config["environment"]["locale"];            
+            $locale = $config["environment"]["locale"];
         }
 
         $i18nTranslator = \Zend\I18n\Translator\Translator::factory(
