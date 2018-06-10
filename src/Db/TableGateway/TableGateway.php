@@ -225,7 +225,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
         if (!count($set))
             throw new \LogicException("You cannot update rows without SET clause");
 
-        if (!count($set))
+        if (!count($where))
             throw new SecurityException("You cannot update rows without WHERE clause!");
 
         $bind_values = [];
