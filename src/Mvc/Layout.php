@@ -44,6 +44,13 @@ class Layout
     private $title;
 
     /**
+     * Document description
+     *
+     * @var string
+     */
+    private $description;
+
+    /**
      * Base path
      *
      * @var string
@@ -81,6 +88,16 @@ class Layout
     }
 
     /**
+     * Returns the document description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
      * Sets the document title
      *
      * @param string $title
@@ -90,6 +107,18 @@ class Layout
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    /**
+     * Sets the document description
+     *
+     * @param string $description
+     *
+     * @return null
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
     }
 
     /**
@@ -125,11 +154,19 @@ class Layout
     /**
      * Constructor
      *
+     * All modifiable attributes (i.e. with setter method) can be passed as key
+     *
+     * @param array $params
+     *
      * @throws Exception\PageNotFoundException
      */
-    public function __construct()
+    public function __construct(Array $params = [])
     {
-        // nothing to do
+        foreach ($params as $param => $value)
+        {
+            if (property_exists(__CLASS__, strtolower($param)) && method_exists($this, 'set'.$param))
+                $this->{'set'.$param}($value);
+        }
     }
 
     /**

@@ -275,7 +275,11 @@ abstract class AbstractionController
 
                 if (!is_null($this->getMethod()))
                 {
-                    $layoutManager = new Layout();
+                    $params = $this->getParams();
+
+                    $layout_params = (count($params) && array_key_exists('::Layout', $params)) ? $params["::Layout"] : [];
+
+                    $layoutManager = new Layout($layout_params);
                     $layoutManager->fromController($this);
                 }
             }
