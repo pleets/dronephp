@@ -10,6 +10,8 @@
 
 namespace Drone\Db\Driver;
 
+use Drone\Error\Errno;
+
 /**
  * AbstractDriver Class
  *
@@ -371,7 +373,7 @@ abstract class AbstractDriver
             $this->connect();
 
         if ($this->transac_mode)
-            throw new \LogicException(self::DB_TRANSACTION_STARTED);
+            throw new \LogicException($this->standardErrors[Errno::DB_TRANSACTION_STARTED]);
 
         $this->transac_mode = true;
     }
@@ -386,10 +388,10 @@ abstract class AbstractDriver
     public function endTransaction()
     {
         if (!$this->transac_mode)
-            throw new \LogicException(self::DB_TRANSACTION_NOT_STARTED);
+            throw new \LogicException($this->standardErrors[Errno::DB_TRANSACTION_NOT_STARTED]);
 
         if (is_null($this->transac_result))
-            throw new \LogicException(self::DB_TRANSACTION_EMPTY);
+            throw new \LogicException($this->standardErrors[Errno::DB_TRANSACTION_EMPTY]);
 
         if ($this->transac_result)
             $this->commit();
