@@ -40,7 +40,9 @@ abstract class AbstractRest
     protected $whiteList;
 
     /**
-     * @var array
+     * The username credential
+     *
+     * @var string
      */
     protected $username;
 
@@ -75,7 +77,7 @@ abstract class AbstractRest
     }
 
     /**
-     * Returns the username attribute
+     * Returns the username credential
      *
      * @return string
      */
@@ -129,6 +131,8 @@ abstract class AbstractRest
 
     /**
      * Sets a white list for authentication
+     *
+     * @param array $whiteList
      *
      * @throws RuntimeException
      *

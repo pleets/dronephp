@@ -18,16 +18,22 @@ namespace Drone\Db;
 abstract class Entity
 {
     /**
+     * the table's name
+     *
      * @var string
      */
     private $tableName;
 
     /**
+     * List of fields changed
+     *
      * @var array
      */
     private $changedFields = [];
 
     /**
+     * The connection identifier
+     *
      * @var string
      */
     private $connectionIdentifier = "default";

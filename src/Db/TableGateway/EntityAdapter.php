@@ -21,6 +21,8 @@ use Drone\Db\SQLFunction;
 class EntityAdapter
 {
     /**
+     * The gateway linked
+     *
      * @var TableGateway $tableGateway
      */
     private $tableGateway;

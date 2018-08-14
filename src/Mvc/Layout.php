@@ -142,7 +142,7 @@ class Layout
     /**
      * Sets the base path
      *
-     * @param string $basePath
+     * @param string $path
      *
      * @return null
      */

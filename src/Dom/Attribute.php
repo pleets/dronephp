@@ -18,11 +18,15 @@ namespace Drone\Dom;
 class Attribute
 {
     /**
+     * The name of the attribute
+     *
      * @var string
      */
     private $name;
 
     /**
+     * The value of the attribute
+     *
      * @var mixed
      */
     private $value;

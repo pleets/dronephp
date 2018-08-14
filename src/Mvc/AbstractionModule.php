@@ -21,6 +21,8 @@ use Drone\Mvc\AbstractionController;
 abstract class AbstractionModule
 {
     /**
+     * The module's name
+     *
      * @var string
      */
     protected $moduleName;

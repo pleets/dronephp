@@ -19,6 +19,8 @@ class SQLServer extends Driver implements DriverInterface
 {
     /**
      * {@inheritDoc}
+     *
+     * @param array $options
      */
     public function __construct($options)
     {

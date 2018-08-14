@@ -22,31 +22,43 @@ abstract class AbstractDriver
     use \Drone\Error\ErrorTrait;
 
     /**
+     * Database host
+     *
      * @var string
      */
     protected $dbhost;
 
     /**
+     * Database user
+     *
      * @var string
      */
     protected $dbuser;
 
     /**
+     * Database password
+     *
      * @var string
      */
     protected $dbpass;
 
     /**
+     * Database name
+     *
      * @var string
      */
     protected $dbname;
 
     /**
+     * Database charset
+     *
      * @var string
      */
     protected $dbchar;
 
     /**
+     * Database port
+     *
      * @var integer
      */
     protected $dbport;
@@ -101,6 +113,11 @@ abstract class AbstractDriver
     protected $transac_mode = false;
 
     /**
+     * Latest result of a transaction process
+     *
+     * The first time would be a result of a query(), execute() or parse() methods
+     * On subsequent times it's a boolean resulting of the boolean operation AND with the latest result.
+     *
      * @var boolean
      */
     protected $transac_result = null;

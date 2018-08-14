@@ -46,11 +46,15 @@ class FormValidator
     private $messages = [];
 
     /**
+     * Form instance
+     *
      * @var Form
      */
     private $formHandler;
 
     /**
+     * Element options
+     *
      * @var array
      */
     private $options;
@@ -110,7 +114,7 @@ class FormValidator
      *
      * @param Form   $formHandler
      * @param array  $options
-     * @param string $local
+     * @param string $locale
      */
     public function __construct(Form $formHandler, $options, $locale = null)
     {

@@ -19,6 +19,8 @@ class MySQL extends AbstractDriver implements DriverInterface
 {
     /**
      * {@inheritDoc}
+     *
+     * @param array $options
      */
     public function __construct($options)
     {

@@ -20,6 +20,8 @@ use Drone\Dom\Attribute;
 abstract class AbstractElement
 {
     /**
+     * Start tag of the element
+     *
      * @var string
      */
     protected $startTag;
@@ -32,7 +34,9 @@ abstract class AbstractElement
     protected $endTag;
 
     /**
-     * @var array
+     * Element attribute list
+     *
+     * @var Attribute[]
      */
     protected $attributes;
 

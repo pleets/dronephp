@@ -20,16 +20,22 @@ use Drone\FileSystem\Shell;
 class Application
 {
     /**
+     * List of modules available
+     *
      * @var array
      */
     private $modules;
 
     /**
+     * The router instance
+     *
      * @var Drone\Mvc\Router
      */
     private $router;
 
     /**
+     * Development or production mode
+     *
      * @var boolean
      */
     private $devMode;

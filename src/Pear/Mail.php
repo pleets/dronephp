@@ -18,6 +18,8 @@ namespace Drone\Pear;
 class Mail
 {
     /**
+     * Mail host
+     *
      * @var string
      */
     protected $host;

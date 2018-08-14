@@ -20,6 +20,8 @@ use Drone\Mvc\Exception;
 class Router
 {
     /**
+     * List of routes
+     *
      * @var array
      */
     private $routes;
@@ -39,6 +41,8 @@ class Router
     private $controller;
 
     /**
+     * The base path of the application
+     *
      * @var string
      */
     private $basePath;

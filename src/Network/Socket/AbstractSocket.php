@@ -21,11 +21,15 @@ abstract class AbstractSocket
     use \Drone\Error\ErrorTrait;
 
     /**
+     * Host
+     *
      * @var string
      */
     protected $host;
 
     /**
+     * Port
+     *
      * @var integer
      */
     protected $port;
