@@ -15,7 +15,7 @@ namespace Drone\Db\Driver;
  *
  * This is a database driver class to connect to SQLServer
  */
-class SQLServer extends Driver implements DriverInterface
+class SQLServer extends AbstractDriver implements DriverInterface
 {
     /**
      * {@inheritDoc}
@@ -58,7 +58,7 @@ class SQLServer extends Driver implements DriverInterface
         {
             $errors = sqlsrv_errors();
 
-            $previousException;
+            $previousException = null;
 
             foreach ($errors as $error)
             {
