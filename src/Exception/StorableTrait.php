@@ -48,7 +48,7 @@ trait StorableTrait
      */
     public function setOutputFile($value)
     {
-        return $this->outputFile = $value;
+        $this->outputFile = $value;
     }
 
     /**

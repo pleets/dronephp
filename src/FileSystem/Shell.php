@@ -189,7 +189,6 @@ class Shell implements ShellInterface
         }
         else {
 
-            $pathIns = dir('.');
             $contents = $this->ls();
 
             foreach ($contents as $item)
@@ -354,7 +353,7 @@ class Shell implements ShellInterface
                 $newfile .= '/'.basename($oldfile);
 
         if ($oldfile == $newfile)
-            return $this;
+            throw new Exception("'$oldfile' and '$newfile' are the same file");
 
         if(!rename($oldfile, $newfile))
             return false;
@@ -367,7 +366,7 @@ class Shell implements ShellInterface
      *
      * @param string       $dir
      * @param string|null  $dest
-     * @param booelan|null $recursive
+     * @param boolean|null $recursive
      *
      * @return boolean
      */

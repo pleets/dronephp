@@ -60,7 +60,7 @@ class Mail
      */
     public function setHost($value)
     {
-        return $this->host = $value;
+        $this->host = $value;
     }
 
     /**
@@ -99,7 +99,7 @@ class Mail
     protected function error($code, $message = null)
     {
         if (!array_key_exists($code, $this->errors))
-            $this->errors[$message] = (is_null($message) && array_key_exists($code, $this->messagesTemplates)) ? $this->messagesTemplates[$code] : $message;
+            $this->errors[$message] = (is_null($message) && array_key_exists($code, $this->errors)) ? $this->errors[$code] : $message;
     }
 
     /**

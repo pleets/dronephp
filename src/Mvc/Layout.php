@@ -124,7 +124,7 @@ class Layout
     /**
      * Sets the view
      *
-     * @param Drone\Mvc\AbstractionModule $module
+     * @param AbstractionModule $module
      * @param string $view
      *
      * @return null
@@ -205,12 +205,12 @@ class Layout
             $config = $controller->getModule()->getConfig();
 
             if (!array_key_exists($controller->getLayout(), $config["view_manager"]["template_map"]))
-                throw new Exception\PageFoundException("The 'template' " . $template . " was not defined in module.config.php");
+                throw new Exception\PageNotFoundException("The 'template' " . $template . " was not defined in module.config.php");
 
             $template = $config["view_manager"]["template_map"][$controller->getLayout()];
 
             if (!file_exists($template))
-                throw new Exception\PageFoundException("The 'template' " . $template . " does not exists");
+                throw new Exception\PageNotFoundException("The 'template' " . $template . " does not exists");
 
             include $template;
         }

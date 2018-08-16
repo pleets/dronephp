@@ -29,7 +29,7 @@ class Application
     /**
      * The router instance
      *
-     * @var Drone\Mvc\Router
+     * @var Router
      */
     private $router;
 
@@ -43,7 +43,7 @@ class Application
     /**
      * Returns the router instance
      *
-     * @return Drone\Mvc\Router
+     * @return Router
      */
     public function getRouter()
     {
@@ -124,7 +124,7 @@ class Application
      */
     private function loadModules($modules)
     {
-        if ($modules)
+        if (count($modules))
         {
             foreach ($modules as $module)
             {

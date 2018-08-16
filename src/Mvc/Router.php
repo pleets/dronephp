@@ -36,7 +36,7 @@ class Router
     /**
      * Controller instance
      *
-     * @var Drone\Mvc\AbstractionController
+     * @var AbstractionController
      */
     private $controller;
 
@@ -70,7 +70,7 @@ class Router
     /**
      * Returns the controller instance
      *
-     * @return Drone\Mvc\AbstractionController
+     * @return AbstractionController
      */
     public function getController()
     {

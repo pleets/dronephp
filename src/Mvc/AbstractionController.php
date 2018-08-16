@@ -24,7 +24,7 @@ abstract class AbstractionController
     /**
      * Current module
      *
-     * @var string
+     * @var object
      */
     private $module;
 
@@ -364,7 +364,9 @@ abstract class AbstractionController
                 $i++;
             }
 
-            for ($i = 0; $i < count($vars); $i++)
+            $vars_count = count($vars);
+
+            for ($i = 0; $i < $vars_count; $i++)
             {
                 if (array_key_exists($i, $values))
                     $_GET[$vars[$i]] = $values[$i];

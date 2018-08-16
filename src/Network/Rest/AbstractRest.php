@@ -71,7 +71,7 @@ abstract class AbstractRest
      */
     public function getWhiteList()
     {
-        return $this->whitelist;
+        return $this->whiteList;
     }
 
     /**
@@ -142,7 +142,7 @@ abstract class AbstractRest
      */
     public function setHttp($http)
     {
-        return $this->http = $http;
+        $this->http = $http;
     }
 
     /**

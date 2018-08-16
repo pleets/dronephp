@@ -72,7 +72,7 @@ class FormValidator
     /**
      * Returns valid attribute after validation
      *
-     * @return array
+     * @return boolean
      */
     public function isValid()
     {
@@ -84,7 +84,7 @@ class FormValidator
      *
      * @param boolean $valid
      *
-     * @return boolean
+     * @return null
      */
     public function setValid($valid)
     {

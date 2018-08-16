@@ -80,7 +80,7 @@ abstract class AbstractSocket
      */
     public function setHost($host)
     {
-        return $this->host = $host;
+        $this->host = $host;
     }
 
     /**
@@ -92,7 +92,7 @@ abstract class AbstractSocket
      */
     public function setPort($port)
     {
-        return $this->port = $port;
+        $this->port = $port;
     }
 
     /**
