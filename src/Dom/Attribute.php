@@ -34,7 +34,7 @@ class Attribute
     /**
      * Gets the name attribute
      *
-     * @return array
+     * @return string
      */
     public function getName()
     {

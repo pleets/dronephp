@@ -51,7 +51,7 @@ abstract class Entity
     /**
      * Returns a list with the fields changed
      *
-     * @return string
+     * @return array
      */
     public function getChangedFields()
     {

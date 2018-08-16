@@ -66,7 +66,7 @@ abstract class AbstractDriver
     /**
      * Connection identifier
      *
-     * @var resource|boolean
+     * @var object|resource
      */
     protected $dbconn;
 
@@ -224,7 +224,7 @@ abstract class AbstractDriver
      */
     public function setDbhost($value)
     {
-        return $this->dbhost = $value;
+        $this->dbhost = $value;
     }
 
     /**
@@ -236,7 +236,7 @@ abstract class AbstractDriver
      */
     public function setDbuser($value)
     {
-        return $this->dbuser = $value;
+        $this->dbuser = $value;
     }
 
     /**
@@ -248,7 +248,7 @@ abstract class AbstractDriver
      */
     public function setDbpass($value)
     {
-        return $this->dbpass = $value;
+        $this->dbpass = $value;
     }
 
     /**
@@ -260,7 +260,7 @@ abstract class AbstractDriver
      */
     public function setDbname($value)
     {
-        return $this->dbname = $value;
+        $this->dbname = $value;
     }
 
     /**
@@ -272,7 +272,7 @@ abstract class AbstractDriver
      */
     public function setDbchar($value)
     {
-        return $this->dbchar = $value;
+        $this->dbchar = $value;
     }
 
     /**
@@ -284,7 +284,7 @@ abstract class AbstractDriver
      */
     public function setDbport($value)
     {
-        return $this->dbport = $value;
+        $this->dbport = $value;
     }
 
     /**

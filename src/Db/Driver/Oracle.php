@@ -20,6 +20,13 @@ class Oracle extends AbstractDriver implements DriverInterface
     /**
      * {@inheritDoc}
      *
+     * @var resource
+     */
+    protected $dbconn;
+
+    /**
+     * {@inheritDoc}
+     *
      * @param array $options
      */
     public function __construct($options)

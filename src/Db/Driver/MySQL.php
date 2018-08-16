@@ -20,6 +20,13 @@ class MySQL extends AbstractDriver implements DriverInterface
     /**
      * {@inheritDoc}
      *
+     * @var object
+     */
+    protected $dbconn;
+
+    /**
+     * {@inheritDoc}
+     *
      * @param array $options
      */
     public function __construct($options)
@@ -41,7 +48,7 @@ class MySQL extends AbstractDriver implements DriverInterface
      * @throws RuntimeException
      * @throws Exception\ConnectionException
      *
-     * @return mysqli
+     * @return \mysqli
      */
     public function connect()
     {

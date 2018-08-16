@@ -20,6 +20,13 @@ class SQLServer extends AbstractDriver implements DriverInterface
     /**
      * {@inheritDoc}
      *
+     * @var resource
+     */
+    protected $dbconn;
+
+    /**
+     * {@inheritDoc}
+     *
      * @param array $options
      */
     public function __construct($options)
@@ -72,10 +79,10 @@ class SQLServer extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * Excecutes a statement
+     * Executes a statement
      *
      * @param string $sql
-     * @param params $params
+     * @param array $params
      *
      * @throws Exception\InvalidQueryException
      *

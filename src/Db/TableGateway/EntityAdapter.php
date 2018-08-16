@@ -113,7 +113,7 @@ class EntityAdapter
      * @throws RuntimeException from internal execute()
      * @throws InvalidArgumentException
      *
-     * @return resource|boolean
+     * @return object|resource
      */
     public function update($entity, $where)
     {
@@ -148,7 +148,7 @@ class EntityAdapter
      * @throws RuntimeException from internal execute()
      * @throws InvalidArgumentException
      *
-     * @return boolean
+     * @return object|resource
      */
     public function delete($entity)
     {
