@@ -75,6 +75,7 @@ class Basic extends AbstractRest
     public function response()
     {
         $status = http_response_code();
-        echo 'Error ' . $status .' (' . $this->http->getStatusText($status) . ')!!';
+        $this->response = 'Error ' . $status .' (' . $this->http->getStatusText($status) . ')!!';
+        echo $this->response;
     }
 }

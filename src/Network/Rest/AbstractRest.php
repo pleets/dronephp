@@ -20,21 +20,22 @@ use Drone\Network\Http;
 abstract class AbstractRest
 {
     /**
-     * @var string
-     */
-    protected $method;
-
-    /**
+     * Server response
+     *
      * @var string
      */
     protected $response;
 
     /**
+     * Description of the protected area
+     *
      * @var string
      */
     protected $realm;
 
     /**
+     * White list for authentication
+     *
      * @var array
      */
     protected $whiteList;
