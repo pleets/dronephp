@@ -8,7 +8,7 @@
  * @author    Darío Rivera <fermius.us@gmail.com>
  */
 
-namespace Drone\Socket;
+namespace Drone\Network\Socket;
 
 /**
  * AbstractSocket class
