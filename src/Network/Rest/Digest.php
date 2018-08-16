@@ -26,11 +26,11 @@ class Digest extends AbstractRest
     {
         if (empty($_SERVER['PHP_AUTH_DIGEST']))
         {
-            $status = $this->http::HTTP_UNAUTHORIZED;
+            $ht = $this->http;
 
-            $this->http->writeStatus($status);
+            $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
             header('WWW-Authenticate: Digest realm="'.$this->realm.'",qop="auth",nonce="'.uniqid().'",opaque="'.md5($this->realm).'"');
-            die('Error ' . $status .' (' . $this->http->getStatusText($status) . ')!!');
+            die('Error ' . $ht::HTTP_UNAUTHORIZED .' (' . $this->http->getStatusText($ht::HTTP_UNAUTHORIZED) . ')!!');
         }
     }
 
@@ -41,9 +41,11 @@ class Digest extends AbstractRest
      */
     public function authenticate()
     {
+        $ht = $this->http;
+
         if (!($data = $this->http_digest_parse($_SERVER['PHP_AUTH_DIGEST'])) || !isset($this->whiteList[$data['username']]))
         {
-            $this->http->writeStatus($this->http::HTTP_UNAUTHORIZED);
+            $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
             return false;
         }
 
@@ -53,7 +55,7 @@ class Digest extends AbstractRest
 
         if ($data['response'] != $valid_response)
         {
-            $this->http->writeStatus($this->http::HTTP_UNAUTHORIZED);
+            $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
             return false;
         }
 
@@ -62,6 +64,13 @@ class Digest extends AbstractRest
         return true;
     }
 
+    /**
+     * Parse digest parameters
+     *
+     * @param string $txt
+     *
+     * @return boolean
+     */
     private function http_digest_parse($txt)
     {
         // protect against missing data

@@ -26,11 +26,11 @@ class Basic extends AbstractRest
     {
         if (empty($_SERVER['PHP_AUTH_USER']))
         {
-            $status = $this->http::HTTP_UNAUTHORIZED;
+            $ht = $this->http;
 
-            $this->http->writeStatus($status);
+            $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
             header('WWW-Authenticate: Basic realm="'.$this->realm.'"');
-            die('Error ' . $status .' (' . $this->http->getStatusText($status) . ')!!');
+            die('Error ' . $ht::HTTP_UNAUTHORIZED .' (' . $this->http->getStatusText($ht::HTTP_UNAUTHORIZED) . ')!!');
         }
     }
 
@@ -41,10 +41,11 @@ class Basic extends AbstractRest
      */
     public function authenticate()
     {
+        $ht = $this->http;
 
         if (!isset($_SERVER['PHP_AUTH_USER']))
         {
-            $this->http->writeStatus($this->http::HTTP_UNAUTHORIZED);
+            $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
             return false;
         }
 
@@ -52,13 +53,13 @@ class Basic extends AbstractRest
 
         if (!isset($this->whiteList[$username]))
         {
-            $this->http->writeStatus($this->http::HTTP_UNAUTHORIZED);
+            $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
             return false;
         }
 
         if ($this->whiteList[$username] !== $_SERVER['PHP_AUTH_PW'])
         {
-            $this->http->writeStatus($this->http::HTTP_UNAUTHORIZED);
+            $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
             return false;
         }
 

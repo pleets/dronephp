@@ -20,13 +20,6 @@ use Drone\Network\Http;
 abstract class AbstractRest
 {
     /**
-     * Server response
-     *
-     * @var string
-     */
-    protected $response;
-
-    /**
      * Description of the protected area
      *
      * @var string
@@ -48,24 +41,18 @@ abstract class AbstractRest
     protected $username;
 
     /**
-     * Returns the method attribute
+     * Server response
      *
-     * @return string
+     * @var string
      */
-    public function getMethod()
-    {
-        return $this->method;
-    }
+    protected $response;
 
     /**
-     * Returns the response attribute
+     * HTTP instance
      *
-     * @return string
+     * @var Http
      */
-    public function getResponse()
-    {
-        return $this->response;
-    }
+    protected $http;
 
     /**
      * Returns the response attribute
@@ -75,6 +62,16 @@ abstract class AbstractRest
     public function getRealm()
     {
         return $this->realm;
+    }
+
+    /**
+     * Returns the white list for authentication
+     *
+     * @return string
+     */
+    public function getWhiteList()
+    {
+        return $this->whitelist;
     }
 
     /**
@@ -88,15 +85,23 @@ abstract class AbstractRest
     }
 
     /**
-     * Sets method attribute
+     * Returns the response attribute
      *
-     * @param string $method
-     *
-     * @return null
+     * @return string
      */
-    public function setMethod($method)
+    public function getResponse()
     {
-        return $this->method = $method;
+        return $this->response;
+    }
+
+    /**
+     * Returns the HTTP instance
+     *
+     * @return Http
+     */
+    public function getHttp()
+    {
+        return $this->http;
     }
 
     /**
@@ -109,6 +114,35 @@ abstract class AbstractRest
     public function setRealm($realm)
     {
         return $this->realm = $realm;
+    }
+
+    /**
+     * Sets a white list for authentication
+     *
+     * @param array $whiteList
+     *
+     * @throws RuntimeException
+     *
+     * @return null
+     */
+    public function setWhiteList(array $whiteList)
+    {
+        if (empty($whiteList))
+            throw new \RuntimeException("Empty whitelist!");
+
+        $this->whiteList = $whiteList;
+    }
+
+    /**
+     * Sets the HTTP instance
+     *
+     * @param Http $http
+     *
+     * @return null
+     */
+    public function setHttp($http)
+    {
+        return $this->http = $http;
     }
 
     /**
@@ -128,23 +162,6 @@ abstract class AbstractRest
 
         # HTTP instance
         $this->http = new Http();
-    }
-
-    /**
-     * Sets a white list for authentication
-     *
-     * @param array $whiteList
-     *
-     * @throws RuntimeException
-     *
-     * @return null
-     */
-    public function setWhiteList(array $whiteList)
-    {
-        if (empty($whiteList))
-            throw new \RuntimeException("Empty whitelist!");
-
-        $this->whiteList = $whiteList;
     }
 
     /**
