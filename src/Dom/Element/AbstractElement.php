@@ -10,7 +10,7 @@
 
 namespace Drone\Dom\Element;
 
-use Drone\Dom\Atribute;
+use Drone\Dom\Attribute;
 
 /**
  * AbstractElement class
@@ -100,7 +100,7 @@ abstract class AbstractElement
      * @param string $label
      * @param string $name
      *
-     * @return Atribute|null
+     * @return Attribute|null
      */
     public function getAttribute($label, $name)
     {
