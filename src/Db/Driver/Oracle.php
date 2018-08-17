@@ -97,7 +97,7 @@ class Oracle extends AbstractDriver implements DriverInterface
 
         if (!$stid)
         {
-            $error = oci_error($stid) : oci_error();
+            $error = $stid ? oci_error($stid) : oci_error();
 
             if (!empty($error))
             {

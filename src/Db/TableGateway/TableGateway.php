@@ -128,7 +128,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
         $sql = "SELECT * \r\nFROM {$table}\r\n$where";
 
         if (count($bind_values))
-            $this->getDriver()->getDb()->execute($sql, $bind_values)
+            $this->getDriver()->getDb()->execute($sql, $bind_values);
         else
             $this->getDriver()->getDb()->execute($sql);
 

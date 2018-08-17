@@ -209,7 +209,7 @@ abstract class AbstractDriver
      */
     public function getArrayResult()
     {
-        if (count($this->arrayResult))
+        if (!empty($this->arrayResult))
             return $this->arrayResult;
 
         return $this->toArray();
