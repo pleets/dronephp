@@ -94,7 +94,7 @@ abstract class AbstractDriver
     /**
      * Statement handle
      *
-     * @var resource|boolean
+     * @var resource|mixed
      */
     protected $result;
 

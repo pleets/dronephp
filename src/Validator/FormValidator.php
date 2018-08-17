@@ -60,6 +60,13 @@ class FormValidator
     private $options;
 
     /**
+     * Translator object
+     *
+     * @var \Zend\Mvc\I18n\Translator
+     */
+    private $translator;
+
+    /**
      * Returns all failure messages
      *
      * @return array
@@ -308,7 +315,7 @@ class FormValidator
      *
      * Supports n-dimensional arrays (name='example[][]')
      *
-     * @param Zend\Validator $validator
+     * @param \Zend\Validator $validator
      * @param mixed          $form_value
      * @param integer        $key
      * @param boolean        $required

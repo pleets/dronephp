@@ -221,7 +221,7 @@ class Layout
      *
      * @throws Exception\PageNotFoundException
      *
-     * @param Drone\Mvc\AbstractionModule $module
+     * @param AbstractionModule $module
      * @param string $template
      */
     public function fromTemplate($module, $template)

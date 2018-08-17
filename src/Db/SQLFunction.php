@@ -28,7 +28,7 @@ class SQLFunction
     /**
      * The arguments for the SQL function
      *
-     * @var string
+     * @var array
      */
     private $arguments;
 
@@ -45,7 +45,7 @@ class SQLFunction
     /**
      * Returns the arguments for the SQL function
      *
-     * @return string
+     * @return array
      */
     public function getArguments()
     {

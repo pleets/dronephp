@@ -67,7 +67,7 @@ abstract class AbstractRest
     /**
      * Returns the white list for authentication
      *
-     * @return string
+     * @return array
      */
     public function getWhiteList()
     {
@@ -113,7 +113,7 @@ abstract class AbstractRest
      */
     public function setRealm($realm)
     {
-        return $this->realm = $realm;
+        $this->realm = $realm;
     }
 
     /**

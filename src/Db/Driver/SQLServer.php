@@ -86,7 +86,7 @@ class SQLServer extends AbstractDriver implements DriverInterface
      *
      * @throws Exception\InvalidQueryException
      *
-     * @return resource
+     * @return mixed
      */
     public function execute($sql, Array $params = [])
     {
@@ -99,9 +99,9 @@ class SQLServer extends AbstractDriver implements DriverInterface
         # Bound variables
         if (count($params))
         {
-            $this->result = sqlsrv_prepare($this->dbconn, $sql, $params);
+            $stmt = sqlsrv_prepare($this->dbconn, $sql, $params);
 
-            if (!$this->result)
+            if (!$stmt)
             {
                 $errors = sqlsrv_errors();
 
@@ -113,12 +113,12 @@ class SQLServer extends AbstractDriver implements DriverInterface
                 throw new Exception\InvalidQueryException($error["message"], $error["code"]);
             }
 
-            $r = sqlsrv_execute($this->result);
+            $exec = sqlsrv_execute($stmt);
         }
         else
-            $r = $this->result = sqlsrv_query($this->dbconn, $sql, $params, array( "Scrollable" => SQLSRV_CURSOR_KEYSET ));
+            $exec = $this->result = sqlsrv_query($this->dbconn, $sql, $params, array( "Scrollable" => SQLSRV_CURSOR_KEYSET ));
 
-        if (!$r)
+        if ($exec === false)
         {
             $errors = sqlsrv_errors();
 

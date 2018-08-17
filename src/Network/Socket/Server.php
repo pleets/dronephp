@@ -69,7 +69,7 @@ class Server extends AbstractSocket
      *
      * @throws RuntimeException
      *
-     * @return null
+     * @return boolean
      */
 	public function listen(Array $eventHandlers = array())
 	{

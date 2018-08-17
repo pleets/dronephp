@@ -141,7 +141,7 @@ abstract class AbstractSocket
     /**
      * Closes the socket
      *
-     * @return bool
+     * @return null
      */
 	public function close()
 	{

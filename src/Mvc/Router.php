@@ -84,7 +84,7 @@ class Router
      */
     public function getBasePath()
     {
-        return $this->basePath();
+        return $this->basePath;
     }
 
     /**

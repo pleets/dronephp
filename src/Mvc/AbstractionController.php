@@ -76,7 +76,7 @@ abstract class AbstractionController
     /**
      * Returns the current module
      *
-     * @return string
+     * @return object
      */
     public function getModule()
     {
