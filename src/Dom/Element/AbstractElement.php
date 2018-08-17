@@ -10,7 +10,7 @@
 
 namespace Drone\Dom\Element;
 
-use Drone\Dom;
+use Drone\Dom\Atribute;
 
 /**
  * AbstractElement class

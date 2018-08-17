@@ -127,7 +127,10 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "SELECT * \r\nFROM {$table}\r\n$where";
 
-        $result = (count($bind_values)) ? $this->getDriver()->getDb()->execute($sql, $bind_values) : $this->getDriver()->getDb()->execute($sql);
+        if (count($bind_values))
+            $this->getDriver()->getDb()->execute($sql, $bind_values)
+        else
+            $this->getDriver()->getDb()->execute($sql);
 
         return $this->getDriver()->getDb()->getArrayResult();
     }
@@ -287,7 +290,6 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             }
         }
 
-        $parsed_set_array = $parsed_set;
         $parsed_set = implode(",\r\n\t", $parsed_set);
 
         $parsed_where = [];

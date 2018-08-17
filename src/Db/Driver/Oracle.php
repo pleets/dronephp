@@ -62,13 +62,15 @@ class Oracle extends AbstractDriver implements DriverInterface
                     ? $this->dbhost .":". $this->dbport ."/". $this->dbname
                     : $this->dbhost ."/". $this->dbname;
 
-        $this->dbconn = @oci_connect($this->dbuser,  $this->dbpass, $connection_string, $this->dbchar);
+        $conn = @oci_connect($this->dbuser,  $this->dbpass, $connection_string, $this->dbchar);
 
-        if ($this->dbconn === false)
+        if ($conn === false)
         {
             $error = oci_error();
             throw new Exception\ConnectionException($error["message"], $error["code"]);
         }
+
+        $this->dbconn = $conn;
 
         return $this->dbconn;
     }
@@ -95,7 +97,7 @@ class Oracle extends AbstractDriver implements DriverInterface
 
         if (!$stid)
         {
-            $error = $this->result ? oci_error($this->result) : oci_error();
+            $error = oci_error($stid) : oci_error();
 
             if (!empty($error))
             {
@@ -135,7 +137,7 @@ class Oracle extends AbstractDriver implements DriverInterface
 
         if (!$r)
         {
-            $error = oci_error($this->result);
+            $error = oci_error($stid);
             $this->error($error["code"], $error["message"]);
 
             throw new Exception\InvalidQueryException($error["message"], $error["code"]);
@@ -150,7 +152,9 @@ class Oracle extends AbstractDriver implements DriverInterface
         $this->numFields = oci_num_fields($stid);
 
         if ($this->transac_mode)
-            $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
+            $this->transac_result = is_null($this->transac_result) ? $stid: $this->transac_result && $stid;
+
+        $this->result = $stid;
 
         return $this->result;
     }

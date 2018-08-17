@@ -101,8 +101,6 @@ abstract class Entity
      */
     public function exchangeArray($data)
     {
-        $class = get_class($this);
-
         foreach ($data as $prop => $value)
         {
             if (property_exists($this, $prop))
@@ -113,7 +111,7 @@ abstract class Entity
                     $this->changedFields[] = $prop;
             }
             else
-                throw new \LogicException("The property '$prop' does not exists in the class '$class'");
+                throw new \LogicException("The property '$prop' does not exists in the class ' " . get_class($this) . " '");
         }
     }
 
