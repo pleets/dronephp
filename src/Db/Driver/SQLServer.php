@@ -59,9 +59,9 @@ class SQLServer extends AbstractDriver implements DriverInterface
             $this->dbhost .= ', ' . $this->dbport;
 
         $db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar);
-        $this->dbconn = sqlsrv_connect($this->dbhost, $db_info);
+        $conn = sqlsrv_connect($this->dbhost, $db_info);
 
-        if ($this->dbconn === false)
+        if ($conn === false)
         {
             $errors = sqlsrv_errors();
 
@@ -74,6 +74,8 @@ class SQLServer extends AbstractDriver implements DriverInterface
 
             throw $previousException;
         }
+
+        $this->dbconn = $conn;
 
         return $this->dbconn;
     }

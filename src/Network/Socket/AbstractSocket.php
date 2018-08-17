@@ -37,7 +37,7 @@ abstract class AbstractSocket
     /**
      * Socket resource
      *
-     * @var resource|boolean
+     * @var resource
      */
     protected $socket;
 
@@ -112,13 +112,15 @@ abstract class AbstractSocket
             $this->{'set'.$option}($value);
         }
 
-        if (!($this->socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP)))
+        if (!($socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP)))
         {
             $errno = socket_last_error();
             $this->error($errno, socket_strerror($errno));
 
             throw new \RuntimeException("Could not create the socket");
         }
+
+        $this->socket = $socket;
 	}
 
     /**

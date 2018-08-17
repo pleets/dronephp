@@ -97,7 +97,7 @@ class Oracle extends AbstractDriver implements DriverInterface
         {
             $error = $this->result ? oci_error($this->result) : oci_error();
 
-            if (!$error)
+            if (!empty($error))
             {
                 $error = [
                     "message" => "Could not prepare statement!"
