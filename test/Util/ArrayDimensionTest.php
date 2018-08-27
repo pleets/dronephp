@@ -18,9 +18,9 @@ class ArrayDimensionTest extends TestCase
     /**
      * Tests if returns the same array if it's unidimensional
      *
-     * @return void
+     * @return null
      */
-    public function testReturnSameArray() : void
+    public function testReturnSameArray()
     {
         $multidimensional = [
             "foo" => [8, "bar"]
@@ -34,9 +34,9 @@ class ArrayDimensionTest extends TestCase
     /**
      * Tests if it's possible transform a simple two-dimensional array into an unidimensional
      *
-     * @return void
+     * @return null
      */
-    public function testCanBeCreatedFromATwoDimensionalArray() : void
+    public function testCanBeCreatedFromATwoDimensionalArray()
     {
         # two-dimensional array
         $multidimensional = [
@@ -61,9 +61,9 @@ class ArrayDimensionTest extends TestCase
     /**
      * Tests if it's possible transform a simple three-dimensional array into an unidimensional
      *
-     * @return void
+     * @return null
      */
-    public function testCanBeCreatedFromAThreeDimensionalArray() : void
+    public function testCanBeCreatedFromAThreeDimensionalArray()
     {
         # three-dimensional array
         $multidimensional = [
@@ -92,9 +92,9 @@ class ArrayDimensionTest extends TestCase
     /**
      * Tests if it's possible transform a mixed n-dimensional array into an unidimensional
      *
-     * @return void
+     * @return null
      */
-    public function testCanBeCreatedFromAMixedArray() : void
+    public function testCanBeCreatedFromAMixedArray()
     {
         # mixed n-dimensional array
         $multidimensional = [
