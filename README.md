@@ -1,6 +1,6 @@
 <p align="center">
 <a href="https://scrutinizer-ci.com/g/Pleets/DronePHP"><img src="https://img.shields.io/scrutinizer/g/pleets/dronephp.svg" alt="Code Quality"></a>
-<a href="https://scrutinizer-ci.com/g/Pleets/DronePHP/build-status/master"><img src="https://scrutinizer-ci.com/g/Pleets/DronePHP/badges/build.png?b=master" alt="Build Status"></a>
+<a href="https://travis-ci.org/Pleets/DronePHP"><img src="https://travis-ci.org/Pleets/DronePHP.svg?branch=master" alt="Build Status"></a>
 <a href="https://packagist.org/packages/pleets/dronephp"><img src="https://poser.pugx.org/pleets/dronephp/d/total.svg" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/pleets/dronephp"><img src="https://poser.pugx.org/pleets/dronephp/v/stable.svg" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/pleets/dronephp"><img src="https://poser.pugx.org/pleets/dronephp/license.svg" alt="License"></a>
