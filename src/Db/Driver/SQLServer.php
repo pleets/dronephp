@@ -110,6 +110,15 @@ class SQLServer extends AbstractDriver implements DriverInterface
         # indicates if SQL is a selection statement
         $isSelectStm = (preg_match('/^SELECT/i', $clean_code));
 
+        # indicates if SQL is a insert statement
+        $isInsertStm = (preg_match('/^INSERT/i', $clean_code));
+
+        # indicates if SQL is a insert statement
+        $isUpdateStm = (preg_match('/^UPDATE/i', $clean_code));
+
+        # indicates if SQL is a insert statement
+        $isDeleteStm = (preg_match('/^DELETE/i', $clean_code));
+
         # Bound variables
         if (count($params))
         {
@@ -154,7 +163,7 @@ class SQLServer extends AbstractDriver implements DriverInterface
         $this->numRows = sqlsrv_has_rows($this->result) ? sqlsrv_num_rows($this->result) : $this->numRows;
         $this->numFields = sqlsrv_num_fields($this->result);
 
-        if (!$isSelectStm)
+        if ($isInsertStm || $isUpdateStm || $isDeleteStm)
             $this->rowsAffected = sqlsrv_rows_affected($this->result);
 
         if ($this->transac_mode)
