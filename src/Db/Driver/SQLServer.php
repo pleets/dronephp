@@ -98,6 +98,18 @@ class SQLServer extends AbstractDriver implements DriverInterface
 
         $this->arrayResult = null;
 
+        // (/**/)
+        $clean_code = preg_replace('/(\s)*\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\//', '', $sql);
+
+        // (--)
+        $clean_code = preg_replace('/(\s)*--.*\n/', "", $clean_code);
+
+        # clean other characters starting senteces
+        $clean_code = preg_replace('/^[\n\t\s]*/', "", $clean_code);
+
+        # indicates if SQL is a selection statement
+        $isSelectStm = (preg_match('/^SELECT/i', $clean_code));
+
         # Bound variables
         if (count($params))
         {
@@ -118,7 +130,12 @@ class SQLServer extends AbstractDriver implements DriverInterface
             $exec = sqlsrv_execute($stmt);
         }
         else
-            $exec = $this->result = sqlsrv_query($this->dbconn, $sql, $params, array( "Scrollable" => SQLSRV_CURSOR_KEYSET ));
+        {
+            if ($isSelectStm)
+                $exec = $this->result = sqlsrv_query($this->dbconn, $sql, $params, array( "Scrollable" => SQLSRV_CURSOR_KEYSET ));
+            else
+                $exec = $this->result = sqlsrv_query($this->dbconn, $sql, $params);
+        }
 
         if ($exec === false)
         {
@@ -134,9 +151,11 @@ class SQLServer extends AbstractDriver implements DriverInterface
 
         $this->getArrayResult();
 
-        $this->numRows = sqlsrv_num_rows($this->result);
+        $this->numRows = sqlsrv_has_rows($this->result) ? sqlsrv_num_rows($this->result) : $this->numRows;
         $this->numFields = sqlsrv_num_fields($this->result);
-        $this->rowsAffected = sqlsrv_rows_affected($this->result);
+
+        if (!$isSelectStm)
+            $this->rowsAffected = sqlsrv_rows_affected($this->result);
 
         if ($this->transac_mode)
             $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
