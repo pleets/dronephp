@@ -48,6 +48,13 @@ class Router
     private $basePath;
 
     /**
+     * Zend\Router implementation
+     *
+     * @var \Zend\Router\SimpleRouteStack
+     */
+    private $zendRouter;
+
+    /**
      * Returns all routes built
      *
      * @return array
@@ -88,6 +95,16 @@ class Router
     }
 
     /**
+     * Returns the Zend\Router\SimpleRouteStack object
+     *
+     * @return \Zend\Router\SimpleRouteStack
+     */
+    public function getZendRouter()
+    {
+        return $this->zendRouter;
+    }
+
+    /**
      * Sets identifiers
      *
      * @param string $module
@@ -125,6 +142,7 @@ class Router
     public function __construct($routes)
     {
         $this->routes = $routes;
+        $this->zendRouter = new \Zend\Router\SimpleRouteStack();
     }
 
     /**
@@ -138,7 +156,7 @@ class Router
     {
         /*
          *  Route builder:
-         *  The route is constructed from the URL in the following order
+         *  The route is constructed by default from the URL in the following order
          *  www.example.com/module/controller/view
          */
 
@@ -180,5 +198,20 @@ class Router
             throw new \LogicException("The key '$key' was already defined as route");
 
         $this->routes = array_merge($this->routes, $route);
+    }
+
+    /**
+     * Adds a new route to router
+     *
+     * @param string $name
+     * @param Zend\Router\Http\RouteInterface $route
+     *
+     * @throws LogicException
+     *
+     * @return null
+     */
+    public function addZendRoute($name, \Zend\Router\Http\RouteInterface $route)
+    {
+        $this->zendRouter->addRoute($name, $route);
     }
 }

@@ -102,6 +102,20 @@ class Application
         $this->router = new Router($init_parameters["router"]["routes"]);
         $this->router->setBasePath($init_parameters["environment"]["base_path"]);
 
+        # load routes from application.config.php
+        if (file_exists("config/application.config.php"))
+        {
+            $app_config_file = require "config/application.config.php";
+
+            foreach ($app_config_file["router"]["routes"] as $name => $route)
+            {
+                if ($route instanceof \Zend\Router\Http\RouteInterface)
+                    $this->getRouter()->addZendRoute($name, $route);
+                else
+                    $this->getRouter()->addRoute($route);
+            }
+        }
+
         # load routes from modules
         foreach ($this->modules as $module)
         {
@@ -153,7 +167,34 @@ class Application
         $controller = isset($_GET["controller"]) ? $_GET["controller"] : null;
         $view = isset($_GET["view"]) ? $_GET["view"] : null;
 
-        $this->router->setIdentifiers($module, $controller, $view);
+        $request = new  \Zend\Http\Request();
+
+        # build URI
+        $uri = '';
+        $uri .= !empty($module) ? '/' . $module : "";
+        $uri .= !empty($controller) ? '/' . $controller : "";
+        $uri .= !empty($view) ? '/' . $view : "";
+
+        if (empty($uri))
+            $uri = "/";
+
+        $request->setUri($uri);
+
+        $match = $this->router->getZendRouter()->match($request);
+
+        if (!is_null($match))
+        {
+            $params = $match->getParams();
+            $parts = explode("\\", $params["controller"]);
+            $module = $parts[0];
+            $controller = $parts[2];
+            $view = $params["action"];
+
+            $this->router->setIdentifiers($module, $controller, $view);
+        }
+        else
+            $this->router->setIdentifiers($module, $controller, $view);
+
         $this->router->run();
     }
 }
