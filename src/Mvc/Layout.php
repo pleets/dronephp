@@ -51,6 +51,13 @@ class Layout
     private $description;
 
     /**
+     * Document image
+     *
+     * @var string
+     */
+    private $image;
+
+    /**
      * Base path
      *
      * @var string
@@ -98,6 +105,16 @@ class Layout
     }
 
     /**
+     * Returns the document image
+     *
+     * @return string
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
      * Sets the document title
      *
      * @param string $title
@@ -119,6 +136,18 @@ class Layout
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * Sets the document image
+     *
+     * @param string $image
+     *
+     * @return null
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
     }
 
     /**
