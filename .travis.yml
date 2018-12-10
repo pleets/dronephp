@@ -23,7 +23,7 @@ matrix:
     - php: 7.2
 
 before_install:
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS test; USE test;
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS test; USE test';
 
 install:
   - travis_retry composer install
