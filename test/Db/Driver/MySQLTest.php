@@ -11,7 +11,7 @@
 namespace DroneTest\Util;
 
 use Drone\Db\Driver\MySQL;
-use Drone\Db\Driver\Exception;
+use Drone\Db\Driver\Exception\ConnectionException;
 use PHPUnit\Framework\TestCase;
 
 class MySQLTest extends TestCase
@@ -77,17 +77,7 @@ class MySQLTest extends TestCase
      */
     public function testCannotDisconectWhenNotConnected()
     {
-        $options = [
-            "dbhost"       => "localhost",
-            "dbuser"       => "root",
-            "dbpass"       => "",
-            "dbname"       => "test",
-            "dbchar"       => "utf8",
-            "dbport"       => "3306",
-            "auto_connect" => false
-        ];
-
-        $conn = new MySQL($options);
+        $conn = new MySQL($this->options);
 
         $errorObject = null;
 
@@ -117,7 +107,7 @@ class MySQLTest extends TestCase
         $conn->connect();
         $mysqliObject = $conn->reconnect();
 
-        $this->assertInstanceOf(\mysqli, $mysqliObject);
+        $this->assertInstanceOf('\mysqli', $mysqliObject);
         $this->assertTrue($conn->isConnected());
     }
 
@@ -154,6 +144,7 @@ class MySQLTest extends TestCase
     public function testCannotStablishConnection()
     {
         $this->options["dbhost"] = "myserver";   // this server does not exists
+        $this->options["auto_connect"] = false;
 
         $conn = new MySQL($this->options);
 
@@ -188,12 +179,12 @@ class MySQLTest extends TestCase
      *
      * @return null
      */
-    public function textCanExecuteDLLStatement()
+    public function testCanExecuteDLLStatement()
     {
         $this->options["auto_connect"] = true;
 
         $conn = new MySQL($this->options);
-        $sql = "CREATE TABLE MYTABLE (ID INTEGER AUTO_INCREMENT, DESCRIPTION VARCHAR(100))";
+        $sql = "CREATE TABLE MYTABLE (ID INTEGER(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, DESCRIPTION VARCHAR(100))";
         $result = $conn->execute($sql);
 
         $this->assertTrue(is_resource($result));
@@ -209,12 +200,12 @@ class MySQLTest extends TestCase
      *
      * @return null
      */
-    public function textCanExecuteDMLStatement()
+    public function testCanExecuteDMLStatement()
     {
         $this->options["auto_connect"] = true;
 
         $conn = new MySQL($this->options);
-        $sql = "INSERT INTO MYTABLE VALUES (1, 'Hello world!')";
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('Hello world!')";
         $result = $conn->execute($sql);
 
         $this->assertTrue(is_resource($result));
