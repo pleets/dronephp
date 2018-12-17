@@ -123,6 +123,13 @@ abstract class AbstractDriver
     protected $transac_result = null;
 
     /**
+     * Autocommit behavior
+     *
+     * @var boolean
+     */
+    protected $autocommit = true;
+
+    /**
      * Returns the dbhost attribute
      *
      * @return string
@@ -216,6 +223,16 @@ abstract class AbstractDriver
     }
 
     /**
+     * Returns the autoCommit attribute
+     *
+     * @return boolean
+     */
+    public function getAutoCommit()
+    {
+        return $this->autoCommit;
+    }
+
+    /**
      * Sets dbhost attribute
      *
      * @param string $value
@@ -285,6 +302,21 @@ abstract class AbstractDriver
     public function setDbport($value)
     {
         $this->dbport = $value;
+    }
+
+    /**
+     * Sets autocommit behavior
+     *
+     * @param boolean $value
+     *
+     * @return null
+     */
+    public function autocommit($value)
+    {
+        if ($this->transac_mode)
+            throw new \LogicException("You cannot change autocommit behavior during a transaction");
+
+        $this->autocommit = $value;
     }
 
     /**

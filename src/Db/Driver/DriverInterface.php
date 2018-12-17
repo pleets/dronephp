@@ -59,6 +59,11 @@ interface DriverInterface
     public function endTransaction();
 
     /**
+     * Sets the autocommit behavior
+     */
+    public function autocommit($value);
+
+    /**
      * Disconnects to database
      */
     public function disconnect();

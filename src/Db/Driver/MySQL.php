@@ -56,11 +56,11 @@ class MySQL extends AbstractDriver implements DriverInterface
             throw new \RuntimeException("The Mysqli extension is not loaded");
 
         if (!is_null($this->dbport) && !empty($this->dbport))
-            $this->dbconn = @new \mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname, $this->dbport);
+            $conn = @new \mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname, $this->dbport);
         else
-            $this->dbconn = @new \mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname);
+            $conn = @new \mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname);
 
-        if ($this->dbconn->connect_errno)
+        if ($conn->connect_errno)
         {
             /*
              * Use ever mysqli_connect_errno() and mysqli_connect_error()
@@ -70,7 +70,10 @@ class MySQL extends AbstractDriver implements DriverInterface
             throw new Exception\ConnectionException(mysqli_connect_error(), mysqli_connect_errno());
         }
         else
+        {
+            $this->dbconn = $conn;
             $this->dbconn->set_charset($this->dbchar);
+        }
 
         return $this->dbconn;
     }
@@ -161,19 +164,24 @@ class MySQL extends AbstractDriver implements DriverInterface
             throw new Exception\InvalidQueryException($this->dbconn->error, $this->dbconn->errno);
         }
 
-        if (is_object($this->result) && property_exists($this->result, 'num_rows'))
-            $this->numRows = $this->result->num_rows;
+        if (property_exists($this->dbconn, 'num_rows'))
+            $this->numRows = $this->dbconn->num_rows;
 
-        if (is_object($this->result) && property_exists($this->result, 'field_count'))
-            $this->numFields = $this->result->field_count;
+        if (property_exists($this->dbconn, 'field_count'))
+            $this->numFields = $this->dbconn->field_count;
 
-        if (is_object($this->result) && property_exists($this->result, 'affected_rows'))
-            $this->rowsAffected = $this->result->affected_rows;
+        if (property_exists($this->dbconn, 'affected_rows'))
+            $this->rowsAffected = $this->dbconn->affected_rows;
 
         if ($this->transac_mode)
             $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
 
-        return $this->result;
+        /*
+         * Because mysqli_query() returns FALSE on failure, a mysqli_result object for SELECT, SHOW, DESCRIBE or EXPLAIN queries, * and TRUE for other successful queries, it should be handled to return only objects or resources.
+         *
+         * Ref: http://php.net/manual/en/mysqli.query.php
+         */
+        return is_bool($this->result) ? $this->dbconn : $this->result;
     }
 
     /**
@@ -198,7 +206,14 @@ class MySQL extends AbstractDriver implements DriverInterface
     public function disconnect()
     {
         parent::disconnect();
-        return $this->dbconn->close();
+
+        if ($this->dbconn->close())
+        {
+            $this->dbconn = null;
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -208,6 +223,15 @@ class MySQL extends AbstractDriver implements DriverInterface
     {
         parent::beginTransaction();
         $this->dbconn->autocommit(false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function autocommit($value)
+    {
+        parent::autocommit($value);
+        $this->dbconn->autocommit($value);
     }
 
     /**

@@ -116,7 +116,7 @@ class MySQLTest extends TestCase
      *
      * @return null
      */
-    public function testCannotStablishConnectionAgain()
+    public function testCannotStablishReconnection()
     {
         $conn = new MySQL($this->options);
 
@@ -137,18 +137,20 @@ class MySQLTest extends TestCase
     }
 
     /**
-     * Tests if a connection failed throws a ConnectionException
+     * Tests if a failed connection throws a ConnectionException
      *
      * @return null
      */
     public function testCannotStablishConnection()
     {
-        $this->options["dbhost"] = "myserver";   // this server does not exists
-        $this->options["auto_connect"] = false;
+        $options = $this->options;
+        $options["dbhost"] = 'myserver';   // this server does not exists
 
-        $conn = new MySQL($this->options);
+        $conn = new MySQL($options);
 
         $mysqliObject = $errorObject = null;
+
+        $message = "No exception";
 
         try {
             $mysqliObject = $conn->connect();
@@ -156,10 +158,11 @@ class MySQLTest extends TestCase
         catch (\Exception $e)
         {
             $errorObject = ($e instanceof ConnectionException);
+            $message = $e->getMessage();
         }
         finally
         {
-            $this->assertTrue($errorObject, $e->getMessage());
+            $this->assertTrue($errorObject, $message);
             $this->assertNotTrue($conn->isConnected());
         }
     }
@@ -181,13 +184,14 @@ class MySQLTest extends TestCase
      */
     public function testCanExecuteDLLStatement()
     {
-        $this->options["auto_connect"] = true;
+        $options = $this->options;
+        $options["auto_connect"] = true;
 
-        $conn = new MySQL($this->options);
+        $conn = new MySQL($options);
         $sql = "CREATE TABLE MYTABLE (ID INTEGER(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, DESCRIPTION VARCHAR(100))";
         $result = $conn->execute($sql);
 
-        $this->assertTrue(is_resource($result));
+        $this->assertTrue(is_object($result));
 
         # properties modified by execute() method
         $this->assertEquals(0, $conn->getNumRows());
@@ -202,13 +206,78 @@ class MySQLTest extends TestCase
      */
     public function testCanExecuteDMLStatement()
     {
-        $this->options["auto_connect"] = true;
+        $options = $this->options;
+        $options["auto_connect"] = true;
 
-        $conn = new MySQL($this->options);
+        $conn = new MySQL($options);
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('Hello world!')";
         $result = $conn->execute($sql);
 
-        $this->assertTrue(is_resource($result));
+        $this->assertTrue(is_object($result));
+
+        # properties modified by execute() method
+        $this->assertEquals(0, $conn->getNumRows());
+        $this->assertEquals(0, $conn->getNumFields());
+        $this->assertEquals(1, $conn->getRowsAffected());
+    }
+
+    /**
+     * Tests getting results
+     *
+     * @return null
+     */
+    public function testGettingResults()
+    {
+        $options = $this->options;
+        $options["auto_connect"] = true;
+
+        $conn = new MySQL($options);
+        $sql = "SELECT * FROM MYTABLE LIMIT 2";
+        $result = $conn->execute($sql);
+
+        # properties modified by execute() method
+        $this->assertEquals(1, $conn->getNumRows());
+        $this->assertEquals(2, $conn->getNumFields());
+        $this->assertEquals(0, $conn->getRowsAffected());
+
+        $rowset = $conn->getArrayResult();    # array with results
+        $row = array_shift($rowset);
+
+        $this->assertArrayHasKey("ID", $row);
+        $this->assertArrayHasKey("DESCRIPTION", $row);
+    }
+
+    /**
+     * Tests if we can commit transactions
+     *
+     * @return null
+     */
+    public function testCommitBehavior()
+    {
+        $options = $this->options;
+        $options["auto_connect"] = true;
+
+        $conn = new MySQL($options);
+        $conn->autocommit(false);
+
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('COMMIT_ROW_1')";
+        $result = $conn->execute($sql);
+
+        $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION = 'COMMIT_ROW_1'";
+        $result = $conn->execute($sql);
+        $rowset = $conn->getArrayResult();
+
+        $rowcount = count($row);
+
+        $this->assertTrue(($rowcount === 0));
+
+        # properties modified by execute() method
+        $this->assertEquals(0, $conn->getNumRows());
+        $this->assertEquals(0, $conn->getNumFields());
+        $this->assertEquals(0, $conn->getRowsAffected());
+
+        $conn->commit();
+        $this->assertTrue(($rowcount === 0));
 
         # properties modified by execute() method
         $this->assertEquals(0, $conn->getNumRows());
