@@ -87,7 +87,7 @@ class MySQL extends AbstractDriver implements DriverInterface
      * @throws RuntimeException
      * @throws Exception\InvalidQueryException
      *
-     * @return resource
+     * @return mysqli_result
      */
     public function execute($sql, Array $params = [])
     {
@@ -164,14 +164,18 @@ class MySQL extends AbstractDriver implements DriverInterface
             throw new Exception\InvalidQueryException($this->dbconn->error, $this->dbconn->errno);
         }
 
-        if (property_exists($this->dbconn, 'num_rows'))
-            $this->numRows = $this->dbconn->num_rows;
+        # identify SELECT, SHOW, DESCRIBE or EXPLAIN queries
+        if (is_object($this->result) && property_exists($this->result, 'num_rows'))
+            $this->numRows = $this->result->num_rows;
+        else
+        {
+            # affected_rows return the same of num_rows on select statements!
+            if (property_exists($this->dbconn, 'affected_rows'))
+                $this->rowsAffected = $this->dbconn->affected_rows;
+        }
 
         if (property_exists($this->dbconn, 'field_count'))
             $this->numFields = $this->dbconn->field_count;
-
-        if (property_exists($this->dbconn, 'affected_rows'))
-            $this->rowsAffected = $this->dbconn->affected_rows;
 
         if ($this->transac_mode)
             $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;

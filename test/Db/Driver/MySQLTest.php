@@ -265,23 +265,197 @@ class MySQLTest extends TestCase
 
         $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION = 'COMMIT_ROW_1'";
         $result = $conn->execute($sql);
-        $rowset = $conn->getArrayResult();
+        $rowcount = count($conn->getArrayResult());
 
-        $rowcount = count($row);
-
-        $this->assertTrue(($rowcount === 0));
+        $this->assertTrue(($rowcount === 1));    # the row is available for now
 
         # properties modified by execute() method
-        $this->assertEquals(0, $conn->getNumRows());
-        $this->assertEquals(0, $conn->getNumFields());
-        $this->assertEquals(0, $conn->getRowsAffected());
+        $this->assertEquals(1, $conn->getNumRows());
+        $this->assertEquals(2, $conn->getNumFields());
+        $this->assertEquals(0, $conn->getRowsAffected());    # nothing affected (autocommit = false)
 
-        $conn->commit();
-        $this->assertTrue(($rowcount === 0));
+        $this->assertTrue($conn->commit());
+
+        # now let's to verify if the record exists after commit
+        $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION = 'COMMIT_ROW_1'";
+        $result = $conn->execute($sql);
+        $rowcount = count($conn->getArrayResult());
+
+        $this->assertTrue(($rowcount === 1));    # the row is available
+    }
+
+    /**
+     * Tests if we can rollback transactions
+     *
+     * @return null
+     */
+    public function testRollbackBehavior()
+    {
+        $options = $this->options;
+        $options["auto_connect"] = true;
+
+        $conn = new MySQL($options);
+        $conn->autocommit(false);
+
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('ROLLBACK_ROW_1')";
+        $result = $conn->execute($sql);
+
+        $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION = 'ROLLBACK_ROW_1'";
+        $result = $conn->execute($sql);
+        $rowcount = count($conn->getArrayResult());
+
+        $this->assertTrue(($rowcount === 1));    # the row is available for now
 
         # properties modified by execute() method
-        $this->assertEquals(0, $conn->getNumRows());
-        $this->assertEquals(0, $conn->getNumFields());
-        $this->assertEquals(1, $conn->getRowsAffected());
+        $this->assertEquals(1, $conn->getNumRows());
+        $this->assertEquals(2, $conn->getNumFields());
+        $this->assertEquals(0, $conn->getRowsAffected());    # nothing affected (autocommit = false)
+
+        $this->assertTrue($conn->rollback());
+
+        # now let's to verify if the record exists after commit
+        $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION = 'ROLLBACK_ROW_1'";
+        $result = $conn->execute($sql);
+        $rowcount = count($conn->getArrayResult());
+
+        $this->assertNotTrue(($rowcount === 1));    # the row is not available
+    }
+
+    /**
+     * Tests if we can do a transaction with commiting changes
+     *
+     * @return null
+     */
+    public function testTransactionConfirmation()
+    {
+        $options = $this->options;
+        $options["auto_connect"] = true;
+
+        $conn = new MySQL($options);
+        $conn->autocommit(false);
+
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('COMMIT_ROW_TRANSACTION_1')";
+        $result = $conn->execute($sql);
+
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('COMMIT_ROW_TRANSACTION_2')";
+        $result = $conn->execute($sql);
+
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('COMMIT_ROW_TRANSACTION_3')";
+        $result = $conn->execute($sql);
+
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('COMMIT_ROW_TRANSACTION_4')";
+        $result = $conn->execute($sql);
+
+        $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'COMMIT_ROW_TRANSACTION_%'";
+        $result = $conn->execute($sql);
+        $rowcount = count($conn->getArrayResult());
+
+        $this->assertTrue(($rowcount === 4));    # the rows are available for now
+
+        # properties modified by execute() method
+        $this->assertEquals(4, $conn->getNumRows());
+        $this->assertEquals(2, $conn->getNumFields());
+        $this->assertEquals(0, $conn->getRowsAffected());    # nothing affected (autocommit = false)
+
+        $this->assertTrue($conn->commit());
+
+        # now let's to verify if the record exists after commit
+        $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'COMMIT_ROW_TRANSACTION_%'";
+        $result = $conn->execute($sql);
+        $rowcount = count($conn->getArrayResult());
+
+        $this->assertTrue(($rowcount === 4));    # the row is available
+    }
+
+    /**
+     * Tests if we can do a transaction with reverting changes
+     *
+     * @return null
+     */
+    public function testTransactionReversion()
+    {
+        $options = $this->options;
+        $options["auto_connect"] = true;
+
+        $conn = new MySQL($options);
+        $conn->autocommit(false);
+
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('ROLLBACK_ROW_TRANSACTION_1')";
+        $result = $conn->execute($sql);
+
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('ROLLBACK_ROW_TRANSACTION_2')";
+        $result = $conn->execute($sql);
+
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('ROLLBACK_ROW_TRANSACTION_3')";
+        $result = $conn->execute($sql);
+
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('ROLLBACK_ROW_TRANSACTION_4')";
+        $result = $conn->execute($sql);
+
+        $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'ROLLBACK_ROW_TRANSACTION_%'";
+        $result = $conn->execute($sql);
+        $rowcount = count($conn->getArrayResult());
+
+        $this->assertTrue(($rowcount === 4));    # the rows are available for now
+
+        # properties modified by execute() method
+        $this->assertEquals(4, $conn->getNumRows());
+        $this->assertEquals(2, $conn->getNumFields());
+        $this->assertEquals(0, $conn->getRowsAffected());    # nothing affected (autocommit = false)
+
+        $this->assertTrue($conn->rollback());
+
+        # now let's to verify if the record exists after commit
+        $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'ROLLBACK_ROW_TRANSACTION_%'";
+        $result = $conn->execute($sql);
+        $rowcount = count($conn->getArrayResult());
+
+        $this->assertNotTrue(($rowcount === 4));    # the row is available
+    }
+
+    /**
+     * Tests if we can do a transaction with the shortcut method
+     *
+     * @return null
+     */
+    public function testTransactionShortcut()
+    {
+        $options = $this->options;
+        $options["auto_connect"] = true;
+
+        $conn = new MySQL($options);
+
+        # not necessary
+        # $conn->autocommit(false);
+
+        # start the transaction
+        $conn->beginTransaction();
+
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('TRANSACTION_SHORTCUT_1')";
+        $result = $conn->execute($sql);
+
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('TRANSACTION_SHORTCUT_1')";
+        $result = $conn->execute($sql);
+
+        $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'TRANSACTION_SHORTCUT_%'";
+        $result = $conn->execute($sql);
+        $rowcount = count($conn->getArrayResult());
+
+        $this->assertTrue(($rowcount === 2));    # the rows are available for now
+
+        # properties modified by execute() method
+        $this->assertEquals(2, $conn->getNumRows());
+        $this->assertEquals(2, $conn->getNumFields());
+        $this->assertEquals(0, $conn->getRowsAffected());    # nothing affected (autocommit = false)
+
+        # ends the transaction
+        $conn->endTransaction();
+
+        # now let's to verify if the record exists after commit
+        $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'TRANSACTION_SHORTCUT_%'";
+        $result = $conn->execute($sql);
+        $rowcount = count($conn->getArrayResult());
+
+        $this->assertTrue(($rowcount === 2));    # the row is available
     }
 }
