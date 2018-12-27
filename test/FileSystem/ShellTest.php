@@ -103,9 +103,11 @@ class ShellTest extends TestCase
     public function testListingFiles()
     {
         $shell = new Shell('foo');
-        $files = $shell->ls();
+        $files = sort($shell->ls());
 
-        $this->assertSame(['bar', 'foo2', 'new.txt', 'new2.txt'], $files);
+        $expected = sort(['bar', 'foo2', 'new.txt', 'new2.txt']);
+
+        $this->assertSame($expected, $files);
     }
 
     /**
@@ -116,12 +118,11 @@ class ShellTest extends TestCase
     public function testListingFilesRecursively()
     {
         $shell = new Shell('foo');
-        $files = $shell->ls('.', true);
+        $files = sort($shell->ls('.', true));
 
-        $this->assertSame(
-            ['./bar', './foo2', './bar/new.txt', './new.txt', './new2.txt'],
-            $files
-        );
+        $expected = sort(['./bar', './foo2', './bar/new.txt', './new.txt', './new2.txt']);
+
+        $this->assertSame($expected, $files);
     }
 
     /**
