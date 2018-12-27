@@ -105,7 +105,8 @@ class ShellTest extends TestCase
         $shell = new Shell('foo');
         $files = sort($shell->ls());
 
-        $expected = sort(['bar', 'foo2', 'new.txt', 'new2.txt']);
+        $expected = ['bar', 'foo2', 'new.txt', 'new2.txt'];
+        $expected = sort($expected);
 
         $this->assertSame($expected, $files);
     }
@@ -120,7 +121,8 @@ class ShellTest extends TestCase
         $shell = new Shell('foo');
         $files = sort($shell->ls('.', true));
 
-        $expected = sort(['./bar', './foo2', './bar/new.txt', './new.txt', './new2.txt']);
+        $expected = ['./bar', './foo2', './bar/new.txt', './new.txt', './new2.txt'];
+        $expected = sort($expected);
 
         $this->assertSame($expected, $files);
     }
