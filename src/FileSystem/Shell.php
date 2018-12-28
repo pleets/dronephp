@@ -109,11 +109,6 @@ class Shell implements ShellInterface
 
                         $this->buffer = $directory.'/'.$i;
                         call_user_func($dirCallback, $this);
-
-                        /*$directory = scandir($directory);
-
-                        if (!count($directory) < 3)
-                            $this->buffer = $directory.'/'.$i;*/
                     }
                 }
             }
@@ -218,7 +213,7 @@ class Shell implements ShellInterface
     /**
      * Changes the current directory
      *
-     * @param boolean|null $path
+     * @param string|null $path
      *
      * @return boolean
      */
@@ -467,7 +462,7 @@ class Shell implements ShellInterface
     public function rmdir($dir)
     {
         if (is_null($dir) || empty($dir))
-            throw new Exception("Missing parameter for rmdir!");
+            throw new \RuntimeException("Missing first parameter");
 
         if (rmdir($dir))
             return true;

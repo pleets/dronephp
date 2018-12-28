@@ -87,7 +87,7 @@ class MySQL extends AbstractDriver implements DriverInterface
      * @throws RuntimeException
      * @throws Exception\InvalidQueryException
      *
-     * @return mysqli_result
+     * @return \mysqli_result
      */
     public function execute($sql, Array $params = [])
     {

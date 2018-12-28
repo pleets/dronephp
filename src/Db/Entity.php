@@ -124,8 +124,6 @@ abstract class Entity
      */
     public function __construct($data)
     {
-        $class = get_class($this);
-
         foreach ($data as $prop => $value)
         {
             $this->$prop = $value;

@@ -223,13 +223,13 @@ abstract class AbstractDriver
     }
 
     /**
-     * Returns the autoCommit attribute
+     * Returns the autocommit attribute
      *
      * @return boolean
      */
     public function getAutoCommit()
     {
-        return $this->autoCommit;
+        return $this->autocommit;
     }
 
     /**
