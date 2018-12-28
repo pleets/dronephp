@@ -181,7 +181,8 @@ class MySQL extends AbstractDriver implements DriverInterface
             $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
 
         /*
-         * Because mysqli_query() returns FALSE on failure, a mysqli_result object for SELECT, SHOW, DESCRIBE or EXPLAIN queries, * and TRUE for other successful queries, it should be handled to return only objects or resources.
+         * Because mysqli_query() returns FALSE on failure, a mysqli_result object for SELECT, SHOW, DESCRIBE or EXPLAIN queries,
+         * and TRUE for other successful queries, it should be handled to return only objects or resources.
          *
          * Ref: http://php.net/manual/en/mysqli.query.php
          */
@@ -218,15 +219,6 @@ class MySQL extends AbstractDriver implements DriverInterface
         }
 
         return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function beginTransaction()
-    {
-        parent::beginTransaction();
-        $this->dbconn->autocommit(false);
     }
 
     /**

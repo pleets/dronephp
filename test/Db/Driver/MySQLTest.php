@@ -12,6 +12,7 @@ namespace DroneTest\Util;
 
 use Drone\Db\Driver\MySQL;
 use Drone\Db\Driver\Exception\ConnectionException;
+use Drone\Db\Driver\Exception\InvalidQueryException;
 use PHPUnit\Framework\TestCase;
 
 class MySQLTest extends TestCase
@@ -222,6 +223,37 @@ class MySQLTest extends TestCase
     }
 
     /**
+     * Tests if a wrong query execution throws an InvalidQueryException
+     *
+     * @return null
+     */
+    public function testGettingInvalidQueryException()
+    {
+        $options = $this->options;
+        $options["auto_connect"] = true;
+
+        $conn = new MySQL($options);
+
+        $errorObject = null;
+        $message = "No exception";
+
+        try
+        {
+            $sql = "INSERT INTO MYTABLE (DESCRIPTION, WRONG) VALUES ('Hello world!')";
+	        $result = $conn->execute($sql);
+        }
+        catch (\Exception $e)
+        {
+            $errorObject = ($e instanceof InvalidQueryException);
+            $message = $e->getMessage();
+        }
+        finally
+        {
+            $this->assertTrue($errorObject, $message);
+        }
+    }
+
+    /**
      * Tests getting results
      *
      * @return null
@@ -418,17 +450,17 @@ class MySQLTest extends TestCase
      *
      * @return null
      */
-    public function testTransactionShortcut()
+    public function testTransactionConfirmationShortcut()
     {
         $options = $this->options;
         $options["auto_connect"] = true;
 
         $conn = new MySQL($options);
 
-        # not necessary
+        # not necessary!
         # $conn->autocommit(false);
 
-        # start the transaction
+        # starts the transaction
         $conn->beginTransaction();
 
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('TRANSACTION_SHORTCUT_1')";
@@ -451,11 +483,55 @@ class MySQLTest extends TestCase
         # ends the transaction
         $conn->endTransaction();
 
-        # now let's to verify if the record exists after commit
+        # now let's to verify if the record exists after endTransaction()
         $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'TRANSACTION_SHORTCUT_%'";
         $result = $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
         $this->assertTrue(($rowcount === 2));    # the row is available
+    }
+
+    /**
+     * Tests if we can do a transaction with reverting changes
+     *
+     * @return null
+     */
+    public function testTransactionReversionShortcut()
+    {
+        $options = $this->options;
+        $options["auto_connect"] = true;
+
+        $conn = new MySQL($options);
+
+        # not necessary!
+        # $conn->autocommit(false);
+
+        # starts the transaction
+        $conn->beginTransaction();
+
+        try
+        {
+	        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('TRANS_SHORTCUT_1')";
+	        $result = $conn->execute($sql);
+
+	        $sql = "INSERT INTO MYTABLE (DESCRIPTION, WRONG) VALUES ('TRANS_SHORTCUT_2')";
+	        $result = $conn->execute($sql);
+        }
+        catch (InvalidQueryException $e)
+        {
+            $message = $e->getMessage();
+            #·not necessary!
+            # $this->assertTrue($conn->rollback());
+        }
+
+        # starts the transaction
+        $conn->endTransaction();
+
+        # now let's to verify if the record exists after endTransaction()
+        $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'TRANS_SHORTCUT_%'";
+        $result = $conn->execute($sql);
+        $rowcount = count($conn->getArrayResult());
+
+        $this->assertNotTrue(($rowcount === 0));    # the rows are not available
     }
 }
