@@ -119,7 +119,10 @@ class ShellTest extends TestCase
     public function testListingFilesRecursively()
     {
         $shell = new Shell('foo');
-        $files = sort($shell->ls('.', true));
+        $files = $shell->ls('.', true);
+
+        var_dump($files);
+        $files = sort($files);
 
         $expected = ['./bar', './foo2', './bar/new.txt', './new.txt', './new2.txt'];
         $expected = sort($expected);

@@ -73,10 +73,11 @@ class Shell implements ShellInterface
      * @param callable $fileCallback
      * @param callable $dirCallback
      * @param callable $callback
+     * @param boolean  $showParentPath
      *
      * @return array
      */
-    public function getContents($directory, $fileCallback, $dirCallback, $callback = null)
+    public function getContents($directory, $fileCallback, $dirCallback, $callback = null, $showParentPath = false)
     {
         $contents = [];
 
@@ -88,7 +89,7 @@ class Shell implements ShellInterface
                     $contents[] = $item;
             }
 
-            $allContents = $contents;
+            //$allContents = $contents;
 
             if (count($contents) > 0)
             {
@@ -96,16 +97,15 @@ class Shell implements ShellInterface
                 {
                     if (is_file($directory.'/'.$i))
                     {
-                        $allContents[] = $directory.'/'.$i;
+                        $allContents[] = ($showParentPath) ? $directory.'/'.$i : $i;
 
                         $this->buffer = $directory.'/'.$i;
                         call_user_func($fileCallback, $this);
                     }
-                    elseif (is_dir($directory.'/'.$i))
+                    else if (is_dir($directory.'/'.$i))
                     {
-                        $allContents[] = $directory.'/'.$i;
-
-                        $this->getContents($directory.'/'.$i, $fileCallback, $dirCallback);
+                        $allContents[] = ($showParentPath) ? $directory.'/'.$i : $i;
+                        $allContents[] = $this->getContents($directory.'/'.$i, $fileCallback, $dirCallback, null, false);
 
                         $this->buffer = $directory.'/'.$i;
                         call_user_func($dirCallback, $this);
@@ -163,7 +163,7 @@ class Shell implements ShellInterface
             {
                 $dirs = $files = [];
 
-                $this->getContents($path,
+                $filesToReturn = $this->getContents($path,
                     # file's callback
                     function($event) use (&$files)
                     {
@@ -176,11 +176,11 @@ class Shell implements ShellInterface
                     }
                 );
 
-                foreach ($dirs as $item)
+                /*foreach ($dirs as $item)
                     $filesToReturn[] = $item;
 
                 foreach ($files as $item)
-                    $filesToReturn[] = $item;
+                    $filesToReturn[] = $item;*/
             }
             else
             {
