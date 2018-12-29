@@ -73,13 +73,12 @@ class Shell implements ShellInterface
      * @param callable $fileCallback
      * @param callable $dirCallback
      * @param callable $callback
-     * @param boolean  $showParentPath
      *
      * @return array
      */
-    public function getContents($directory, $fileCallback, $dirCallback, $callback = null, $showParentPath = false)
+    public function getContents($directory, $fileCallback = null, $dirCallback = null, $callback = null)
     {
-        $contents = [];
+        $contents = $allContents = [];
 
         if (is_dir($directory))
         {
@@ -89,23 +88,24 @@ class Shell implements ShellInterface
                     $contents[] = $item;
             }
 
-            //$allContents = $contents;
-
             if (count($contents) > 0)
             {
                 foreach ($contents as $i)
                 {
                     if (is_file($directory.'/'.$i))
                     {
-                        $allContents[] = ($showParentPath) ? $directory.'/'.$i : $i;
+                        $allContents[] = $i;
 
                         $this->buffer = $directory.'/'.$i;
                         call_user_func($fileCallback, $this);
                     }
                     else if (is_dir($directory.'/'.$i))
                     {
-                        $allContents[] = ($showParentPath) ? $directory.'/'.$i : $i;
-                        $allContents[] = $this->getContents($directory.'/'.$i, $fileCallback, $dirCallback, null, false);
+                        $allContents[] = $i;
+                        $contents = $this->getContents($directory.'/'.$i, $fileCallback, $dirCallback);
+
+                        if (count($contents))
+                            $allContents[] = $contents;
 
                         $this->buffer = $directory.'/'.$i;
                         call_user_func($dirCallback, $this);
@@ -160,28 +160,7 @@ class Shell implements ShellInterface
             $pathIns = dir($path);
 
             if ($recursive)
-            {
-                $dirs = $files = [];
-
-                $filesToReturn = $this->getContents($path,
-                    # file's callback
-                    function($event) use (&$files)
-                    {
-                        $files[] = $event->getBuffer();
-                    },
-                    # folder's callback
-                    function($event) use (&$dirs)
-                    {
-                        $dirs[] = $event->getBuffer();
-                    }
-                );
-
-                /*foreach ($dirs as $item)
-                    $filesToReturn[] = $item;
-
-                foreach ($files as $item)
-                    $filesToReturn[] = $item;*/
-            }
+                $filesToReturn = $this->getContents($path);
             else
             {
                 while (($item = $pathIns->read()) !== false)
@@ -306,22 +285,23 @@ class Shell implements ShellInterface
         if (is_dir($file) && !$recursive)
             throw new \RuntimeException("Ommiting directory <<$foo>>");
 
-        if (is_dir($file) && (is_dir($dest) || !file_exists($dest)))
+        $dest_exists = file_exists($dest);
+
+        if (is_dir($file) && (is_dir($dest) || !$dest_exists))
         {
             $files = [
                 "files"   => [],
                 "folders" => []
             ];
 
-            if (is_dir($dest))
-                $files["folders"][] = basename($file);
+            $files["folders"][] = is_dir($dest) ? basename($file) : $dest;
 
-            if (!file_exists($dest))
+            if (!$dest_exists)
                 mkdir($dest);
 
             $that = $this;
 
-            $this->getContents($file,
+            $contents = $this->getContents($file,
                 # file's callback
                 function() use($that, &$files)
                 {
@@ -333,63 +313,30 @@ class Shell implements ShellInterface
                     $files["folders"][] = $that->getBuffer();
                 },
                 # final callback
-                function() use (&$files, $dest)
+                function() use (&$files, $dest, $dest_exists)
                 {
-                    if (count($files["folders"]))
+                    if ($dest_exists)
                     {
                         foreach ($files["folders"] as $folder)
                         {
                             if (!file_exists($dest.'/'.$folder))
                                 mkdir("$dest/$folder", 0777, true);
                         }
-                    }
 
-                    if (count($files["files"]))
-                    {
-                        foreach ($files["files"] as $item)
+                        if (count($files["files"]))
                         {
-                            if (!file_exists("$dest/$files"))
-                                copy($item, $dest.'/'.$item);
+                            foreach ($files["files"] as $item)
+                            {
+                                if (!file_exists("$dest/$files"))
+                                    copy($item, $dest.'/'.$item);
+                            }
                         }
                     }
                 }
             );
         }
-
-        if (is_dir($dest))
-        {
-            if (!$recursive)
-                copy($file, $dest.'/'.$file);
-            else {
-
-                $files = array();
-                $files[0] = array();
-                $files[1] = array();
-
-                $_SESSION["BUFFER"]["EXO"]["cp"][2] = $dest;
-
-                $that = $this;
-
-                $this->getContents($file, function() use($that, &$files) {
-                    $files[0][] = $that->getBuffer();
-                }, function() use($that, &$files) {
-                    $files[1][] = $that->getBuffer();
-                }, function() use ($files, $dest) {
-
-                    foreach ($files[1] as $item)
-                    {
-                        if (!file_exists($dest.'/'.$item))
-                            mkdir("$dest/$item", 0777, true);
-                    }
-
-                    foreach ($files[0] as $item)
-                    {
-                        if (!file_exists("$dest/$files"))
-                            copy($item, $dest.'/'.$item);
-                    }
-                });
-            }
-        }
+        else if (is_dir($dest))
+            copy($file, $dest.'/'.$file);
         else
             copy($file, $dest);
 

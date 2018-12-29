@@ -103,10 +103,11 @@ class ShellTest extends TestCase
     public function testListingFiles()
     {
         $shell = new Shell('foo');
-        $files = sort($shell->ls());
+        $files = $shell->ls();
+        sort($files);
 
         $expected = ['bar', 'foo2', 'new.txt', 'new2.txt'];
-        $expected = sort($expected);
+        sort($expected);
 
         $this->assertSame($expected, $files);
     }
@@ -121,11 +122,11 @@ class ShellTest extends TestCase
         $shell = new Shell('foo');
         $files = $shell->ls('.', true);
 
-        var_dump($files);
-        $files = sort($files);
+        $files = array_values($files);
+        sort($files);
 
-        $expected = ['./bar', './foo2', './bar/new.txt', './new.txt', './new2.txt'];
-        $expected = sort($expected);
+        $expected = ['bar', 'foo2', 'new.txt', 'new2.txt', ['new.txt']];
+        sort($expected);
 
         $this->assertSame($expected, $files);
     }
@@ -173,6 +174,7 @@ class ShellTest extends TestCase
         $this->assertTrue(file_exists('foo3/foo2/new3.txt'));
         $this->assertTrue(file_exists('foo3/foo2/new4.txt'));
 
+        # for future improvement (copy a directory in a new directory)
         $shell->cp(
             'foo2', // directory
             'foo4', // not a directory or file
