@@ -313,7 +313,7 @@ class Shell implements ShellInterface
 
             $that = $this;
 
-            $contents = $this->getContents($file,
+            $this->getContents($file,
                 # file's callback
                 function() use($that, &$files)
                 {

@@ -149,12 +149,13 @@ class MySQLTest extends TestCase
 
         $conn = new MySQL($options);
 
-        $mysqliObject = $errorObject = null;
+        $errorObject = null;
 
         $message = "No exception";
 
-        try {
-            $mysqliObject = $conn->connect();
+        try
+        {
+            $conn->connect();
         }
         catch (\Exception $e)
         {
@@ -240,7 +241,7 @@ class MySQLTest extends TestCase
         try
         {
             $sql = "INSERT INTO MYTABLE (DESCRIPTION, WRONG) VALUES ('Hello world!')";
-	        $result = $conn->execute($sql);
+            $conn->execute($sql);
         }
         catch (\Exception $e)
         {
@@ -265,7 +266,7 @@ class MySQLTest extends TestCase
 
         $conn = new MySQL($options);
         $sql = "SELECT * FROM MYTABLE LIMIT 2";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
 
         # properties modified by execute() method
         $this->assertEquals(1, $conn->getNumRows());
@@ -293,10 +294,10 @@ class MySQLTest extends TestCase
         $conn->autocommit(false);
 
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('COMMIT_ROW_1')";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
 
         $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION = 'COMMIT_ROW_1'";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
         $this->assertTrue(($rowcount === 1));    # the row is available for now
@@ -310,7 +311,7 @@ class MySQLTest extends TestCase
 
         # now let's to verify if the record exists after commit
         $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION = 'COMMIT_ROW_1'";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
         $this->assertTrue(($rowcount === 1));    # the row is available
@@ -330,10 +331,10 @@ class MySQLTest extends TestCase
         $conn->autocommit(false);
 
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('ROLLBACK_ROW_1')";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
 
         $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION = 'ROLLBACK_ROW_1'";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
         $this->assertTrue(($rowcount === 1));    # the row is available for now
@@ -347,7 +348,7 @@ class MySQLTest extends TestCase
 
         # now let's to verify if the record exists after commit
         $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION = 'ROLLBACK_ROW_1'";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
         $this->assertNotTrue(($rowcount === 1));    # the row is not available
@@ -367,19 +368,19 @@ class MySQLTest extends TestCase
         $conn->autocommit(false);
 
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('COMMIT_ROW_TRANSACTION_1')";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
 
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('COMMIT_ROW_TRANSACTION_2')";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
 
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('COMMIT_ROW_TRANSACTION_3')";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
 
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('COMMIT_ROW_TRANSACTION_4')";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
 
         $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'COMMIT_ROW_TRANSACTION_%'";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
         $this->assertTrue(($rowcount === 4));    # the rows are available for now
@@ -393,7 +394,7 @@ class MySQLTest extends TestCase
 
         # now let's to verify if the record exists after commit
         $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'COMMIT_ROW_TRANSACTION_%'";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
         $this->assertTrue(($rowcount === 4));    # the row is available
@@ -413,19 +414,19 @@ class MySQLTest extends TestCase
         $conn->autocommit(false);
 
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('ROLLBACK_ROW_TRANSACTION_1')";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
 
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('ROLLBACK_ROW_TRANSACTION_2')";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
 
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('ROLLBACK_ROW_TRANSACTION_3')";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
 
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('ROLLBACK_ROW_TRANSACTION_4')";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
 
         $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'ROLLBACK_ROW_TRANSACTION_%'";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
         $this->assertTrue(($rowcount === 4));    # the rows are available for now
@@ -439,7 +440,7 @@ class MySQLTest extends TestCase
 
         # now let's to verify if the record exists after commit
         $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'ROLLBACK_ROW_TRANSACTION_%'";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
         $this->assertNotTrue(($rowcount === 4));    # the row is available
@@ -464,13 +465,13 @@ class MySQLTest extends TestCase
         $conn->beginTransaction();
 
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('TRANSACTION_SHORTCUT_1')";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
 
         $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('TRANSACTION_SHORTCUT_1')";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
 
         $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'TRANSACTION_SHORTCUT_%'";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
         $this->assertTrue(($rowcount === 2));    # the rows are available for now
@@ -485,7 +486,7 @@ class MySQLTest extends TestCase
 
         # now let's to verify if the record exists after endTransaction()
         $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'TRANSACTION_SHORTCUT_%'";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
         $this->assertTrue(($rowcount === 2));    # the row is available
@@ -511,11 +512,11 @@ class MySQLTest extends TestCase
 
         try
         {
-	        $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('TRANS_SHORTCUT_1')";
-	        $result = $conn->execute($sql);
+            $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('TRANS_SHORTCUT_1')";
+            $conn->execute($sql);
 
-	        $sql = "INSERT INTO MYTABLE (DESCRIPTION, WRONG) VALUES ('TRANS_SHORTCUT_2')";
-	        $result = $conn->execute($sql);
+            $sql = "INSERT INTO MYTABLE (DESCRIPTION, WRONG) VALUES ('TRANS_SHORTCUT_2')";
+            $conn->execute($sql);
         }
         catch (InvalidQueryException $e)
         {
@@ -529,7 +530,7 @@ class MySQLTest extends TestCase
 
         # now let's to verify if the record exists after endTransaction()
         $sql = "SELECT * FROM MYTABLE WHERE DESCRIPTION LIKE 'TRANS_SHORTCUT_%'";
-        $result = $conn->execute($sql);
+        $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
         $this->assertNotTrue(($rowcount === 0));    # the rows are not available
