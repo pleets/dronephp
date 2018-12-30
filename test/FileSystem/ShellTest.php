@@ -89,10 +89,11 @@ class ShellTest extends TestCase
     public function testMakeDirectory()
     {
         $shell = new Shell('foo');
-        $shell->mkdir('foo2');
+        $cmd = $shell->mkdir('foo2');
 
         $this->assertTrue(file_exists('foo2'));
         $this->assertTrue(is_dir('foo2'));
+        $this->assertTrue($cmd);
     }
 
     /**
@@ -122,13 +123,21 @@ class ShellTest extends TestCase
         $shell = new Shell('foo');
         $files = $shell->ls('.', true);
 
-        $files = array_values($files);
-        sort($files);
+        /**
+         * Actually the $files variable would be the following array
+         * [['bar' => ['new.txt']], ['foo2' => []], 'new.txt', 'new2.txt'];
+         */
 
-        $expected = ['bar', 'foo2', 'new.txt', 'new2.txt', ['new.txt']];
-        sort($expected);
+        # check directories
+        $this->assertTrue(array_key_exists('bar', $files));
+        $this->assertTrue(is_array($files["bar"]));
+        $this->assertTrue(array_key_exists('foo2', $files));
+        $this->assertTrue(is_array($files["foo2"]));
 
-        $this->assertSame($expected, $files);
+        # check files
+        $this->assertSame(['new.txt'], $files["bar"]);
+        $this->assertTrue(in_array('new.txt', $files));
+        $this->assertTrue(in_array('new2.txt', $files));
     }
 
     /**
@@ -174,10 +183,87 @@ class ShellTest extends TestCase
         $this->assertTrue(file_exists('foo3/foo2/new3.txt'));
         $this->assertTrue(file_exists('foo3/foo2/new4.txt'));
 
-        # for future improvement (copy a directory in a new directory)
         $shell->cp(
-            'foo2', // directory
+            'foo3', // directory
             'foo4', // not a directory or file
         true);
+
+        $this->assertTrue(file_exists('foo4'));
+        $this->assertTrue(is_dir('foo4'));
+        $this->assertTrue(file_exists('foo4/foo2'));
+        $this->assertTrue(is_dir('foo4/foo2'));
+        $this->assertTrue(file_exists('foo4/foo2/new3.txt'));
+        $this->assertTrue(file_exists('foo4/foo2/new4.txt'));
    }
+
+    /**
+     * Tests removing files
+     *
+     * @return null
+     */
+    public function testRemovingFiles()
+    {
+        $shell = new Shell('foo');
+        $cmd = $shell->rm('new2.txt');
+
+        $this->assertTrue($cmd);
+        $this->assertNotTrue(file_exists('new2.txt'));
+    }
+
+    /**
+     * Tests removing not empty directories
+     *
+     * @return null
+     */
+    public function testRemovingNotEmptyDirectories()
+    {
+        $shell = new Shell('foo');
+        $cmd = $shell->rm('foo4', true);
+
+        $this->assertTrue($cmd);
+        $this->assertNotTrue(file_exists('foo4'));
+    }
+
+    /**
+     * Tests renaming files
+     *
+     * @return null
+     */
+    public function testRenamingFiles()
+    {
+        $shell = new Shell('foo');
+        $cmd = $shell->mv('new.txt', 'renamed.txt');
+
+        $this->assertTrue($cmd);
+        $this->assertTrue(file_exists('renamed.txt'));
+    }
+
+    /**
+     * Tests moving files
+     *
+     * @return null
+     */
+    public function testMovingFiles()
+    {
+        $shell = new Shell('foo');
+        $cmd = $shell->mv('renamed.txt', 'bar');
+
+        $this->assertTrue($cmd);
+        $this->assertTrue(file_exists('bar/renamed.txt'));
+    }
+
+    /**
+     * Tests removing empty directories
+     *
+     * @return null
+     */
+    public function testRemovingDirectories()
+    {
+        $shell = new Shell('foo');
+        mkdir('temp');
+        $cmd = $shell->rmdir('temp');
+
+        $this->assertTrue($cmd);
+        $this->assertNotTrue(file_exists('temp'));
+    }
 }
