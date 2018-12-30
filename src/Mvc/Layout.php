@@ -233,8 +233,10 @@ class Layout
 
             $config = $controller->getModule()->getConfig();
 
+            $layout = $controller->getLayout();
+
             if (!array_key_exists($controller->getLayout(), $config["view_manager"]["template_map"]))
-                throw new Exception\PageNotFoundException("The 'template' " . $template . " was not defined in module.config.php");
+                throw new Exception\PageNotFoundException("The 'template' " . $layout . " was not defined in module.config.php");
 
             $template = $config["view_manager"]["template_map"][$controller->getLayout()];
 

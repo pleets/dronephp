@@ -62,7 +62,12 @@ class Shell implements ShellInterface
      */
     public function __construct($home = null)
     {
-        $this->home = (is_null($home) || empty($home)) ? $this->pwd() : $home;
+        $this->home = (is_null($home) || empty($home))
+            ? ($this->pwd() !== false)
+                ? $this->pwd()
+                : $home
+            : $home;
+
         $this->cd($this->home);
     }
 

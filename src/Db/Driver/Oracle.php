@@ -122,7 +122,9 @@ class Oracle extends AbstractDriver implements DriverInterface
             $param_keys   = array_keys($params);
             $param_values = array_values($params);
 
-            for ($i = 0; $i < count($params); $i++)
+            $param_count = count($params);
+
+            for ($i = 0; $i < $param_count; $i++)
             {
                 oci_bind_by_name($stid, $param_keys[$i], $param_values[$i], -1);
             }

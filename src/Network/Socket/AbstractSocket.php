@@ -121,7 +121,7 @@ abstract class AbstractSocket
         }
 
         $this->socket = $socket;
-	}
+    }
 
     /**
      * Binds the socket
@@ -143,10 +143,10 @@ abstract class AbstractSocket
     /**
      * Closes the socket
      *
-     * @return null
+     * @return void
      */
-	public function close()
-	{
+    public function close()
+    {
         return socket_close($this->socket);
-	}
+    }
 }
