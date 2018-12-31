@@ -189,7 +189,7 @@ class Layout
      *
      * @throws Exception\PageNotFoundException
      */
-    public function __construct(Array $params = [])
+    public function __construct(array $params = [])
     {
         foreach ($params as $param => $value)
         {
@@ -204,6 +204,8 @@ class Layout
      * @throws Exception\PageNotFoundException
      *
      * @param AbstractionController
+     *
+     * @return null
      */
     public function fromController(AbstractionController $controller)
     {
@@ -254,6 +256,8 @@ class Layout
      *
      * @param AbstractionModule $module
      * @param string $template
+     *
+     * @return null
      */
     public function fromTemplate($module, $template)
     {

@@ -28,6 +28,16 @@ abstract class AbstractionModule
     protected $moduleName;
 
     /**
+     * Returns the moduleName attribute
+     *
+     * @return string
+     */
+    public function getModuleName()
+    {
+        return $this->moduleName;
+    }
+
+    /**
      * Constructor
      *
      * @param string                $moduleName
@@ -40,21 +50,11 @@ abstract class AbstractionModule
     }
 
     /**
-     * Absract method to be executed before each controller in each module
+     * Abstract method to be executed before each controller in each module
      *
      * @param AbstractionController
      */
     public abstract function init(AbstractionController $controller);
-
-    /**
-     * Returns the moduleName attribute
-     *
-     * @return string
-     */
-    public function getModuleName()
-    {
-        return $this->moduleName;
-    }
 
     /**
      * Returns an array with application settings

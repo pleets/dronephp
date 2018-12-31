@@ -187,9 +187,9 @@ class Router
      *
      * @throws LogicException
      *
-     * @return string
+     * @return null
      */
-    public function addRoute(Array $route)
+    public function addRoute(array $route)
     {
         $key = array_keys($route);
         $key = array_shift($key);
