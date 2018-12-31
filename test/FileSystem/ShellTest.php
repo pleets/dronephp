@@ -265,5 +265,9 @@ class ShellTest extends TestCase
 
         $this->assertTrue($cmd);
         $this->assertNotTrue(file_exists('temp'));
+
+        # remove all work
+        $shell->cd('..');
+        $shell->rm('foo', true);
     }
 }

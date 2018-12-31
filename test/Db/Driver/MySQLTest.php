@@ -534,5 +534,8 @@ class MySQLTest extends TestCase
         $rowcount = count($conn->getArrayResult());
 
         $this->assertNotTrue(($rowcount === 0));    # the rows are not available
+
+        # remove all work
+        $conn->execute("DROP TABLE MYTABLE");
     }
 }
