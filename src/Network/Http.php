@@ -119,7 +119,7 @@ class Http
      *
      * @param integer $code
      *
-     * @throws LogicException
+     * @throws RuntimeException
      *
      * @return string
      */
@@ -128,7 +128,7 @@ class Http
         $codes = $this->httpStatusCodes;
 
         if (!in_array($code, array_keys($codes)))
-            throw new \LogicException("Status code not supported");
+            throw new \RuntimeException("Status code not supported");
 
         return $this->httpStatusCodes[$code];
     }
@@ -143,7 +143,8 @@ class Http
     public function writeStatus($code)
     {
         $description = $this->getStatusText($code);
-        $header = $_SERVER['SERVER_PROTOCOL'] . " $code $description";
+        $protocol = array_key_exists('SERVER_PROTOCOL', $_SERVER) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
+        $header = $protocol . " $code $description";
 
         header($header);
 
