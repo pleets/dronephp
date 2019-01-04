@@ -57,12 +57,14 @@ class DateTime
      *
      * @param string $month_number
      *
+     * @throws Exception\MonthOutOfRange
+     *
      * @return string
      */
     public static function getMonth($month_number)
     {
         if (!array_key_exists($month_number, self::MONTHS))
-            throw new MonthOutOfRange("Invalid Month");
+            throw new Exception\MonthOutOfRange("Invalid Month");
 
         return self::MONTHS[$month_number];
     }
@@ -137,7 +139,7 @@ class DateTime
             else
             {
                 $d = new \DateTime("first day of $month");
-                $d->setDate($year, $d->format('m'), $d->format('d'));
+                $d->setDate($year, (int) $d->format('m'), (int) $d->format('d'));
             }
 
             $d->add(new \DateInterval('P'.($day - 1).'D'));
