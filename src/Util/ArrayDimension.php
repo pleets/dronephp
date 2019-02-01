@@ -48,9 +48,9 @@ class ArrayDimension
     }
 
     /**
-     * Search inside a multi-dimensional array some key
+     * Search inside a multi-dimensional array a value by nested keys
      *
-     * Default value will be returned if any key in the array does not exists in any level
+     * Default value will be returned if any key in the haystack array does not exists
      *
      * @param array $needle
      * @param array $haystack
