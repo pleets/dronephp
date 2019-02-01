@@ -46,4 +46,34 @@ class ArrayDimension
 
         return (!$again) ? $new_config : self::toUnidimensional($new_config, $glue);
     }
+
+    /**
+     * Search inside a multi-dimensional array some key
+     *
+     * Default value will be returned if any key in the array does not exists in any level
+     *
+     * @param array $needle
+     * @param array $haystack
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public static function ifdef(array $needle, array $haystack, $value)
+    {
+        $key = array_shift($needle);
+
+        do
+        {
+            if (array_key_exists($key, $haystack))
+                $haystack = $haystack[$key];
+            else
+                return $value;
+
+            $key = count($needle) ? array_shift($needle) : NULL;
+
+            if (is_null($key))
+                return $haystack;
+
+        } while (!is_null($key));
+    }
 }
