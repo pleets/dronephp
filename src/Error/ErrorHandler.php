@@ -42,15 +42,15 @@ class ErrorHandler
     }
 
     /**
-     * Better wat to use the error-control operator @
+     * Better way to use the error-control operator @
      *
      * By default @ operator hides Fatal errors (Ex: Maximum time execution).
      * The errorControlOperator could be setted as handler with set_error_handler($callable $e, E_ALL)
      * and it takes the same behavior of @, but it does not ignore Fatal errors.
      *
      * @param integer $errno
-     * @param string $errstr
-     * @param string $errfile
+     * @param string  $errstr
+     * @param string  $errfile
      * @param integer $errline
      *
      * @return null|boolean

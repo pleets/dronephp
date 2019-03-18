@@ -25,9 +25,9 @@ trait ErrorTrait
     protected $standardErrors = [
 
         # File errros
-        1 => 'Failed to open stream: \'%file%\', Permission Denied!',
-        2 => 'No such file or directory %file%',
-        3 => 'File exists %file%',
+        1 => 'Failed to open stream \'%file%\', Permission Denied!',
+        2 => 'No such file or directory \'%file%\'',
+        3 => 'File exists \'%file%\'',
         4 => 'Stream \'%file%\' is Not a directory',
 
         # JSON errors
@@ -42,6 +42,13 @@ trait ErrorTrait
 
     /**
      * Failure messages
+     *
+     * This member stores all failure messages as an array of key/value pairs.
+     *
+     * key:   The the code of the error (usually in Errno class). Also the ERROR_CONSTANT.
+     * value: The error message.
+     *
+     * If the key is not an integer, the error is not in Errno class.
      *
      * @var array
      */
@@ -58,21 +65,77 @@ trait ErrorTrait
     }
 
     /**
+     * Returns true if there is at least one error or false if not
+     *
+     * @return array
+     */
+    public function hasErrors()
+    {
+        return (bool) count($this->errors);
+    }
+
+    /**
      * Adds an error
      *
-     * @param string $code
-     * @param string $message
+     * When the error is standard (i.e. exists in Errno class) the behavior is as follow:
+     * - _error(int ERROR_CONSTANT): Adds a standard error without replace the wildcard
+     * - _error(int ERROR_CONSTANT, string $message): Adds a standard error replacing the wildcard
+     *
+     * When the error is non-standard (i.e. is not a member of Errno class) the behavior is as follow:
+     * - _error(int $code, string $message): Adds a non-standard error
+     * - _error(string $message): Adds a non-standard error creating a generated base64 code
+     *
+     * @param integer $code
+     * @param string  $message
      *
      * @return null
      */
-    protected function error($code, $message = null)
+    protected function _error($code, $message = null)
     {
+        if (!is_null($code) && !is_integer($code))
+            throw new \InvalidArgumentException("Invalid type given. Integer expected");
+
+        if (is_null($code))
+            $code = preg_replace('/=|\/|\+/', "", base64_encode($message));
+        else
+        {
+            if (!array_key_exists($code, $this->standardErrors) && empty($message))
+                /*
+                 * "This kind of exception should lead directly to a fix in your code"
+                 * Non-standard errors must have a message to describe the error, make sure
+                 * you execute the error() method with a message as the second parameter.
+                 *
+                 * Ref: http://php.net/manual/en/class.logicexception.php
+                 */
+                throw new \LogicException('The message does not be empty in non-standard errors!');
+        }
+
         if (!array_key_exists($code, $this->errors))
             $this->errors[$code] = (array_key_exists($code, $this->standardErrors))
                 ?
                     is_null($message)
-                        ? $this->standardErrors[$code]
+                        ? preg_replace('/\s\'%[a-zA-Z]*%\'/', $message, $this->standardErrors[$code])
+                        # if $message is not null it will replace the %file% wildcard
                         : preg_replace('/%[a-zA-Z]*%/', $message, $this->standardErrors[$code])
                 : $message;
+    }
+
+    function __call($method, $arguments)
+    {
+        if ($method == 'error')
+        {
+            switch (count($arguments))
+            {
+                case 1:
+                    if (is_integer($arguments[0]))
+                        return call_user_func([$this, '_error'], array_shift($arguments));
+                    else
+                        return call_user_func([$this, '_error'], null, array_shift($arguments));
+                    break;
+                case 2:
+                    return call_user_func([$this, '_error'], $arguments[0], $arguments[1]);
+                    break;
+            }
+        }
     }
 }

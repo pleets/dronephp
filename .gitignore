@@ -7,6 +7,5 @@ nbproject
 .project
 .settings
 composer.lock
-vendor/bin
-vendor/container-interop
+vendor
 node_modules

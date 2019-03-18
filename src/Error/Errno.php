@@ -22,10 +22,10 @@ class Errno
      *
      * @var integer
      */
-	const FILE_PERMISSION_DENIED = 1;
-	const FILE_NOT_FOUND         = 2;
-	const FILE_EXISTS            = 3;
-	const NOT_DIRECTORY          = 4;
+    const FILE_PERMISSION_DENIED = 1;
+    const FILE_NOT_FOUND         = 2;
+    const FILE_EXISTS            = 3;
+    const NOT_DIRECTORY          = 4;
 
     /**
      * Common JSON errors
@@ -51,14 +51,14 @@ class Errno
      *
      * @return string
      */
-    public static function getErrorCodeName($code)
+    public static function getErrorNameByCode($code)
     {
         $currentClass = new \ReflectionClass('\Drone\Error\Errno');
         $constants = $currentClass->getConstants();
 
         $constName = null;
 
-        foreach ($constants as $name => $value )
+        foreach ($constants as $name => $value)
         {
             if ($value == $code)
             {
