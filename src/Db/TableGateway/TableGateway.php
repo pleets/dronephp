@@ -22,6 +22,40 @@ use Drone\Exception;
 class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 {
     /**
+     * The text with the last query executed
+     *
+     * @var string
+     */
+    protected $lastQuery;
+
+    /**
+     * An array with the last binded values
+     *
+     * @var array
+     */
+    protected $lastValues;
+
+    /**
+     * Returns the lastQuery
+     *
+     * @return string
+     */
+    public function getLastQuery()
+    {
+        return $this->lastQuery;
+    }
+
+    /**
+     * Returns the lastValues
+     *
+     * @return array
+     */
+    public function getLastValues()
+    {
+        return $this->lastValues;
+    }
+
+    /**
      * Select statement
      *
      * @param array $where
@@ -97,6 +131,9 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
         $table = $this->entity->getTableName();
 
         $sql = "SELECT * \r\nFROM {$table}\r\n$where";
+
+        $this->lastQuery = $sql;
+        $this->lastValues = $bind_values;
 
         if (count($bind_values))
             $this->getDb()->execute($sql, $bind_values);
@@ -176,6 +213,9 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
         $table = $this->entity->getTableName();
 
         $sql = "INSERT INTO {$table} \r\n(\r\n\t$cols\r\n) \r\nVALUES \r\n(\r\n\t$vals\r\n)";
+
+        $this->lastQuery = $sql;
+        $this->lastValues = $bind_values;
 
         return $this->getDb()->execute($sql, $bind_values);
     }
@@ -320,6 +360,9 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "UPDATE {$table} \r\nSET \r\n\t$parsed_set \r\nWHERE \r\n\t$parsed_where";
 
+        $this->lastQuery = $sql;
+        $this->lastValues = $bind_values;
+
         return $this->getDb()->execute($sql, $bind_values);
     }
 
@@ -402,6 +445,9 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
         $table = $this->entity->getTableName();
 
         $sql = "DELETE FROM {$table} $where";
+
+        $this->lastQuery = $sql;
+        $this->lastValues = $bind_values;
 
         return $this->getDb()->execute($sql, $bind_values);
     }

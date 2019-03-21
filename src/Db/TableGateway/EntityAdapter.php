@@ -169,7 +169,7 @@ class EntityAdapter
      */
     private function parseEntity(Array &$entity)
     {
-        $drv = $this->getTableGateway()->getDriver()->getDriverName();
+        $drv = $this->getTableGateway()->getDb()->getDriverName();
 
         foreach ($entity as $field => $value)
         {

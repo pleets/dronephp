@@ -290,7 +290,7 @@ class TableGatewayTest extends TestCase
     }
 
     # AS YOU CAN SEE IN THE ABOVE TEST, IT'S EASY TO ACCESS TO THE DRIVER (HERE MYSQL) USING THE
-    # getDb() METHOD. A COMPLETE TEST FOR A DRIVER IS AVAILABLE IN MySQLTes.php. ALL TRANSACTION
+    # getDb() METHOD. A COMPLETE TEST FOR A DRIVER IS AVAILABLE IN MySQLTest.php. ALL TRANSACTION
     # BEHAVIOR OF TABLE GATEWAY IS RELATED TO THE DRIVER. ONLY GET THE DRIVER AND LET'S DO IT.
 
     /*
@@ -303,7 +303,7 @@ class TableGatewayTest extends TestCase
     */
 
     /**
-     * Tests if we can execute INSERT statement through the ORM tool
+     * Tests if we can execute INSERT statements through the TableGateway
      *
      * @return null
      */
@@ -331,7 +331,7 @@ class TableGatewayTest extends TestCase
     }
 
     /**
-     * Tests if we can execute UPDATE statement through the ORM tool
+     * Tests if we can execute UPDATE statements through the TableGateway
      *
      * @return null
      */
@@ -356,7 +356,7 @@ class TableGatewayTest extends TestCase
     }
 
     /**
-     * Tests if we can execute DELETE statement through the ORM tool
+     * Tests if we can execute DELETE statements through the TableGateway
      *
      * @return null
      */
@@ -381,7 +381,7 @@ class TableGatewayTest extends TestCase
     }
 
     /**
-     * Tests if we can execute SELECT statement through the ORM tool
+     * Tests if we can execute SELECT statements through the TableGateway
      *
      * @return null
      */
@@ -440,7 +440,6 @@ class MyEntity extends Entity
     {
         parent::__construct($data);
         $this->setTableName("MYTABLE");
-        //$this->setConnectionParams("local");
    }
 }
 

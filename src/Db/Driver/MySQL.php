@@ -133,10 +133,6 @@ class MySQL extends AbstractDriver implements DriverInterface
             eval('$stmt->bind_param(\'' . $bind_types . '\', ' . $values . ');');
 
             $r = $stmt->execute();
-
-            if ($r)
-            {
-            }
         }
         else
         {
@@ -189,7 +185,6 @@ class MySQL extends AbstractDriver implements DriverInterface
 
         if ($this->transac_mode)
             $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
-
         /*
          * Because mysqli_query() returns FALSE on failure, a mysqli_result object for SELECT, SHOW, DESCRIBE or EXPLAIN queries,
          * and TRUE for other successful queries, it should be handled to return only objects or resources.

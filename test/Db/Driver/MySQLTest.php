@@ -225,6 +225,28 @@ class MySQLTest extends TestCase
     }
 
     /**
+     * Tests if we can execute a prepared DML statement
+     *
+     * @return null
+     */
+    public function testCanExecutePreparedDMLStatement()
+    {
+        $options = $this->options;
+        $options["auto_connect"] = true;
+
+        $conn = new MySQL($options);
+        $sql = "UPDATE MYTABLE SET DESCRIPTION = ? WHERE ID = ?";
+        $result = $conn->execute($sql, ["Bonjour le monde!", 1]);
+
+        $this->assertTrue(is_object($result));
+
+        # properties modified by execute() method
+        $this->assertEquals(0, $conn->getNumRows());
+        $this->assertEquals(0, $conn->getNumFields());
+        $this->assertEquals(1, $conn->getRowsAffected());
+    }
+
+    /**
      * Tests if a wrong query execution throws an InvalidQueryException
      *
      * @return null
