@@ -22,35 +22,6 @@ use Drone\Exception;
 class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 {
     /**
-     * Entity instance
-     *
-     * @var Entity
-     */
-    private $entity;
-
-    /**
-     * Returns the entity
-     *
-     * @return Entity
-     */
-    public function getEntity()
-    {
-        return $this->entity;
-    }
-
-    /**
-     * Constructor
-     *
-     * @param Entity $entity
-     * @param boolean $auto_connect
-     */
-    public function __construct(Entity $entity, $auto_connect = true)
-    {
-        parent::__construct($entity->getConnectionIdentifier(), $auto_connect);
-        $this->entity = $entity;
-    }
-
-    /**
      * Select statement
      *
      * @param array $where
@@ -61,7 +32,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
     {
         $bind_values = [];
 
-        $driver = $this->getDriver()->getDriverName();
+        $driver = $this->getDb()->getDriverName();
 
         if (count($where))
         {
@@ -128,11 +99,11 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
         $sql = "SELECT * \r\nFROM {$table}\r\n$where";
 
         if (count($bind_values))
-            $this->getDriver()->getDb()->execute($sql, $bind_values);
+            $this->getDb()->execute($sql, $bind_values);
         else
-            $this->getDriver()->getDb()->execute($sql);
+            $this->getDb()->execute($sql);
 
-        return $this->getDriver()->getDb()->getArrayResult();
+        return $this->getDb()->getArrayResult();
     }
 
     /**
@@ -152,7 +123,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $bind_values = [];
 
-        $driver = $this->getDriver()->getDriverName();
+        $driver = $this->getDb()->getDriverName();
 
         $k = 0;
 
@@ -206,7 +177,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "INSERT INTO {$table} \r\n(\r\n\t$cols\r\n) \r\nVALUES \r\n(\r\n\t$vals\r\n)";
 
-        return $this->getDriver()->getDb()->execute($sql, $bind_values);
+        return $this->getDb()->execute($sql, $bind_values);
     }
 
     /**
@@ -233,7 +204,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $bind_values = [];
 
-        $driver = $this->getDriver()->getDriverName();
+        $driver = $this->getDb()->getDriverName();
 
         $k = 0;
 
@@ -349,7 +320,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "UPDATE {$table} \r\nSET \r\n\t$parsed_set \r\nWHERE \r\n\t$parsed_where";
 
-        return $this->getDriver()->getDb()->execute($sql, $bind_values);
+        return $this->getDb()->execute($sql, $bind_values);
     }
 
     /**
@@ -370,7 +341,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
             $bind_values = [];
 
-            $driver = $this->getDriver()->getDriverName();
+            $driver = $this->getDb()->getDriverName();
 
             $k = 0;
 
@@ -432,6 +403,6 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $sql = "DELETE FROM {$table} $where";
 
-        return $this->getDriver()->getDb()->execute($sql, $bind_values);
+        return $this->getDb()->execute($sql, $bind_values);
     }
 }

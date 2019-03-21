@@ -31,6 +31,8 @@ class MySQL extends AbstractDriver implements DriverInterface
      */
     public function __construct($options)
     {
+        $this->driverName = 'Mysqli';
+
         if (!array_key_exists("dbchar", $options))
             $options["dbchar"] = "utf8";
 
@@ -134,18 +136,6 @@ class MySQL extends AbstractDriver implements DriverInterface
 
             if ($r)
             {
-                if (is_object($stmt) && get_class($stmt) == 'mysqli_stmt')
-                {
-                    $res = $this->result->get_result();
-
-                    /*
-                     * if $res is false then there aren't results.
-                     * It is useful to prevent rollback transactions on insert statements because
-                     * insert statement do not free results.
-                     */
-                    if ($res)
-                        $this->result = $res;
-                }
             }
         }
         else
@@ -164,15 +154,35 @@ class MySQL extends AbstractDriver implements DriverInterface
             throw new Exception\InvalidQueryException($this->dbconn->error, $this->dbconn->errno);
         }
 
+        $is_stmt_result = is_object($this->result) && get_class($this->result) == 'mysqli_stmt';
+
+        if ($is_stmt_result)
+        {
+            $this->rowsAffected = $this->result->affected_rows;
+
+            $res = $this->result->get_result();
+
+            /*
+             * if $res is false then there aren't results.
+             * It is useful to prevent rollback transactions on insert statements because
+             * insert statement do not free results.
+             */
+            if ($res)
+                $this->result = $res;
+        }
+
         # identify SELECT, SHOW, DESCRIBE or EXPLAIN queries
         if (is_object($this->result) && property_exists($this->result, 'num_rows'))
             $this->numRows = $this->result->num_rows;
         else
         {
-            # affected_rows return the same of num_rows on select statements!
-            if (property_exists($this->dbconn, 'affected_rows'))
+            if (property_exists($this->dbconn, 'affected_rows') && !$is_stmt_result)
                 $this->rowsAffected = $this->dbconn->affected_rows;
         }
+
+        # affected_rows return the same of num_rows on select statements!
+        if ($this->numRows > 0)
+            $this->rowsAffected = 0;
 
         if (property_exists($this->dbconn, 'field_count'))
             $this->numFields = $this->dbconn->field_count;

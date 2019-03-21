@@ -31,6 +31,8 @@ class SQLServer extends AbstractDriver implements DriverInterface
      */
     public function __construct($options)
     {
+        $this->driverName = 'Sqlsrv';
+
         if (!array_key_exists("dbchar", $options))
             $options["dbchar"] = "UTF-8";
 

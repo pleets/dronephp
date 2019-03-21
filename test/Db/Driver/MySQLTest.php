@@ -193,6 +193,7 @@ class MySQLTest extends TestCase
         $sql = "CREATE TABLE MYTABLE (ID INTEGER(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, DESCRIPTION VARCHAR(100))";
         $result = $conn->execute($sql);
 
+        # mysqli
         $this->assertTrue(is_object($result));
 
         # properties modified by execute() method
@@ -397,7 +398,7 @@ class MySQLTest extends TestCase
         $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
-        $this->assertTrue(($rowcount === 4));    # the row is available
+        $this->assertTrue(($rowcount === 4));    # the rows are available
     }
 
     /**
@@ -443,7 +444,7 @@ class MySQLTest extends TestCase
         $conn->execute($sql);
         $rowcount = count($conn->getArrayResult());
 
-        $this->assertNotTrue(($rowcount === 4));    # the row is available
+        $this->assertNotTrue(($rowcount === 4));    # the rows are not available
     }
 
     /**

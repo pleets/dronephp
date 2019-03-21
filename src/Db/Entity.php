@@ -32,11 +32,11 @@ abstract class Entity
     private $changedFields = [];
 
     /**
-     * The connection identifier
+     * The connection parameters
      *
-     * @var string
+     * @var array
      */
-    private $connectionIdentifier = "default";
+    private $connectionParams = [];
 
     /**
      * Returns the tableName property
@@ -59,13 +59,13 @@ abstract class Entity
     }
 
     /**
-     * Returns the connectionIdentifier property
+     * Returns the connectionParams property
      *
-     * @return string
+     * @return array
      */
-    public function getConnectionIdentifier()
+    public function getConnectionParams()
     {
-        return $this->connectionIdentifier;
+        return $this->connectionParams;
     }
 
     /**
@@ -81,15 +81,15 @@ abstract class Entity
     }
 
     /**
-     * Sets the connectionIdentifier property
+     * Sets the connectionParams property
      *
-     * @param string $connectionIdentifier
+     * @param array $connectionParams
      *
      * @return null
      */
-    public function setConnectionIdentifier($connectionIdentifier)
+    public function setConnectionParams($connectionParams)
     {
-        $this->connectionIdentifier = $connectionIdentifier;
+        $this->connectionParams = $connectionParams;
     }
 
     /**

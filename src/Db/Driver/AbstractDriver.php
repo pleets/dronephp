@@ -64,6 +64,13 @@ abstract class AbstractDriver
     protected $dbport;
 
     /**
+     * Driver name
+     *
+     * @var string
+     */
+    protected $driverName;
+
+    /**
      * Connection identifier
      *
      * @var object|resource
@@ -177,6 +184,16 @@ abstract class AbstractDriver
     public function getDbport()
     {
         return $this->dbport;
+    }
+
+    /**
+     * Returns the driverName attribute
+     *
+     * @return string
+     */
+    public function getDriverName()
+    {
+        return $this->driverName;
     }
 
     /**

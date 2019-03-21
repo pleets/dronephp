@@ -31,6 +31,8 @@ class Oracle extends AbstractDriver implements DriverInterface
      */
     public function __construct($options)
     {
+        $this->driverName = 'Oci8';
+
         if (!array_key_exists("dbchar", $options))
             $options["dbchar"] = "AL32UTF8";
 

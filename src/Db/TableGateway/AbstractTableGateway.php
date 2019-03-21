@@ -10,7 +10,8 @@
 
 namespace Drone\Db\TableGateway;
 
-use Drone\Db\Driver\DriverAdapter;
+use Drone\Db\Driver\DriverFactory;
+use Drone\Db\Entity;
 
 /**
  * AbstractTableGateway class
@@ -20,23 +21,40 @@ use Drone\Db\Driver\DriverAdapter;
 abstract class AbstractTableGateway
 {
     /**
+     * Entity instance
+     *
+     * @var Entity
+     */
+    protected $entity;
+
+    /**
      * Driver collector
      *
-     * @var DriverAdapter[]
+     * @var AbstractDriver[]
      */
     private static $drivers;
 
     /**
-     * Current driver identifier
+     * Current connection
      *
      * @var string
      */
-    private $currentDriverIdentifier;
+    protected $currentConnection;
+
+    /**
+     * Returns the entity
+     *
+     * @return Entity
+     */
+    public function getEntity()
+    {
+        return $this->entity;
+    }
 
     /**
      * Returns all registered drivers
      *
-     * @return DriverAdapter[]
+     * @return AbstractDriver[]
      */
     public static function getDrivers()
     {
@@ -44,36 +62,106 @@ abstract class AbstractTableGateway
     }
 
     /**
-     * Returns the current driver identifier
+     * Returns the current connection identifier
      *
      * @return string
      */
-    public function getCurrentDriverIdentifier()
+    public function getCurrentConnection()
     {
-        return $this->currentDriverIdentifier;
-    }
-
-    /**
-     * Returns the current DriverAdapter
-     *
-     * @return DriverAdapter
-     */
-    public function getDriver()
-    {
-        return self::$drivers[$this->currentDriverIdentifier];
+        return $this->currentConnection;
     }
 
     /**
      * Constructor
      *
-     * @param string  $connection_identifier
-     * @param boolean $auto_connect
+     * @param Entity       $entity
+     * @param array|string $connection
+     *
+     * @throws \RuntimeException
      */
-    public function __construct($connection_identifier = "default", $auto_connect = true)
+    public function __construct(Entity $entity, $connection)
     {
-        $this->currentDriverIdentifier = $connection_identifier;
+        $this->entity = $entity;
 
-        if (!isset(self::$drivers[$connection_identifier]))
-            self::$drivers[$connection_identifier] = new DriverAdapter($connection_identifier, $auto_connect);
+        if (is_string($connection))
+        {
+            $this->currentConnection = $connection;
+            $this->getDriver($connection);
+        }
+        else if (is_array($connection))
+        {
+            $identifier = key($connection);
+            $connection_options = $connection[$identifier];
+
+            $this->currentConnection = $identifier;
+
+            if (!array_key_exists('driver', $connection_options))
+                throw new \RuntimeException("The database driver key has not been declared");
+
+            if (!isset(self::$drivers[$identifier]))
+                self::$drivers[$identifier] = DriverFactory::create($connection_options);
+            else
+                throw new \RuntimeException("The database connection already exists");
+        }
+        else
+            throw new \InvalidArgumentException("Invalid type given. Array or string expected");
+    }
+
+    /**
+     * Returns the a particular connection
+     *
+     * @param string
+     *
+     * @return AbstractDriver
+     *
+     * @throws \RuntimeException
+     */
+    public static function getDriver($identifier)
+    {
+        if (!array_key_exists($identifier, self::$drivers))
+            throw new \RuntimeException("The database connection does not exists");
+
+        return self::$drivers[$identifier];
+    }
+
+    /**
+     * Returns true if the connection exists
+     *
+     * @param string
+     *
+     * @return boolean
+     *
+     * @throws \RuntimeException
+     */
+    public static function hasDriver($identifier)
+    {
+        if (!array_key_exists($identifier, self::$drivers))
+            return false;
+
+        return true;
+    }
+
+    /**
+     * Returns the current connection driver
+     *
+     * @return AbstractDriver
+     *
+     * @throws \RuntimeException
+     */
+    public function getCurrentDriver()
+    {
+        return self::$drivers[$this->currentConnection];
+    }
+
+    /**
+     * Alias for getCurrentDriver()
+     *
+     * @return AbstractDriver
+     *
+     * @throws \RuntimeException
+     */
+    public function getDb()
+    {
+        return $this->getCurrentDriver();
     }
 }
