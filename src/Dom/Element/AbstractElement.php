@@ -20,6 +20,20 @@ use Drone\Dom\Attribute;
 abstract class AbstractElement
 {
     /**
+     * The node name of the element
+     *
+     * @var string
+     */
+    const NODE_NAME = '';
+
+    /**
+     * Tells if the element has a end tag
+     *
+     * @var boolean
+     */
+    const HAS_END_TAG = true;
+
+    /**
      * Start tag of the element
      *
      * @var string
@@ -27,31 +41,28 @@ abstract class AbstractElement
     protected $startTag;
 
     /**
-     * Defines if the element has a end tag
+     * End tag of the element
      *
-     * @var boolean
+     * @var string
      */
     protected $endTag;
 
     /**
-     * Element attribute list
+     * Element attributes list
      *
      * @var Attribute[]
      */
-    protected $attributes;
+    protected $attributes = [];
 
     /**
-     * Gets all attributes of the element
+     * Children elements
      *
-     * @return array
+     * @var AbstractElement[]
      */
-    public function getAttributes()
-    {
-        return $this->attributes;
-    }
+    protected $children = [];
 
     /**
-     * Returns startTag attribute
+     * Returns the startTag attribute
      *
      * @return string
      */
@@ -63,7 +74,7 @@ abstract class AbstractElement
     /**
      * Returns the endTag attribute
      *
-     * @return boolean
+     * @return string
      */
     public function getEndTag()
     {
@@ -71,92 +82,171 @@ abstract class AbstractElement
     }
 
     /**
-     * Sets the startTag attribute
+     * Gets all attributes of the element
      *
-     * @param string $startTag
-     *
-     * @return null
+     * @return Attribute[]
      */
-    public function setStartTag($startTag)
+    public function getAttributes()
     {
-        $this->startTag = $startTag;
+        return $this->attributes;
     }
 
     /**
-     * Sets the endTag attribute
+     * Gets all children elements
      *
-     * @param boolean $endTag
+     * @return AbstractElement[]
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * Checks if a particula child exists by label
+     *
+     * @param string $label
+     *
+     * @return boolean
+     */
+    public function hasChild($label)
+    {
+        if (array_key_exists($label, $this->children))
+            return true;
+
+        return false;
+    }
+
+    /**
+     * Returns a particular child
+     *
+     * @param string $label
+     *
+     * @return AbstractElement|null
+     */
+    public function getChild($label)
+    {
+        if (array_key_exists($label, $this->children))
+            return $this->children[$label];
+
+        return null;
+    }
+
+    /**
+     * Sets a child
+     *
+     * @param string          $label
+     * @param AbstractElement $child
      *
      * @return null
      */
-    public function setEndTag($endTag)
+    public function setChild($label, AbstractElement $child)
     {
-        $this->endTag = (boolean) $endTag;
+        $this->children[$label] = $child;
+    }
+
+    /**
+     * Removes a particular child
+     *
+     * @param string $label
+     *
+     * @throws Exception\ChildNotFoundException
+     *
+     * @return AbstractElement|null
+     */
+    public function removeChild($label)
+    {
+        if (array_key_exists($label, $this->children))
+            unset($this->children[$label]);
+        else
+            throw new Exception\ChildNotFoundException("The child to remove does not exists");
+    }
+
+    /**
+     * Checks if the element has the specified attribute
+     *
+     * @param string $name
+     *
+     * @return boolean
+     */
+    public function hasAttribute($name)
+    {
+        if (count($this->attributes))
+        {
+            foreach ($this->attributes as $attrib)
+            {
+                if ($attrib->getName() == $name)
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * Returns a particular Attribute
      *
-     * @param string $label
      * @param string $name
      *
      * @return Attribute|null
      */
-    public function getAttribute($label, $name)
+    public function getAttribute($name)
     {
-        $attribs = $this->getAttributes();
-
-        foreach ($attribs[$label] as $attrib)
+        if (count($this->attributes))
         {
-            if ($attrib->getName() == $name)
-                return $attrib;
-        }
-    }
-
-    /**
-     * Sets only one attribute
-     *
-     * @param string $label
-     * @param string $name
-     * @param mixed $value
-     *
-     * @return null
-     */
-    public function setAttribute($label, $name, $value)
-    {
-        $attribs = $this->getAttributes();
-
-        if (array_key_exists($label, $attribs))
-        {
-
-            if (!array_key_exists($name, $attribs))
-                $this->attributes[$label][] = new Attribute($name, $value);
-            else
-                $this->getAttribute($label, $name)->setValue($value);
-        }
-        else {
-            $this->attributes[$label][] = new Attribute($name, $value);
-        }
-    }
-
-    /**
-     * Adds all attributes passed as parameter
-     *
-     * @param array $definition
-     *
-     * @return null
-     */
-    public function addAttributes($definition)
-    {
-        foreach ($definition as $label => $attributes)
-        {
-            $this->attributes[$label] = [];
-
-            foreach ($attributes as $name => $value)
+            foreach ($this->attributes as $attrib)
             {
-                $this->attributes[$label][] = new Attribute($name, $value);
+                if ($attrib->getName() == $name)
+                    return $attrib;
             }
         }
+
+        return null;
+    }
+
+    /**
+     * Sets an attribute
+     *
+     * @param Attribute $attribute
+     *
+     * @return null
+     */
+    public function setAttribute(Attribute $attribute)
+    {
+        $attrib = $this->getAttribute($attribute->getName());
+
+        if (!is_null($attrib))
+        {
+            foreach ($this->attributes as $key => $_attrib)
+            {
+                if ($_attrib->getName() == $attrib->getName())
+                    $this->attributes[$key] = $attribute;
+            }
+        }
+        else
+            $this->attributes[] = $attribute;
+    }
+
+    /**
+     * Removes a particular Attribute
+     *
+     * @param string $name
+     *
+     * @throws Exception\AttributeNotFoundException
+     *
+     * @return null
+     */
+    public function removeAttribute($name)
+    {
+        if (count($this->attributes))
+        {
+            foreach ($this->attributes as $key => $attrib)
+            {
+                if ($attrib->getName() == $name)
+                    unset($this->attributes[$key]);
+            }
+        }
+
+        throw new Exception\AttributeNotFoundException("The attribute to remove does not exists");
     }
 
     /**
@@ -164,27 +254,17 @@ abstract class AbstractElement
      *
      * @param array $options
      */
-    public function __construct($options)
+    public function __construct()
     {
-        if (!array_key_exists('endTag', $options))
-            $this->setEndTag(false);
-
-        foreach ($options as $key => $value)
+        if (static::HAS_END_TAG)
         {
-            switch ($key)
-            {
-                case 'attributes':
-                    $this->addAttributes($value);
-                    break;
-
-                case 'startTag':
-                    $this->setStartTag($value);
-                    break;
-
-                case 'endTag':
-                    $this->setEndTag($value);
-                    break;
-            }
+            $this->startTag = "<" .strtolower(static::NODE_NAME). ">";
+            $this->endTag   = "</" .strtolower(static::NODE_NAME). ">";
+        }
+        else
+        {
+            $this->startTag = "<" .strtolower(static::NODE_NAME);
+            $this->endTag   = "/>";
         }
     }
 }

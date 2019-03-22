@@ -11,36 +11,23 @@
 namespace Drone\Dom\Element;
 
 /**
- * Form class
+ * Input class
  *
- * Represents a html Form element
+ * Represents a input element
  */
-class Form extends AbstractElement
+class Input extends AbstractElement
 {
     /**
      * The node name of the element
      *
      * @var string
      */
-    const NODE_NAME = 'FORM';
+    const NODE_NAME = 'INPUT';
 
     /**
      * Tells if the element has a end tag
      *
      * @var boolean
      */
-    const HAS_END_TAG = true;
-
-    /**
-     * Fills the form with all passed values
-     *
-     * @param array $values
-     */
-    public function fill(Array $values)
-    {
-        foreach ($values as $label => $value)
-        {
-            $this->setAttribute($label, "value", $value);
-        }
-    }
+    const HAS_END_TAG = false;
 }

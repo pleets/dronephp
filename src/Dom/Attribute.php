@@ -22,14 +22,14 @@ class Attribute
      *
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * The value of the attribute
      *
      * @var mixed
      */
-    private $value;
+    protected $value;
 
     /**
      * Gets the name attribute
