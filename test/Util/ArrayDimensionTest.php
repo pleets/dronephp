@@ -120,4 +120,30 @@ class ArrayDimensionTest extends TestCase
 
         $this->assertEquals($expected, $unidimensional);
     }
+
+    /**
+     * Tests if it's possible transform an object to an array
+     *
+     * @return null
+     */
+    public function testConvertAnObjectToArray()
+    {
+        $object = new \StdClass();
+        $object->id = 34389;
+        $object->prices = new \StdClass();
+        $object->prices->house = 1200000;
+        $object->prices->car   = 650000;
+
+        $expected = [
+            "id" => 34389,
+            "prices" => [
+                "house" => 1200000,
+                "car"   =>  650000
+            ]
+        ];
+
+        $array = ArrayDimension::objectToArray($object);
+
+        $this->assertSame($expected, $array);
+    }
 }
