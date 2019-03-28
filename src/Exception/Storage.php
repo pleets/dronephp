@@ -70,6 +70,16 @@ class Storage
                 }
             }
         }
+        else
+        {
+            $directory = strstr($this->outputFile, basename($this->outputFile), true);
+
+            if (!file_exists($directory))
+            {
+                $this->error(Errno::FILE_NOT_FOUND, $directory);
+                return false;
+            }
+        }
 
         $data[$id] = [
             "message" => $exception->getMessage(),
