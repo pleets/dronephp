@@ -85,15 +85,15 @@ trait ErrorTrait
      * - _error(int $code, string $message): Adds a non-standard error
      * - _error(string $message): Adds a non-standard error creating a generated base64 code
      *
-     * @param integer $code
-     * @param string  $message
+     * @param integer|string $code
+     * @param string         $message
      *
      * @return null
      */
     protected function _error($code, $message = null)
     {
-        if (!is_null($code) && !is_integer($code))
-            throw new \InvalidArgumentException("Invalid type given. Integer expected");
+        if (!is_null($code) && !is_integer($code) && !is_string($code))
+            throw new \InvalidArgumentException("Invalid type given. Integer or string expected");
 
         if (is_null($code))
             $code = preg_replace('/=|\/|\+/', "", base64_encode($message));
@@ -101,11 +101,8 @@ trait ErrorTrait
         {
             if (!array_key_exists($code, $this->standardErrors) && empty($message))
                 /*
-                 * "This kind of exception should lead directly to a fix in your code"
                  * Non-standard errors must have a message to describe the error, make sure
                  * you execute the error() method with a message as the second parameter.
-                 *
-                 * Ref: http://php.net/manual/en/class.logicexception.php
                  */
                 throw new \LogicException('The message does not be empty in non-standard errors!');
         }

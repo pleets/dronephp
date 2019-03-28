@@ -15,7 +15,7 @@ use Exception;
 /**
  * PageNotFoundException class
  *
- * Page not found is throwed in application class and other management classes
+ * Page not found is thrown in application class and other management classes
  */
 class PageNotFoundException extends Exception
 {

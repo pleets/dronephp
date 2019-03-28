@@ -13,7 +13,7 @@ namespace Drone\Dom\Element\Exception;
 /**
  * AttributeNotFoundException Class
  *
- * This Exception is throwed when an attribute does not exists
+ * This Exception is thrown when an attribute does not exists
  */
 class AttributeNotFoundException extends \RuntimeException
 {

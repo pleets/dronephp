@@ -13,7 +13,7 @@ namespace Drone\Db\Driver\Exception;
 /**
  * ConnectionException Class
  *
- * This Exception is throwed in the constructor of all database drivers
+ * This Exception is thrown in the constructor of all database drivers
  */
 class ConnectionException extends \RuntimeException
 {

@@ -267,4 +267,17 @@ abstract class AbstractElement
             $this->endTag   = "/>";
         }
     }
+
+    /**
+     * Checks is an element is a form control
+     *
+     * @return boolean
+     */
+    public function isFormControl()
+    {
+        if (in_array(static::NODE_NAME, ['INPUT']))
+            return true;
+
+        return false;
+    }
 }

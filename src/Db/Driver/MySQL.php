@@ -254,13 +254,7 @@ class MySQL extends AbstractDriver implements DriverInterface
             }
         }
         else
-            /*
-             * "This kind of exception should lead directly to a fix in your code"
-             * So much production tests tell us this error is throwed because developers
-             * execute toArray() before execute().
-             *
-             * Ref: http://php.net/manual/en/class.logicexception.php
-             */
+            # This error is thrown because of 'execute' method has not been executed.
             throw new \LogicException('There are not data in the buffer!');
 
         $this->arrayResult = $data;

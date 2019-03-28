@@ -13,7 +13,7 @@ namespace Drone\Db\Driver\Exception;
 /**
  * InvalidQueryException Class
  *
- * This Exception is throwed when an error ocurred in SQL statement executions
+ * This Exception is thrown when an error ocurred in SQL statement executions
  */
 class InvalidQueryException extends \RuntimeException
 {

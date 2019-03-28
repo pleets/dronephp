@@ -8,13 +8,13 @@
  * @author    Darío Rivera <fermius.us@gmail.com>
  */
 
-namespace Drone\Util\Exception;
+namespace Drone\Dom\Element\Exception;
 
 /**
- * MonthOutOfRange Class
+ * NotFormControlException Class
  *
- * This Exception is thrown when there is a undefined index on DateTime::MONTHS constant
+ * This Exception is thrown when an element is not a form control
  */
-class MonthOutOfRange extends \RuntimeException
+class NotFormControlException extends \RuntimeException
 {
 }

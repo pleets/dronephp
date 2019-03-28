@@ -11,6 +11,7 @@
 namespace Drone\Validator;
 
 use Drone\Dom\Element\Form;
+use Drone\Dom\Element\ElementFactory;
 use Zend\Validator\NotEmpty;
 use Zend\Validator\Digits;
 use Zend\Validator\StringLength;
@@ -29,6 +30,8 @@ use Zend\Validator\Uri;
  */
 class FormValidator
 {
+    use \Drone\Error\ErrorTrait;
+
     /**
      * The result of latest validation
      *
@@ -39,18 +42,11 @@ class FormValidator
     private $valid;
 
     /**
-     * Validation messages
-     *
-     * @var array
-     */
-    private $messages = [];
-
-    /**
      * Form instance
      *
      * @var Form
      */
-    private $formHandler;
+    private $form;
 
     /**
      * Element options
@@ -67,22 +63,16 @@ class FormValidator
     private $translator;
 
     /**
-     * Returns all failure messages
-     *
-     * @return array
-     */
-    public function getMessages()
-    {
-        return $this->messages;
-    }
-
-    /**
-     * Returns valid attribute after validation
+     * Returns the valid attribute after validation
      *
      * @return boolean
      */
     public function isValid()
     {
+        if (is_null($this->valid))
+            # This error is thrown because of 'setValid' method has not been executed.
+            throw new \LogicException('No validation has been executed!');
+
         return $this->valid;
     }
 
@@ -93,46 +83,26 @@ class FormValidator
      *
      * @return null
      */
-    public function setValid($valid)
+    private function setValid($valid)
     {
         $this->valid = (is_null($this->valid) ? true : $this->valid) && $valid;
     }
 
     /**
-     * Gets an option
-     *
-     * @param string $key
-     * @param string $name
-     *
-     * @throws LogicException
-     *
-     * @return mixed
-     */
-    public function getOption($key, $name)
-    {
-        if (!array_key_exists($key, $this->options))
-            throw new \LogicException("The option '$key' does not exists");
-
-        return array_key_exists($name, $this->options[$key]) ? $this->options[$key][$name] : null;
-    }
-
-    /**
      * Constructor
      *
-     * @param Form   $formHandler
-     * @param array  $options
+     * @param Form   $form
      * @param string $locale
      */
-    public function __construct(Form $formHandler, $options, $locale = null)
+    public function __construct(Form $form, $locale = null)
     {
-        $this->formHandler = $formHandler;
-        $this->options = (is_array($options)) ? $options : array();
+        $this->form = $form;
 
-        if (is_null($locale))
+        /*if (is_null($locale))
         {
             $config = include('config/application.config.php');
             $locale = $config["environment"]["locale"];
-        }
+        }*/
 
         $i18nTranslator = \Zend\I18n\Translator\Translator::factory(
             [
@@ -159,33 +129,36 @@ class FormValidator
      */
     public function validate()
     {
+        $this->valid = null;
+
         $this->setValid(true);
+        $elements = $this->form->getChildren();
 
-        $attribs = $this->formHandler->getAttributes();
-
-        foreach ($attribs as $key => $attributes)
+        foreach ($elements as $label => $element)
         {
-            if (!array_key_exists($key, $attribs))
-                throw new \LogicException("The field '$key' does not exists!");
+            if (!$element->isFormControl())
+                continue;
 
-            $label = (array_key_exists('label', array_keys($this->options))) ? $attributes["label"] : $key;
+            $attribs = $element->getAttributes();
 
             $all_attribs = [];
 
-            foreach ($attributes as $attr)
+            foreach ($attribs as $attr)
             {
                 $all_attribs[$attr->getName()] = $attr->getValue();
             }
 
             $required = array_key_exists('required', $all_attribs) ? $all_attribs["required"] : false;
 
-            foreach ($attributes as $name => $attr)
+            foreach ($attribs as $attr)
             {
-                $name = $attr->getName();
+                $name  = $attr->getName();
                 $value = $attr->getValue();
 
-                $attrib = $this->formHandler->getAttribute($label, "value");
+                $attrib = $element->getAttribute("value");
                 $form_value = (!is_null($attrib)) ? $attrib->getValue() : null;
+
+                $validator = null;
 
                 switch ($name)
                 {
@@ -228,6 +201,7 @@ class FormValidator
                                 $validator = new Uri();
                                 break;
                         }
+
                         break;
 
                     case 'min':
@@ -258,53 +232,40 @@ class FormValidator
                             throw new \LogicException("The input type must be 'range'");
 
                         break;
-                }
 
-                if (in_array($name, ['required', 'digits', 'minlength', 'maxlength', 'type', 'min', 'max', 'date', 'step']))
-                {
-                    $validator->setTranslator($this->translator);
-                    $this->_validate($validator, $form_value, $key, $required);
-                }
-            }
-        }
+                    case 'data-validators':
 
-        foreach ($this->options as $key => $options)
-        {
-            if (isset($options["validators"]) and is_array($options["validators"]))
-            {
-                $attrib = $this->formHandler->getAttribute($key, "required");
+                        if (!is_array($value))
+                            throw new \InvalidArgumentException("Invalid type given. Array expected in 'data-validators' attribute.");
 
-                $isRequired = (!is_null($attrib)) ? $attrib = $attrib->getValue() : false;
-
-                $validator = new NotEmpty();
-                $attribute = $this->formHandler->getAttribute($key, "value");
-
-                if (is_null($attribute))
-                    throw new \LogicException("Missing attribute 'value' in '" . $key . "'.");
-
-                $value = $attribute->getValue();
-
-                if ($isRequired || $validator->isValid($value))
-                {
-                    foreach ($options["validators"] as $class => $params)
-                    {
-                        $className = "\Zend\Validator\\" . $class;
-
-                        if (!class_exists($className))
+                        foreach ($value as $class => $params)
                         {
-                            $className = "\Zend\I18n\Validator\\" . $class;
+                            $className = "\Zend\Validator\\" . $class;
 
                             if (!class_exists($className))
-                                throw new \RuntimeException("The class '$userInputClass' or '$className' does not exists");
+                            {
+                                $className = "\Zend\I18n\Validator\\" . $class;
+
+                                if (!class_exists($className))
+                                    throw new \RuntimeException("The class '$userInputClass' or '$className' does not exists");
+                            }
+
+                            $validator = new $className($params);
+
+                            $validator->setTranslator($this->translator);
+                            $this->_validate($validator, $form_value, $label, $required);
                         }
 
-                        $validator = new $className($params);
+                        break;
+                }
 
-                        $form_value = $this->formHandler->getAttribute($key, "value")->getValue();
-
-                        $validator->setTranslator($this->translator);
-                        $this->_validate($validator, $form_value, $key, $required);
-                    }
+                if (in_array(
+                        $name,
+                        ['required', 'digits', 'minlength', 'maxlength', 'type', 'min', 'max', 'date', 'step']
+                    ) && !is_null($validator))
+                {
+                    $validator->setTranslator($this->translator);
+                    $this->_validate($validator, $form_value, $label, $required);
                 }
             }
         }
@@ -316,13 +277,13 @@ class FormValidator
      * Supports n-dimensional arrays (name='example[][]')
      *
      * @param \Zend\Validator $validator
-     * @param mixed          $form_value
-     * @param integer        $key
-     * @param boolean        $required
+     * @param mixed           $form_value
+     * @param string          $label
+     * @param boolean         $required
      *
      * @return null
      */
-    private function _validate($validator, $form_value, $key, $required)
+    private function _validate($validator, $form_value, $label, $required)
     {
         if (gettype($form_value) != 'array')
         {
@@ -341,17 +302,44 @@ class FormValidator
 
             if (!$valid)
             {
-                if (!in_array($key, array_keys($this->messages)))
-                    $this->messages[$key] = array();
-
-                $this->messages[$key] = array_merge($this->messages[$key], $validator->getMessages());
+                foreach ($validator->getMessages() as $message)
+                {
+                    $this->error($label ."-~-". (count($this->getErrors()) + 1), $message);
+                }
             }
         }
-        else {
+        else
+        {
             foreach ($form_value as $val)
             {
-                $this->_validate($validator, $val, $key, $required);
+                $this->_validate($validator, $val, $label, $required);
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return array
+     */
+    public function getErrors()
+    {
+        $errors = [];
+
+        if (count($this->errors))
+        {
+            foreach ($this->errors as $key => $value)
+            {
+                $errorLbl = explode("-~-", $key);
+                $label = array_shift($errorLbl);
+
+                if (!array_key_exists($label, $errors))
+                    $errors[$label] = [];
+
+                $errors[$label][] = $value;
+            }
+        }
+
+        return $errors;
     }
 }

@@ -13,7 +13,7 @@ namespace Drone\Dom\Element\Exception;
 /**
  * ChildNotFoundException Class
  *
- * This Exception is throwed when an child does not exists
+ * This Exception is thrown when a child does not exists
  */
 class ChildNotFoundException extends \RuntimeException
 {

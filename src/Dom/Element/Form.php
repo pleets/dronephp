@@ -10,6 +10,8 @@
 
 namespace Drone\Dom\Element;
 
+use Drone\Dom\Attribute;
+
 /**
  * Form class
  *
@@ -35,12 +37,24 @@ class Form extends AbstractElement
      * Fills the form with all passed values
      *
      * @param array $values
+     *
+     * @throws Exception\ChildNotFoundException
+     *
+     * @return null
      */
     public function fill(Array $values)
     {
         foreach ($values as $label => $value)
         {
-            $this->setAttribute($label, "value", $value);
+            $child = $this->getChild($label);
+
+            if (is_null($child))
+                throw new Exception\ChildNotFoundException("The child '$label' does not exists inside the form element");
+
+            if (!$child->isFormControl())
+                throw new Exception\NotFormControlException("The child '$label' is not a form control");
+
+            $child->setAttribute(new Attribute("value", $value));
         }
     }
 }
