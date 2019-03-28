@@ -20,6 +20,13 @@ use Drone\FileSystem\Shell;
 class Application
 {
     /**
+     * Module path
+     *
+     * @var array
+     */
+    protected $modulePath;
+
+    /**
      * List of modules available
      *
      * @var array
@@ -51,77 +58,86 @@ class Application
     }
 
     /**
-     * Prepares the app environment
+     * Constructor
      *
-     * @return null
+     * @param array $init_parameters
+     *
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
-    public function prepare()
+    public function __construct(Array $init_parameters)
     {
         # start sessions
         if (!isset($_SESSION))
             session_start();
-    }
 
-    /**
-     * Constructor
-     *
-     * @param array $init_parameters
-     */
-    public function __construct($init_parameters)
-    {
-        $this->prepare();
+        if (!array_key_exists('environment', $init_parameters))
+            throw new \InvalidArgumentException("The 'environment' key was not defined");
+
+        if (!array_key_exists('dev_mode', $init_parameters['environment']))
+            throw new \InvalidArgumentException("The 'dev_mode' key was not defined");
 
         $this->devMode = $init_parameters["environment"]["dev_mode"];
+
+        if (!array_key_exists('modules', $init_parameters))
+            throw new \InvalidArgumentException("The 'modules' key was not defined");
+
         $this->modules = $init_parameters["modules"];
 
-        /*
-         *  DEV MODE:
-         *  Set Development or production environment
-         */
+        # setting module path
+        $this->modulePath = (!array_key_exists('module_path', $init_parameters['environment']))
+            ? 'module'
+            : $init_parameters['environment']['module_path'];
 
+        #  setting development or production environment
         if ($this->devMode)
         {
             ini_set('display_errors', 1);
-
-            // See errors
-            // error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
-
-            // PHP 5.4
-            // error_reporting(E_ALL);
-
-            // Best way to view all possible errors
             error_reporting(-1);
         }
-        else {
+        else
+        {
             ini_set('display_errors', 0);
-            error_reporting(-1);
+            error_reporting(0);
         }
 
         $this->loadModules($this->modules);
 
+        if (!array_key_exists('router', $init_parameters))
+            throw new \InvalidArgumentException("The 'router' key was not defined");
+
+        if (!array_key_exists('routes', $init_parameters["router"]))
+            throw new \InvalidArgumentException("The 'routes' key was not defined");
+
         $this->router = new Router($init_parameters["router"]["routes"]);
+
+        if (!array_key_exists('base_path', $init_parameters['environment']))
+            throw new \InvalidArgumentException("The 'base_path' key was not defined");
+
         $this->router->setBasePath($init_parameters["environment"]["base_path"]);
 
-        # load routes from application.config.php
-        if (file_exists("config/application.config.php"))
+        # load routes from init_parameters
+        foreach ($init_parameters["router"]["routes"] as $name => $route)
         {
-            $app_config_file = require "config/application.config.php";
-
-            foreach ($app_config_file["router"]["routes"] as $name => $route)
-            {
-                if ($route instanceof \Zend\Router\Http\RouteInterface)
-                    $this->getRouter()->addZendRoute($name, $route);
-                else
-                    $this->getRouter()->addRoute($route);
-            }
+            if ($route instanceof \Zend\Router\Http\RouteInterface)
+                $this->getRouter()->addZendRoute($name, $route);
+            else
+                $this->getRouter()->addRoute($route);
         }
 
-        # load routes from modules
+        # load routes from each module
         foreach ($this->modules as $module)
         {
-            if (file_exists("module/$module/config/module.config.php"))
+            if (file_exists($this->modulePath . "/$module/config/module.config.php"))
             {
-                $module_config_file = require "module/$module/config/module.config.php";
+                $module_config_file = require($this->modulePath . "/$module/config/module.config.php");
+
+                if (!array_key_exists('router', $module_config_file))
+                    throw new \RuntimeException("The 'router' key was not defined in the config file for module '$module'");
+
+                if (!array_key_exists('routes', $module_config_file["router"]))
+                    throw new \RuntimeException("The 'routes' key was not defined in the config file for module '$module'");
+
                 $this->getRouter()->addRoute($module_config_file["router"]["routes"]);
             }
         }
@@ -143,11 +159,11 @@ class Application
             foreach ($modules as $module)
             {
                 /*
-                 *  This instruction include each module declared in application.config.php
+                 *  This instruction includes each module declared.
                  *  Each module has an autoloader to load its classes (controllers and models)
                  */
-                if (file_exists("module/".$module."/Module.php"))
-                    include("module/".$module."/Module.php");
+                if (file_exists($this->modulePath ."/". $module."/Module.php"))
+                    include($this->modulePath ."/". $module."/Module.php");
 
                 spl_autoload_register($module . "\Module::loader");
             }
@@ -163,17 +179,17 @@ class Application
      */
     public function run()
     {
-        $module = isset($_GET["module"]) ? $_GET["module"] : null;
+        $module     = isset($_GET["module"])     ? $_GET["module"] : null;
         $controller = isset($_GET["controller"]) ? $_GET["controller"] : null;
-        $view = isset($_GET["view"]) ? $_GET["view"] : null;
+        $view       = isset($_GET["view"])       ? $_GET["view"] : null;
 
         $request = new  \Zend\Http\Request();
 
         # build URI
         $uri = '';
-        $uri .= !empty($module) ? '/' . $module : "";
+        $uri .= !empty($module)     ? '/' . $module : "";
         $uri .= !empty($controller) ? '/' . $controller : "";
-        $uri .= !empty($view) ? '/' . $view : "";
+        $uri .= !empty($view)       ? '/' . $view : "";
 
         if (empty($uri))
             $uri = "/";
@@ -185,10 +201,11 @@ class Application
         if (!is_null($match))
         {
             $params = $match->getParams();
-            $parts = explode("\\", $params["controller"]);
-            $module = $parts[0];
+            $parts  = explode("\\", $params["controller"]);
+
+            $module     = $parts[0];
             $controller = $parts[2];
-            $view = $params["action"];
+            $view       = $params["action"];
 
             $this->router->setIdentifiers($module, $controller, $view);
         }

@@ -24,7 +24,7 @@ class Router
      *
      * @var array
      */
-    private $routes;
+    private $routes = [];
 
     /**
      * The Identifiers builds the route
@@ -115,11 +115,11 @@ class Router
      */
     public function setIdentifiers($module, $controller, $view)
     {
-        $this->identifiers = array(
-            "module"        => $module,
-            "controller"    => $controller,
-            "view"          => $view
-        );
+        $this->identifiers = [
+            "module"     => $module,
+            "controller" => $controller,
+            "view"       => $view
+        ];
     }
 
     /**
@@ -139,9 +139,11 @@ class Router
      *
      * @param  array $routes
      */
-    public function __construct($routes)
+    public function __construct(Array $routes = [])
     {
-        $this->routes = $routes;
+        if (count($routes))
+            $this->routes = $routes;
+
         $this->zendRouter = new \Zend\Router\SimpleRouteStack();
     }
 
@@ -156,7 +158,7 @@ class Router
     {
         /*
          *  Route builder:
-         *  The route is constructed by default from the URL in the following order
+         *  The route is built by default from the URL as follow
          *  www.example.com/module/controller/view
          */
 
