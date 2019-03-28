@@ -98,11 +98,8 @@ class FormValidator
     {
         $this->form = $form;
 
-        /*if (is_null($locale))
-        {
-            $config = include('config/application.config.php');
-            $locale = $config["environment"]["locale"];
-        }*/
+        if (is_null($locale))
+            $locale = 'en';
 
         $i18nTranslator = \Zend\I18n\Translator\Translator::factory(
             [
