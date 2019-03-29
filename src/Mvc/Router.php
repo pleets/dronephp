@@ -157,6 +157,17 @@ class Router
     public function run()
     {
         /*
+         *  Key value pairs builder:
+         *  Searches for the pattern /var1/value1/var2/value2 and converts it to  var1 => value1, var2 => value2
+         */
+        if (array_key_exists('params', $_GET))
+        {
+            $keypairs = $this->parseRequestParameters($_GET["params"]);
+            unset($_GET["params"]);
+            $_GET = array_merge($_GET, $keypairs);
+        }
+
+        /*
          *  Route builder:
          *  The route is built by default from the URL as follow
          *  www.example.com/module/controller/view
@@ -177,7 +188,26 @@ class Router
         $fqn_controller = '\\' . $module . "\Controller\\" . $controller;
 
         if (class_exists($fqn_controller))
-            $this->controller = new $fqn_controller($module, $view, $this->basePath);
+        {
+            try {
+                $this->controller = new $fqn_controller($view, $this->basePath);
+            }
+            catch (Exception\MethodNotFoundException $e)
+            {
+                # change context, in terms of Router MethodNotFoundException is a PageNotfoundException
+                throw new Exception\PageNotFoundException($e->getMessage(), $e->getCode(), $e);
+            }
+
+            # in controller terms, a view is a method
+            $this->controller->setMethod($view);
+
+            $this->controller->createModuleInstance($module);
+            $this->controller->getModule()->setModulePath($this->modulePath);
+            $this->controller->getModule()->setControllerPath('source/Controller');
+            $this->controller->getModule()->setViewPath('source/view');
+
+            $this->controller->execute();
+        }
         else
             throw new Exception\ControllerNotFoundException("The control class '$fqn_controller' does not exists!");
     }
@@ -215,5 +245,48 @@ class Router
     public function addZendRoute($name, \Zend\Router\Http\RouteInterface $route)
     {
         $this->zendRouter->addRoute($name, $route);
+    }
+
+    /**
+     * Parse key value pairs from a string
+     *
+     * Searches for the pattern /var1/value1/var2/value2 and converts it to
+     *
+     * var1 => value1
+     * var2 => value2
+     *
+     * @param string $unparsed
+     *
+     * @return array
+     */
+    private function parseKeyValuePairsFrom($unparsed)
+    {
+        $params = explode("/", $unparsed);
+
+        $vars = $values = [];
+
+        $i = 1;
+        foreach ($params as $item)
+        {
+            if ($i % 2 != 0)
+                $vars[] = $item;
+            else
+                $values[] = $item;
+            $i++;
+        }
+
+        $vars_count = count($vars);
+
+        $result = [];
+
+        for ($i = 0; $i < $vars_count; $i++)
+        {
+            if (array_key_exists($i, $values))
+                $result[$vars[$i]] = $values[$i];
+            else
+                $result[$vars[$i]] = '';
+        }
+
+        return $result;
     }
 }

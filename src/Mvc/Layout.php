@@ -10,7 +10,7 @@
 
 namespace Drone\Mvc;
 
-use Drone\Mvc\AbstractionController;
+use Drone\Mvc\AbstractController;
 use Drone\Mvc\Exception;
 
 /**
@@ -25,7 +25,7 @@ class Layout
     /**
      * Controller instance
      *
-     * @var AbstractionController
+     * @var AbstractController
      */
     private $controller;
 
@@ -67,7 +67,7 @@ class Layout
     /**
      * Returns the instance of current controller
      *
-     * @return AbstractionController
+     * @return AbstractController
      */
     public function getController()
     {
@@ -203,22 +203,26 @@ class Layout
      *
      * @throws Exception\PageNotFoundException
      *
-     * @param AbstractionController
+     * @param AbstractController
      *
      * @return null
      */
-    public function fromController(AbstractionController $controller)
+    public function fromController(AbstractController $controller)
     {
-        // str_replace() is needed in linux systems
         $this->setParams($controller->getParams());
         $this->basePath = $controller->getBasePath();
         $this->controller = $controller;
 
         if ($controller->getShowView())
         {
-            $view = 'module/'      . $controller->getModule()->getModuleName() .
-                    '/source/view/'. basename(str_replace('\\','/',get_class($controller))) .
-                    '/'            . $controller->getMethod() . '.phtml';
+            $view = "";
+
+            if (!is_null($controller->getModule()))
+                $view .= $controller->getModule()->getModulePath() .'/'. $controller->getModule()->getModuleName();
+
+            $view .=
+                    '/'. $controller->getModule()->getModulePath() . '/'. basename(str_replace('\\','/',get_class($controller))) .
+                    '/'. $controller->getMethod() . '.phtml';
 
             $this->view = $view;
         }

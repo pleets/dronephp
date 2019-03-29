@@ -15,16 +15,16 @@ use Drone\Mvc\Exception;
 /**
  * AbstractionController class
  *
- * This class manges the interaction between models and views
+ * This class manages the interaction between models and views
  */
-abstract class AbstractionController
+abstract class AbstractController
 {
     use \Drone\Util\ParamTrait;
 
     /**
-     * Current module
+     * Current module instance
      *
-     * @var object
+     * @var AbstractModule
      */
     private $module;
 
@@ -47,20 +47,19 @@ abstract class AbstractionController
      *
      * @var boolean
      */
-    private $terminal = false;
+    private $terminal = true;
 
     /**
-     * Indicates if controller should show the views
+     * Indicates if the controller must show the views
      *
      * @var boolean
      */
     private $showView = true;
 
     /**
-     * Defines starting execution
+     * Defines method execution
      *
-     * When this parameter is true, the constructor executes the method of the specified controller
-     * The only way to stop init execution is throw the method stopExecution() inside a module class
+     * The only way to stop method execution is executing stopExecution() before execute().
      *
      * @var boolean
      */
@@ -74,9 +73,9 @@ abstract class AbstractionController
     private $basePath;
 
     /**
-     * Returns the current module
+     * Returns the current module instance
      *
-     * @return object
+     * @return AbstractModule
      */
     public function getModule()
     {
@@ -134,55 +133,6 @@ abstract class AbstractionController
     }
 
     /**
-     * Returns the class name
-     *
-     * @return string
-     */
-    public static function getClassName()
-    {
-        return __CLASS__;
-    }
-
-    /**
-     * Returns $_POST contents
-     *
-     * @return array
-     */
-    public function getPost()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST))
-            $_POST = json_decode(file_get_contents('php://input'), true);
-
-        return (array) $_POST;
-    }
-
-    /**
-     * Returns json contents
-     *
-     * @throws LogicException
-     *
-     * @return array
-     */
-    public function getJson()
-    {
-        if ($_SERVER['REQUEST_METHOD'] != 'JSON')
-            throw new \LogicException("Request method is not JSON");
-
-        $input =  file_get_contents('php://input');
-        $array = explode("&", $input);
-
-        $result = array();
-
-        foreach ($array as $value)
-        {
-            $io = explode("=", $value);
-            $result[$io[0]] = $io[1];
-        }
-
-        return $result;
-    }
-
-    /**
      * Sets the terminal mode
      *
      * @param boolean $terminal
@@ -233,31 +183,57 @@ abstract class AbstractionController
     /**
      * Constructor
      *
-     * @param string $module
-     * @param string $method
      * @param string $basePath
      *
      * @throws Exception\PageNotFoundException
      */
-    public function __construct($module, $method, $basePath)
+    public function __construct($basePath = null)
     {
         $this->basePath = $basePath;
-        $this->parseRequestParameters($_GET);
+    }
 
-        /* Module class:
-         * Each module must have a class called Module in her namesapce. This class
-         * is initilized here, and contains several configurations and methods for
-         * controllers.
-         */
-        $fqn = "\\" . $module . "\\Module";
+    /**
+     * Creates the module instance
+     *
+     * @param string $module
+     *
+     * @return null
+     */
+    public function createModuleInstance($module)
+    {
+        if (!is_null($module))
+        {
+            /*
+             * Module class instantiation
+             *
+             * Each module must have a class called Module in her namesapce. This class
+             * is initilized here and can change the behavior of a controller using
+             * stopExecution(), setMethod() or other methods.
+             */
 
-        $this->module = new $fqn($module, $this);
+            $fqn_module = "\\" . $module . "\\Module";
 
-        # detects method change inside Module.php
-        if (!is_null($this->getMethod()))
-            $method = $this->getMethod();
+            if (!class_exists($fqn_module))
+                throw new Exception\ModuleNotFoundException("The module class '$fqn_module' does not exists!");
 
-        if (!is_null($method) && $this->initExecution)
+            $this->module = new $fqn_module($module, $this);
+        }
+    }
+
+    /**
+     * Executes the controller
+     *
+     * @return null
+     */
+    public function execute()
+    {
+        $method = $this->method;
+
+        if (is_null($method))
+            # This error is thrown because of 'setMethod' method has not been executed
+            throw new \LogicException("No method has been setted to execute!");
+
+        if ($this->initExecution)
         {
             if (method_exists($this, $method))
             {
@@ -266,14 +242,13 @@ abstract class AbstractionController
                 $reflection = new \ReflectionMethod($this, $method);
 
                 if (!$reflection->isPublic())
-                    throw new Exception\PageNotFoundException("The method '$method' is not public in the control class '$class'");
+                    throw new Exception\MethodNotFoundException("The method '$method' is not public in the control class '$class'");
 
-                $this->method = $method;
-
-                // Get the return value of the method (parameters sent to the view)
+                # Get the returned value of the method to send to the view
                 $this->params = $this->$method();
 
-                if (!is_null($this->getMethod()))
+                # The only way to manage views is through an AbstractModule
+                if (!is_null($this->module))
                 {
                     $params = $this->getParams();
 
@@ -283,21 +258,73 @@ abstract class AbstractionController
                     $layoutManager->fromController($this);
                 }
             }
-            else {
+            else
+            {
                 $class = __CLASS__;
-                throw new Exception\PageNotFoundException("The method '$method' doesn't exists in the control class '$class'");
+                throw new Exception\MethodNotFoundException("The method '$method' doesn't exists in the control class '$class'");
             }
         }
     }
 
     /**
-     * Stops the execution of the specified method inside of __construct()
+     * Stops the execution of the specified method
+     *
+     * The only way to stop method execution before execute()
      *
      * @return null
      */
     public function stopExecution()
     {
         $this->initExecution = false;
+    }
+
+    /**
+     * Returns the class name
+     *
+     * @return string
+     */
+    public static function getClassName()
+    {
+        return __CLASS__;
+    }
+
+    /**
+     * Returns $_POST contents
+     *
+     * @return array
+     */
+    public function getPost()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST))
+            $_POST = json_decode(file_get_contents('php://input'), true);
+
+        return (array) $_POST;
+    }
+
+    /**
+     * Returns json contents
+     *
+     * @throws LogicException
+     *
+     * @return array
+     */
+    public function getJson()
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'JSON')
+            throw new \LogicException("Request method is not JSON");
+
+        $input =  file_get_contents('php://input');
+        $array = explode("&", $input);
+
+        $result = [];
+
+        foreach ($array as $value)
+        {
+            $io = explode("=", $value);
+            $result[$io[0]] = $io[1];
+        }
+
+        return $result;
     }
 
     /**
@@ -335,46 +362,5 @@ abstract class AbstractionController
         if ($_SERVER["REQUEST_METHOD"] == "GET")
             return true;
         return false;
-    }
-
-    /**
-     * Parses requests parameters
-     *
-     * Searches for URI formed as follows /var1/value1/var2/value2
-     *
-     * @param string $get
-     *
-     * @return null
-     */
-    private function parseRequestParameters($get)
-    {
-        if (array_key_exists('params', $_GET))
-        {
-            $params = explode("/", $_GET["params"]);
-
-            $vars = $values = array();
-
-            $i = 1;
-            foreach ($params as $item)
-            {
-                if ($i % 2 != 0)
-                    $vars[] = $item;
-                else
-                    $values[] = $item;
-                $i++;
-            }
-
-            $vars_count = count($vars);
-
-            for ($i = 0; $i < $vars_count; $i++)
-            {
-                if (array_key_exists($i, $values))
-                    $_GET[$vars[$i]] = $values[$i];
-                else
-                    $_GET[$vars[$i]] = '';
-            }
-
-            unset($_GET["params"]);
-        }
     }
 }

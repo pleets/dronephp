@@ -11,8 +11,8 @@
 namespace DroneTest\Util;
 
 use Drone\Mvc\Router;
-use Drone\Mvc\AbstractionController;
-use Drone\Mvc\AbstractionModule;
+use Drone\Mvc\AbstractController;
+use Drone\Mvc\AbstractModule;
 use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase
@@ -63,12 +63,12 @@ class RouterTest extends TestCase
 
 namespace App;
 
-use Drone\Mvc\AbstractionController;
-use Drone\Mvc\AbstractionModule;
+use Drone\Mvc\AbstractController;
+use Drone\Mvc\AbstractModule;
 
-class Module extends AbstractionModule
+class Module extends AbstractModule
 {
-    public function init(AbstractionController $c)
+    public function init(AbstractController $c)
     {
         // init
     }
@@ -79,19 +79,18 @@ class Module extends AbstractionModule
 | Controller class
 |--------------------------------------------------------------------------
 |
-| This is a simple controller implementing AbstractionController.
+| This is a simple controller implementing AbstractController.
 |
 */
 
 namespace App\Controller;
 
-use Drone\Mvc\AbstractionController;
+use Drone\Mvc\AbstractController;
 
-class Index extends AbstractionController
+class Index extends AbstractController
 {
     public function about()
     {
-        $this->setTerminal();
         return [];
     }
 }

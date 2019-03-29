@@ -22,12 +22,16 @@ class Application
     /**
      * Module path
      *
-     * @var array
+     * The path where all modules are located.
+     *
+     * @var string
      */
     protected $modulePath;
 
     /**
      * List of modules available
+     *
+     * Each module in this list must be a folder inside $modulePath
      *
      * @var array
      */
@@ -48,6 +52,26 @@ class Application
     private $devMode;
 
     /**
+     * Returns the modulePath attribute
+     *
+     * @return string
+     */
+    public function getModulePath()
+    {
+        return $this->modulePath;
+    }
+
+    /**
+     * Returns the modules available
+     *
+     * @return array
+     */
+    public function getModules()
+    {
+        return $this->modules;
+    }
+
+    /**
      * Returns the router instance
      *
      * @return Router
@@ -60,34 +84,34 @@ class Application
     /**
      * Constructor
      *
-     * @param array $init_parameters
+     * @param array $config
      *
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function __construct(Array $init_parameters)
+    public function __construct(Array $config)
     {
         # start sessions
         if (!isset($_SESSION))
             session_start();
 
-        if (!array_key_exists('environment', $init_parameters))
+        if (!array_key_exists('environment', $config))
             throw new \InvalidArgumentException("The 'environment' key was not defined");
 
-        if (!array_key_exists('dev_mode', $init_parameters['environment']))
+        if (!array_key_exists('dev_mode', $config['environment']))
             throw new \InvalidArgumentException("The 'dev_mode' key was not defined");
 
-        $this->devMode = $init_parameters["environment"]["dev_mode"];
+        $this->devMode = $config["environment"]["dev_mode"];
 
-        if (!array_key_exists('modules', $init_parameters))
+        if (!array_key_exists('modules', $config))
             throw new \InvalidArgumentException("The 'modules' key was not defined");
 
-        $this->modules = $init_parameters["modules"];
+        $this->modules = $config["modules"];
 
         # setting module path
-        $this->modulePath = (!array_key_exists('module_path', $init_parameters['environment']))
+        $this->modulePath = (!array_key_exists('module_path', $config['environment']))
             ? 'module'
-            : $init_parameters['environment']['module_path'];
+            : $config['environment']['module_path'];
 
         #  setting development or production environment
         if ($this->devMode)
@@ -101,23 +125,24 @@ class Application
             error_reporting(0);
         }
 
-        $this->loadModules($this->modules);
+        # register autoloading functions for each module
+        $this->autoload($this->modules);
 
-        if (!array_key_exists('router', $init_parameters))
+        if (!array_key_exists('router', $config))
             throw new \InvalidArgumentException("The 'router' key was not defined");
 
-        if (!array_key_exists('routes', $init_parameters["router"]))
+        if (!array_key_exists('routes', $config["router"]))
             throw new \InvalidArgumentException("The 'routes' key was not defined");
 
-        $this->router = new Router($init_parameters["router"]["routes"]);
+        $this->router = new Router($config["router"]["routes"]);
 
-        if (!array_key_exists('base_path', $init_parameters['environment']))
+        if (!array_key_exists('base_path', $config['environment']))
             throw new \InvalidArgumentException("The 'base_path' key was not defined");
 
-        $this->router->setBasePath($init_parameters["environment"]["base_path"]);
+        $this->router->setBasePath($config["environment"]["base_path"]);
 
-        # load routes from init_parameters
-        foreach ($init_parameters["router"]["routes"] as $name => $route)
+        # load routes from config
+        foreach ($config["router"]["routes"] as $name => $route)
         {
             if ($route instanceof \Zend\Router\Http\RouteInterface)
                 $this->getRouter()->addZendRoute($name, $route);
@@ -146,13 +171,16 @@ class Application
     /**
      * Loads module classes and autoloading functions
      *
+     * Each module must have a Module.php inside them. The goal of this file is register an autoloading function
+     * to load all its controller and model classes.
+     *
      * @param array $modules
      *
      * @throws RuntimeException
      *
      * @return null
      */
-    private function loadModules($modules)
+    private function autoload(Array $modules)
     {
         if (count($modules))
         {
