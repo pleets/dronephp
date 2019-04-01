@@ -192,9 +192,10 @@ class Router
             try {
                 $this->controller = new $fqn_controller($view, $this->basePath);
             }
-            catch (Exception\MethodNotFoundException $e)
+            catch (Exception\MethodNotFoundException | Exception\PrivateMethodExecutionException $e)
             {
-                # change context, in terms of Router MethodNotFoundException is a PageNotfoundException
+                # change context, in terms of Router MethodNotFoundException or
+                # PrivateMethodExecutionException is a PageNotfoundException
                 throw new Exception\PageNotFoundException($e->getMessage(), $e->getCode(), $e);
             }
 

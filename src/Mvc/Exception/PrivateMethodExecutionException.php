@@ -11,10 +11,10 @@
 namespace Drone\Mvc\Exception;
 
 /**
- * ControllerNotFoundException Class
+ * PrivateMethodExecutionException Class
  *
- * This exception is thrown when the Controller does not exists
+ * This exception is thrown when the method to execute is not public
  */
-class ControllerNotFoundException extends PageNotFoundException
+class PrivateMethodExecutionException extends PageNotFoundException
 {
 }

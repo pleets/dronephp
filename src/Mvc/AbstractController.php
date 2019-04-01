@@ -63,7 +63,7 @@ abstract class AbstractController
      *
      * @var boolean
      */
-    private $initExecution = true;
+    private $allowExecution = true;
 
     /**
      * Base path
@@ -233,7 +233,7 @@ abstract class AbstractController
             # This error is thrown because of 'setMethod' method has not been executed
             throw new \LogicException("No method has been setted to execute!");
 
-        if ($this->initExecution)
+        if ($this->allowExecution)
         {
             if (method_exists($this, $method))
             {
@@ -242,7 +242,7 @@ abstract class AbstractController
                 $reflection = new \ReflectionMethod($this, $method);
 
                 if (!$reflection->isPublic())
-                    throw new Exception\MethodNotFoundException("The method '$method' is not public in the control class '$class'");
+                    throw new Exception\PrivateMethodExecutionException("The method '$method' is not public in the control class '$class'");
 
                 # Get the returned value of the method to send to the view
                 $this->params = $this->$method();
@@ -275,7 +275,17 @@ abstract class AbstractController
      */
     public function stopExecution()
     {
-        $this->initExecution = false;
+        $this->allowExecution = false;
+    }
+
+    /**
+     * Checks if allowExecution is true
+     *
+     * @return null
+     */
+    public function executionIsAllowed()
+    {
+        return $this->allowExecution;
     }
 
     /**

@@ -22,7 +22,7 @@ trait ParamTrait
      *
      * @var array
      */
-    protected $params;
+    protected $params = [];
 
     /**
      * Returns all parameters
