@@ -218,11 +218,12 @@ class Layout
             $view = "";
 
             if (!is_null($controller->getModule()))
-                $view .= $controller->getModule()->getModulePath() .'/'. $controller->getModule()->getModuleName();
+                $view .= $controller->getModule()->getModulePath() .'/'. $controller->getModule()->getModuleName() .'/';
 
             $view .=
-                    '/'. $controller->getModule()->getModulePath() . '/'. basename(str_replace('\\','/',get_class($controller))) .
-                    '/'. $controller->getMethod() . '.phtml';
+                    $controller->getModule()->getViewPath()                .'/'.
+                    basename(str_replace('\\','/',get_class($controller))) .'/'.
+                    $controller->getMethod() . '.phtml';
 
             $this->view = $view;
         }
