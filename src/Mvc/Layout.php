@@ -58,13 +58,6 @@ class Layout
     private $image;
 
     /**
-     * Base path
-     *
-     * @var string
-     */
-    private $basePath;
-
-    /**
      * Returns the instance of current controller
      *
      * @return AbstractController
@@ -169,18 +162,6 @@ class Layout
     }
 
     /**
-     * Sets the base path
-     *
-     * @param string $path
-     *
-     * @return null
-     */
-    public function setBasePath($path)
-    {
-        $this->basePath = $path;
-    }
-
-    /**
      * Constructor
      *
      * All modifiable attributes (i.e. with setter method) can be passed as key
@@ -210,28 +191,22 @@ class Layout
     public function fromController(AbstractController $controller)
     {
         $this->setParams($controller->getParams());
-        $this->basePath = $controller->getBasePath();
         $this->controller = $controller;
 
+        if (is_null($controller->getModule()))
+            throw new \RuntimeException("No module instance found in controller '" . get_class($controller) . "'");
+
         if ($controller->getShowView())
-        {
-            $view = "";
-
-            if (!is_null($controller->getModule()))
-                $view .= $controller->getModule()->getModulePath() .'/'. $controller->getModule()->getModuleName() .'/';
-
-            $view .=
-                    $controller->getModule()->getViewPath()                .'/'.
-                    basename(str_replace('\\','/',get_class($controller))) .'/'.
-                    $controller->getMethod() . '.phtml';
-
-            $this->view = $view;
-        }
+            $this->view =
+                $controller->getModule()->getModulePath() .'/'. $controller->getModule()->getModuleName() .'/'.
+                $controller->getModule()->getViewPath()                .'/'.
+                basename(str_replace('\\','/',get_class($controller))) .'/'.
+                $controller->getMethod() . '.phtml';
 
         if ($controller->getTerminal())
         {
-            if (file_exists($view))
-                include $view;
+            if (file_exists($this->view))
+                include $this->view;
         }
         else
         {
@@ -284,12 +259,12 @@ class Layout
     }
 
     /**
-     * Returns the base path of the application
+     * Alias to return the base path of the application
      *
      * @return string
      */
     public function basePath()
     {
-        return $this->basePath;
+        return $this->controller->getModule()->getRouter()->getBasePath();
     }
 }

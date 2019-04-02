@@ -190,7 +190,7 @@ class Router
         if (class_exists($fqn_controller))
         {
             try {
-                $this->controller = new $fqn_controller($view, $this->basePath);
+                $this->controller = new $fqn_controller;
             }
             catch (Exception\MethodNotFoundException | Exception\PrivateMethodExecutionException $e)
             {
@@ -202,7 +202,7 @@ class Router
             # in controller terms, a view is a method
             $this->controller->setMethod($view);
 
-            $this->controller->createModuleInstance($module);
+            $this->controller->createModuleInstance($module, $this);
             $this->controller->getModule()->setModulePath($this->modulePath);
             $this->controller->getModule()->setControllerPath('source/Controller');
             $this->controller->getModule()->setViewPath('source/view');

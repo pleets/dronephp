@@ -10,8 +10,6 @@
 
 namespace Drone\Mvc;
 
-use Drone\Mvc\AbstractController;
-
 /**
  * AbstractModule class
  *
@@ -55,6 +53,13 @@ abstract class AbstractModule
     protected $viewPath;
 
     /**
+     * The Router instace
+     *
+     * @var string
+     */
+    protected $router;
+
+    /**
      * Returns the moduleName attribute
      *
      * @return string
@@ -92,6 +97,16 @@ abstract class AbstractModule
     public function getViewPath()
     {
         return $this->viewPath;
+    }
+
+    /**
+     * Returns the Router instance
+     *
+     * @return Router
+     */
+    public function getRouter()
+    {
+        return $this->router;
     }
 
     /**
@@ -143,14 +158,28 @@ abstract class AbstractModule
     }
 
     /**
+     * Sets the Router instance
+     *
+     * @param Router $router
+     *
+     * @return null
+     */
+    public function setRouter($router)
+    {
+        $this->router = $router;
+    }
+
+    /**
      * Constructor
      *
      * @param string             $moduleName
      * @param AbstractController $controller
+     * @param Router             $router
      */
-    public function __construct($moduleName, AbstractController $controller)
+    public function __construct($moduleName, AbstractController $controller, Router $router)
     {
         $this->moduleName = $moduleName;
+        $this->router     = $router;
         $this->init($controller);
     }
 
@@ -168,7 +197,9 @@ abstract class AbstractModule
      */
     public function getConfig()
     {
-        return include($this->modulePath .'/' . $this->getModuleName() . '/config/module.config.php');
+        return include(
+            $this->router->getBasePath() .'/'. $this->modulePath .'/' . $this->getModuleName() . '/config/module.config.php'
+        );
     }
 
     /**
@@ -183,7 +214,7 @@ abstract class AbstractModule
         $nm = explode('\\', $name);
         $module = array_shift($nm);
 
-        $class = $this->modulePath ."/". $module . "/source/" . implode("/", $nm) . ".php";
+        $class = $this->router->getBasePath() .'/'. $this->modulePath ."/". $module . "/source/" . implode("/", $nm) . ".php";
 
         if (file_exists($class))
             include $class;

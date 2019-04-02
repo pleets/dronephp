@@ -66,13 +66,6 @@ abstract class AbstractController
     private $allowExecution = true;
 
     /**
-     * Base path
-     *
-     * @var string
-     */
-    private $basePath;
-
-    /**
      * Returns the current module instance
      *
      * @return AbstractModule
@@ -120,16 +113,6 @@ abstract class AbstractController
     public function getLayout()
     {
         return $this->layout;
-    }
-
-    /**
-     * Returns the base path
-     *
-     * @return string
-     */
-    public function getBasePath()
-    {
-        return $this->basePath;
     }
 
     /**
@@ -181,25 +164,14 @@ abstract class AbstractController
     }
 
     /**
-     * Constructor
-     *
-     * @param string $basePath
-     *
-     * @throws Exception\PageNotFoundException
-     */
-    public function __construct($basePath = null)
-    {
-        $this->basePath = $basePath;
-    }
-
-    /**
      * Creates the module instance
      *
      * @param string $module
+     * @param Router $router
      *
      * @return null
      */
-    public function createModuleInstance($module)
+    public function createModuleInstance($module, Router $router)
     {
         if (!is_null($module))
         {
@@ -216,7 +188,7 @@ abstract class AbstractController
             if (!class_exists($fqn_module))
                 throw new Exception\ModuleNotFoundException("The module class '$fqn_module' does not exists!");
 
-            $this->module = new $fqn_module($module, $this);
+            $this->module = new $fqn_module($module, $this, $router);
         }
     }
 
