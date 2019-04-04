@@ -37,27 +37,6 @@ class Layout
     private $view;
 
     /**
-     * Document title
-     *
-     * @var string
-     */
-    private $title;
-
-    /**
-     * Document description
-     *
-     * @var string
-     */
-    private $description;
-
-    /**
-     * Document image
-     *
-     * @var string
-     */
-    private $image;
-
-    /**
      * Returns the instance of current controller
      *
      * @return AbstractController
@@ -78,72 +57,6 @@ class Layout
     }
 
     /**
-     * Returns the document title
-     *
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * Returns the document description
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Returns the document image
-     *
-     * @return string
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    /**
-     * Sets the document title
-     *
-     * @param string $title
-     *
-     * @return null
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    /**
-     * Sets the document description
-     *
-     * @param string $description
-     *
-     * @return null
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * Sets the document image
-     *
-     * @param string $image
-     *
-     * @return null
-     */
-    public function setImage($image)
-    {
-        $this->image = $image;
-    }
-
-    /**
      * Sets the view
      *
      * @param AbstractionModule $module
@@ -159,24 +72,6 @@ class Layout
             throw new Exception\ViewNotFoundException("The 'view' template " . $view . " does not exists");
 
         $this->view = $config["view_manager"]["view_map"][$view];
-    }
-
-    /**
-     * Constructor
-     *
-     * All modifiable attributes (i.e. with setter method) can be passed as key
-     *
-     * @param array $params
-     *
-     * @throws Exception\PageNotFoundException
-     */
-    public function __construct(array $params = [])
-    {
-        foreach ($params as $param => $value)
-        {
-            if (property_exists(__CLASS__, strtolower($param)) && method_exists($this, 'set'.$param))
-                $this->{'set'.$param}($value);
-        }
     }
 
     /**
@@ -214,7 +109,6 @@ class Layout
                 throw new Exception\ViewNotFoundException("The 'view' template " . $this->view . " does not exists");
 
             $config = $controller->getModule()->getConfig();
-
             $layout = $controller->getLayout();
 
             if (!array_key_exists($controller->getLayout(), $config["view_manager"]["template_map"]))

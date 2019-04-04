@@ -96,29 +96,6 @@ class ControllerTest extends TestCase
             $this->assertTrue($errorObject, $e->getMessage());
         }
     }
-
-    /**
-     * Tests stopping execution
-     *
-     * @return null
-     */
-    public function testStoppingExecution()
-    {
-        $ctrl = new \App\Controller\Home;
-        $ctrl->setMethod('about');
-
-        $this->assertTrue($ctrl->executionIsAllowed());
-
-        $ctrl->stopExecution();
-
-        $this->assertNotTrue($ctrl->executionIsAllowed());
-
-        $ctrl->execute();
-        $params = $ctrl->getParams();
-
-        $expected = [];
-        $this->assertSame($expected, $params);
-    }
 }
 
 /*

@@ -240,6 +240,16 @@ class Application
         else
             $this->router->setIdentifiers($module, $controller, $view);
 
-        $this->router->run();
+        $this->router->match();
+
+        $this->controller->setModule(ModuleFactory::create($module, [
+            "path"    => $this->modulePath,
+            "classes" => 'source',
+            "views"   => 'source/view',
+            "config"  => 'config/module.config.php'
+        ]));
+
+        if ($this->getController()->getModule()->executionIsAllowed())
+            $this->router->run();
     }
 }

@@ -26,6 +26,13 @@ abstract class AbstractModule
     protected $moduleName;
 
     /**
+     * The base path of the application
+     *
+     * @var string
+     */
+    private $basePath;
+
+    /**
      * The module path
      *
      * The path where modules are located.
@@ -35,13 +42,13 @@ abstract class AbstractModule
     protected $modulePath;
 
     /**
-     * The controller path
+     * The class path
      *
-     * The path where controllers are located.
+     * The path where classes are located (often controllers and models).
      *
      * @var string
      */
-    protected $contollerPath;
+    protected $classPath;
 
     /**
      * The view path
@@ -53,11 +60,18 @@ abstract class AbstractModule
     protected $viewPath;
 
     /**
-     * The Router instace
+     * Config file for the module
      *
      * @var string
      */
-    protected $router;
+    protected $configFile;
+
+    /**
+     * Defines method execution in the controller
+     *
+     * @var boolean
+     */
+    private $executionAllowed = true;
 
     /**
      * Returns the moduleName attribute
@@ -67,6 +81,16 @@ abstract class AbstractModule
     public function getModuleName()
     {
         return $this->moduleName;
+    }
+
+    /**
+     * Returns the base path of the application
+     *
+     * @return string
+     */
+    public function getBasePath()
+    {
+        return $this->basePath;
     }
 
     /**
@@ -80,13 +104,13 @@ abstract class AbstractModule
     }
 
     /**
-     * Returns the controllerPath attribute
+     * Returns the classPath attribute
      *
      * @return string
      */
-    public function getControllerPath()
+    public function getClassPath()
     {
-        return $this->controllerPath;
+        return $this->classPath;
     }
 
     /**
@@ -100,13 +124,13 @@ abstract class AbstractModule
     }
 
     /**
-     * Returns the Router instance
+     * Returns the configFile attribute
      *
-     * @return Router
+     * @return string
      */
-    public function getRouter()
+    public function getConfigFile()
     {
-        return $this->router;
+        return $this->configFile;
     }
 
     /**
@@ -122,6 +146,18 @@ abstract class AbstractModule
     }
 
     /**
+     * Sets the basePath attribute
+     *
+     * @param string $basePath
+     *
+     * @return null
+     */
+    public function setBasePath($basePath)
+    {
+        $this->basePath = $basePath;
+    }
+
+    /**
      * Sets the modulePath attribute
      *
      * @param string $modulePath
@@ -134,15 +170,15 @@ abstract class AbstractModule
     }
 
     /**
-     * Sets the controllerPath attribute
+     * Sets the classPath attribute
      *
-     * @param string $controllerPath
+     * @param string $classPath
      *
      * @return null
      */
-    public function setControllerPath($controllerPath)
+    public function setClassPath($classPath)
     {
-        $this->controllerPath = $controllerPath;
+        $this->classPath = $classPath;
     }
 
     /**
@@ -158,48 +194,81 @@ abstract class AbstractModule
     }
 
     /**
-     * Sets the Router instance
+     * Sets the configFile attribute
      *
-     * @param Router $router
+     * @param string $configFile
+     *
+     * @throws \RuntimeException
      *
      * @return null
      */
-    public function setRouter($router)
+    public function setConfigFile($configFile)
     {
-        $this->router = $router;
+        $_file = $this->basePath .'/'. $this->modulePath .'/'. $this->moduleName .'/'. $configFile;
+
+        if (!file_exists($_file))
+            throw new \RuntimeException("The file '$_file' does not exists");
+
+        $this->configFile =
+            $this->basePath .'/'. $this->modulePath .'/'. $this->moduleName .'/'. $configFile;
     }
 
     /**
      * Constructor
      *
-     * @param string             $moduleName
-     * @param AbstractController $controller
-     * @param Router             $router
+     * @param string $moduleName
      */
-    public function __construct($moduleName, AbstractController $controller, Router $router)
+    public function __construct($moduleName)
     {
         $this->moduleName = $moduleName;
-        $this->router     = $router;
-        $this->init($controller);
+        $this->init();
     }
 
     /**
-     * Abstract method to be executed before each controller execution in each module
+     * Abstract method to be executed before each method execution in the controller
      *
      * @param AbstractController
      */
-    public abstract function init(AbstractController $controller);
+    public abstract function init();
 
     /**
-     * Returns an array with application settings
+     * Checks if executionAllowed is true
+     *
+     * @return null
+     */
+    public function executionIsAllowed()
+    {
+        return $this->executionAllowed;
+    }
+
+    /**
+     * Disallow the method execution in a controller
+     *
+     * @return null
+     */
+    public function disallowExecution()
+    {
+        $this->executionAllowed = false;
+    }
+
+    /**
+     * Allow the method execution in a controller
+     *
+     * @return null
+     */
+    public function allowExecution()
+    {
+        $this->executionAllowed = true;
+    }
+
+    /**
+     * Returns the module configuration
      *
      * @return array
      */
     public function getConfig()
     {
-        return include(
-            $this->router->getBasePath() .'/'. $this->modulePath .'/' . $this->getModuleName() . '/config/module.config.php'
-        );
+        return (array) include $this->configFile;
     }
 
     /**
@@ -214,7 +283,20 @@ abstract class AbstractModule
         $nm = explode('\\', $name);
         $module = array_shift($nm);
 
-        $class = $this->router->getBasePath() .'/'. $this->modulePath ."/". $module . "/source/" . implode("/", $nm) . ".php";
+        $class = "";
+
+        if (!empty($this->basePath))
+            $class .= $this->basePath .'/';
+
+        if (!empty($this->modulePath))
+            $class .= $this->modulePath .'/';
+
+        $class .= $module ."/";
+
+        if (!empty($this->classPath))
+            $class .= $this->classPath .'/';
+
+        $class .= implode("/", $nm) . ".php";
 
         if (file_exists($class))
             include $class;

@@ -57,15 +57,6 @@ abstract class AbstractController
     private $showView = true;
 
     /**
-     * Defines method execution
-     *
-     * The only way to stop method execution is executing stopExecution() before execute().
-     *
-     * @var boolean
-     */
-    private $allowExecution = true;
-
-    /**
      * Returns the current module instance
      *
      * @return AbstractModule
@@ -152,6 +143,18 @@ abstract class AbstractController
     }
 
     /**
+     * Sets module instance
+     *
+     * @param AbstractModule $module
+     *
+     * @return null
+     */
+    public function setModule(AbstractModule $module)
+    {
+        $this->module = $module;
+    }
+
+    /**
      * Sets the method attribute
      *
      * @param string $method
@@ -161,35 +164,6 @@ abstract class AbstractController
     public function setMethod($method)
     {
         $this->method = $method;
-    }
-
-    /**
-     * Creates the module instance
-     *
-     * @param string $module
-     * @param Router $router
-     *
-     * @return null
-     */
-    public function createModuleInstance($module, Router $router)
-    {
-        if (!is_null($module))
-        {
-            /*
-             * Module class instantiation
-             *
-             * Each module must have a class called Module in her namesapce. This class
-             * is initilized here and can change the behavior of a controller using
-             * stopExecution(), setMethod() or other methods.
-             */
-
-            $fqn_module = "\\" . $module . "\\Module";
-
-            if (!class_exists($fqn_module))
-                throw new Exception\ModuleNotFoundException("The module class '$fqn_module' does not exists!");
-
-            $this->module = new $fqn_module($module, $this, $router);
-        }
     }
 
     /**
@@ -205,7 +179,9 @@ abstract class AbstractController
             # This error is thrown because of 'setMethod' method has not been executed
             throw new \LogicException("No method has been setted to execute!");
 
-        if ($this->allowExecution)
+        if (!is_null($this->module) && !$this->module->executionIsAllowed())
+            throw new Exception\MethodExecutionNotAllowedException("Method execution is not allowed");
+        else
         {
             if (method_exists($this, $method))
             {
@@ -226,8 +202,9 @@ abstract class AbstractController
 
                     $layout_params = (count($params) && array_key_exists('::Layout', $params)) ? $params["::Layout"] : [];
 
-                    $layoutManager = new Layout($layout_params);
-                    $layoutManager->fromController($this);
+                    $layout = new Layout;
+                    $layout->setParams($layout_params);
+                    $layout->fromController($this);
                 }
             }
             else
@@ -236,28 +213,6 @@ abstract class AbstractController
                 throw new Exception\MethodNotFoundException("The method '$method' doesn't exists in the control class '$class'");
             }
         }
-    }
-
-    /**
-     * Stops the execution of the specified method
-     *
-     * The only way to stop method execution before execute()
-     *
-     * @return null
-     */
-    public function stopExecution()
-    {
-        $this->allowExecution = false;
-    }
-
-    /**
-     * Checks if allowExecution is true
-     *
-     * @return null
-     */
-    public function executionIsAllowed()
-    {
-        return $this->allowExecution;
     }
 
     /**

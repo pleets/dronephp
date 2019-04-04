@@ -36,16 +36,16 @@ class Router
     /**
      * Controller instance
      *
-     * @var AbstractionController
+     * @var AbstractController
      */
     private $controller;
 
     /**
-     * The base path of the application
+     * Indicates how the class name could be matched
      *
-     * @var string
+     * @var callable
      */
-    private $basePath;
+    private $classNameBuilder;
 
     /**
      * Zend\Router implementation
@@ -77,21 +77,26 @@ class Router
     /**
      * Returns the controller instance
      *
-     * @return AbstractionController
+     * @throws \RuntimeException
+     *
+     * @return AbstractController
      */
     public function getController()
     {
+        if (is_null($this->controller))
+            throw new \RuntimeException("No controller matched, try to match first.");
+
         return $this->controller;
     }
 
     /**
-     * Returns the base path of the application
+     * Returns the class name builder function
      *
-     * @return string
+     * @return callable
      */
-    public function getBasePath()
+    public function getClassNameBuilder()
     {
-        return $this->basePath;
+        return $this->classNameBuilder;
     }
 
     /**
@@ -123,26 +128,36 @@ class Router
     }
 
     /**
-     * Sets the basePath attribute
+     * Sets the class name builder function
      *
-     * @param string $basePath
+     * @param callable $builder
      *
      * @return null
      */
-    public function setBasePath($basePath)
+    public function setClassNameBuilder(callable $builder)
     {
-        $this->basePath = $basePath;
+        $this->classNameBuilder = $builder;
     }
 
     /**
      * Constructor
      *
-     * @param  array $routes
+     * @param array $routes
      */
     public function __construct(Array $routes = [])
     {
         if (count($routes))
-            $this->routes = $routes;
+        {
+            foreach ($routes as $route)
+            {
+                $this->addRoute($route);
+            }
+        }
+
+        # default class name builder
+        $this->setClassNameBuilder(function($module, $class) {
+            return "\\$module\\$class";
+        });
 
         $this->zendRouter = new \Zend\Router\SimpleRouteStack();
     }
@@ -151,11 +166,15 @@ class Router
      * Builds the current route and calls the controller
      *
      * @throws Exception\PageNotFoundException
+     * @throws \LogicException
      *
      * @return  null
      */
-    public function run()
+    public function match()
     {
+        if (!is_callable($this->classNameBuilder))
+            throw \LogicException("No class name builder found");
+
         /*
          *  Key value pairs builder:
          *  Searches for the pattern /var1/value1/var2/value2 and converts it to  var1 => value1, var2 => value2
@@ -185,32 +204,39 @@ class Router
         $view = (is_null($this->identifiers["view"]) || empty($this->identifiers["view"]))
                     ? $this->routes[$module]["view"] : $this->identifiers["view"];
 
-        $fqn_controller = '\\' . $module . "\Controller\\" . $controller;
+        $fqn_controller = call_user_func($this->classNameBuilder, $module, $controller);
 
         if (class_exists($fqn_controller))
         {
             try {
                 $this->controller = new $fqn_controller;
             }
-            catch (Exception\MethodNotFoundException | Exception\PrivateMethodExecutionException $e)
+            # change context, in terms of Router MethodNotFoundException or
+            # PrivateMethodExecutionException is a PageNotfoundException
+            catch (Exception\MethodNotFoundException $e)
             {
-                # change context, in terms of Router MethodNotFoundException or
-                # PrivateMethodExecutionException is a PageNotfoundException
+                throw new Exception\PageNotFoundException($e->getMessage(), $e->getCode(), $e);
+            }
+            catch (Exception\PrivateMethodExecutionException $e)
+            {
                 throw new Exception\PageNotFoundException($e->getMessage(), $e->getCode(), $e);
             }
 
             # in controller terms, a view is a method
             $this->controller->setMethod($view);
-
-            $this->controller->createModuleInstance($module, $this);
-            $this->controller->getModule()->setModulePath($this->modulePath);
-            $this->controller->getModule()->setControllerPath('source/Controller');
-            $this->controller->getModule()->setViewPath('source/view');
-
-            $this->controller->execute();
         }
         else
             throw new Exception\ControllerNotFoundException("The control class '$fqn_controller' does not exists!");
+    }
+
+    /**
+     * Execute the method matched in the controller
+     *
+     * @return  null
+     */
+    public function run()
+    {
+        $this->controller->execute();
     }
 
     /**
