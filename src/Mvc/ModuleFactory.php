@@ -49,15 +49,6 @@ class ModuleFactory
 
         $module = new $fqn_module($module);
 
-        if (array_key_exists('path', $module_settings))
-            $module->setModulePath($module_settings["path"]);
-
-        if (array_key_exists('classes', $module_settings))
-            $module->setClassPath($module_settings["classes"]);
-
-        if (array_key_exists('views', $module_settings))
-            $module->setViewPath($module_settings["views"]);
-
         if (array_key_exists('config', $module_settings) && !is_null($module_settings["config"]))
             $module->setConfigFile($module_settings["config"]);
 

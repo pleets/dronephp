@@ -29,10 +29,10 @@ class ControllerTest extends TestCase
          */
 
         $ctrl = new \App\Controller\Home;
-        $params = $ctrl->about();
+        $result = $ctrl->about();
 
         $expected = ["greeting" => "Hello World!"];
-        $this->assertSame($expected, $params);
+        $this->assertSame($expected, $result);
 
         /*
          * Implicit method execution
@@ -40,11 +40,10 @@ class ControllerTest extends TestCase
 
         $ctrl = new \App\Controller\Home;
         $ctrl->setMethod('about');
-        $ctrl->execute();
-        $params = $ctrl->getParams();
+        $result = $ctrl->execute();
 
         $expected = ["greeting" => "Hello World!"];
-        $this->assertSame($expected, $params);
+        $this->assertSame($expected, $result);
     }
 
     /**

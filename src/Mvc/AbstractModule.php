@@ -13,8 +13,7 @@ namespace Drone\Mvc;
 /**
  * AbstractModule class
  *
- * This is an abstract class required for each mvc module. The first code execution
- * in a route is the module, after the module loads the controller.
+ * This is an abstract class to execute some code before method execution in a controller.
  */
 abstract class AbstractModule
 {
@@ -24,40 +23,6 @@ abstract class AbstractModule
      * @var string
      */
     protected $moduleName;
-
-    /**
-     * The base path of the application
-     *
-     * @var string
-     */
-    private $basePath;
-
-    /**
-     * The module path
-     *
-     * The path where modules are located.
-     *
-     * @var string
-     */
-    protected $modulePath;
-
-    /**
-     * The class path
-     *
-     * The path where classes are located (often controllers and models).
-     *
-     * @var string
-     */
-    protected $classPath;
-
-    /**
-     * The view path
-     *
-     * The path where views are located.
-     *
-     * @var string
-     */
-    protected $viewPath;
 
     /**
      * Config file for the module
@@ -84,46 +49,6 @@ abstract class AbstractModule
     }
 
     /**
-     * Returns the base path of the application
-     *
-     * @return string
-     */
-    public function getBasePath()
-    {
-        return $this->basePath;
-    }
-
-    /**
-     * Returns the modulePath attribute
-     *
-     * @return string
-     */
-    public function getModulePath()
-    {
-        return $this->modulePath;
-    }
-
-    /**
-     * Returns the classPath attribute
-     *
-     * @return string
-     */
-    public function getClassPath()
-    {
-        return $this->classPath;
-    }
-
-    /**
-     * Returns the viewPath attribute
-     *
-     * @return string
-     */
-    public function getViewPath()
-    {
-        return $this->viewPath;
-    }
-
-    /**
      * Returns the configFile attribute
      *
      * @return string
@@ -146,54 +71,6 @@ abstract class AbstractModule
     }
 
     /**
-     * Sets the basePath attribute
-     *
-     * @param string $basePath
-     *
-     * @return null
-     */
-    public function setBasePath($basePath)
-    {
-        $this->basePath = $basePath;
-    }
-
-    /**
-     * Sets the modulePath attribute
-     *
-     * @param string $modulePath
-     *
-     * @return null
-     */
-    public function setModulePath($modulePath)
-    {
-        $this->modulePath = $modulePath;
-    }
-
-    /**
-     * Sets the classPath attribute
-     *
-     * @param string $classPath
-     *
-     * @return null
-     */
-    public function setClassPath($classPath)
-    {
-        $this->classPath = $classPath;
-    }
-
-    /**
-     * Sets the viewPath attribute
-     *
-     * @param string $viewPath
-     *
-     * @return null
-     */
-    public function setViewPath($viewPath)
-    {
-        $this->viewPath = $viewPath;
-    }
-
-    /**
      * Sets the configFile attribute
      *
      * @param string $configFile
@@ -204,13 +81,7 @@ abstract class AbstractModule
      */
     public function setConfigFile($configFile)
     {
-        $_file = $this->basePath .'/'. $this->modulePath .'/'. $this->moduleName .'/'. $configFile;
-
-        if (!file_exists($_file))
-            throw new \RuntimeException("The file '$_file' does not exists");
-
-        $this->configFile =
-            $this->basePath .'/'. $this->modulePath .'/'. $this->moduleName .'/'. $configFile;
+        $this->configFile = $configFile;
     }
 
     /**
@@ -268,37 +139,11 @@ abstract class AbstractModule
      */
     public function getConfig()
     {
+        $_file = $this->configFile;
+
+        if (!file_exists($_file))
+            throw new \RuntimeException("The config file '$_file' does not exists");
+
         return (array) include $this->configFile;
-    }
-
-    /**
-     * Creates an autoloader for module classes
-     *
-     * @param string $name
-     *
-     * @return null
-     */
-    public static function loader($name)
-    {
-        $nm = explode('\\', $name);
-        $module = array_shift($nm);
-
-        $class = "";
-
-        if (!empty($this->basePath))
-            $class .= $this->basePath .'/';
-
-        if (!empty($this->modulePath))
-            $class .= $this->modulePath .'/';
-
-        $class .= $module ."/";
-
-        if (!empty($this->classPath))
-            $class .= $this->classPath .'/';
-
-        $class .= implode("/", $nm) . ".php";
-
-        if (file_exists($class))
-            include $class;
     }
 }

@@ -20,6 +20,13 @@ use Drone\FileSystem\Shell;
 class Application
 {
     /**
+     * Base path for the application
+     *
+     * @var string
+     */
+    protected $basePath;
+
+    /**
      * Module path
      *
      * The path where all modules are located.
@@ -125,9 +132,6 @@ class Application
             error_reporting(0);
         }
 
-        # register autoloading functions for each module
-        $this->autoload($this->modules);
-
         if (!array_key_exists('router', $config))
             throw new \InvalidArgumentException("The 'router' key was not defined");
 
@@ -139,15 +143,26 @@ class Application
         if (!array_key_exists('base_path', $config['environment']))
             throw new \InvalidArgumentException("The 'base_path' key was not defined");
 
-        $this->router->setBasePath($config["environment"]["base_path"]);
+        $this->basePath = $config["environment"]["base_path"];
 
         # load routes from config
         foreach ($config["router"]["routes"] as $name => $route)
         {
             if ($route instanceof \Zend\Router\Http\RouteInterface)
-                $this->getRouter()->addZendRoute($name, $route);
+                $this->router->addZendRoute($name, $route);
             else
-                $this->getRouter()->addRoute($route);
+                $this->router->addRoute($route);
+        }
+
+        # register autoloading functions for each module
+        foreach ($this->modules as $module)
+        {
+            \Drone\Loader\ClassMap::$path = $this->basePath .
+                DIRECTORY_SEPARATOR . $this->modulePath .
+                DIRECTORY_SEPARATOR . $module .
+                DIRECTORY_SEPARATOR . 'source';
+
+            spl_autoload_register("Drone\Loader\ClassMap::autoload");
         }
 
         # load routes from each module
@@ -169,47 +184,15 @@ class Application
     }
 
     /**
-     * Loads module classes and autoloading functions
-     *
-     * Each module must have a Module.php inside them. The goal of this file is register an autoloading function
-     * to load all its controller and model classes.
-     *
-     * @param array $modules
-     *
-     * @throws RuntimeException
-     *
-     * @return null
-     */
-    private function autoload(Array $modules)
-    {
-        if (count($modules))
-        {
-            foreach ($modules as $module)
-            {
-                /*
-                 *  This instruction includes each module declared.
-                 *  Each module has an autoloader to load its classes (controllers and models)
-                 */
-                if (file_exists($this->modulePath ."/". $module."/Module.php"))
-                    include($this->modulePath ."/". $module."/Module.php");
-
-                spl_autoload_register($module . "\Module::loader");
-            }
-        }
-        else
-            throw new \RuntimeException("The application must have at least one module");
-    }
-
-    /**
      * Runs the application
      *
      * @return null
      */
     public function run()
     {
-        $module     = isset($_GET["module"])     ? $_GET["module"] : null;
+        $module     = isset($_GET["module"])     ? $_GET["module"]     : null;
         $controller = isset($_GET["controller"]) ? $_GET["controller"] : null;
-        $view       = isset($_GET["view"])       ? $_GET["view"] : null;
+        $view       = isset($_GET["view"])       ? $_GET["view"]       : null;
 
         $request = new  \Zend\Http\Request();
 
@@ -243,13 +226,25 @@ class Application
         $this->router->match();
 
         $this->controller->setModule(ModuleFactory::create($module, [
-            "path"    => $this->modulePath,
-            "classes" => 'source',
-            "views"   => 'source/view',
-            "config"  => 'config/module.config.php'
+            "config"  => $this->basePath .
+                DIRECTORY_SEPARATOR . $this->modulePath .
+                DIRECTORY_SEPARATOR . $module .
+                DIRECTORY_SEPARATOR . 'config/module.config.php'
         ]));
 
         if ($this->getController()->getModule()->executionIsAllowed())
-            $this->router->run();
+        {
+            $result = $this->router->run();
+
+            if ($result instanceof View)
+            {
+                $result->setPath($this->basePath . DIRECTORY_SEPARATOR . $this->modulePath . DIRECTORY_SEPARATOR . 'source/view');
+
+                if (is_null($result->getName()))
+                    $result->setView($router->getController()->getMethod());
+
+                $result->render();
+            }
+        }
     }
 }

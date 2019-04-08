@@ -19,8 +19,6 @@ use Drone\Mvc\Exception;
  */
 abstract class AbstractController
 {
-    use \Drone\Util\ParamTrait;
-
     /**
      * Current module instance
      *
@@ -34,27 +32,6 @@ abstract class AbstractController
      * @var string
      */
     private $method = null;
-
-    /**
-     * Layout name
-     *
-     * @var string
-     */
-    private $layout = "default";
-
-    /**
-     * Terminal mode
-     *
-     * @var boolean
-     */
-    private $terminal = true;
-
-    /**
-     * Indicates if the controller must show the views
-     *
-     * @var boolean
-     */
-    private $showView = true;
 
     /**
      * Returns the current module instance
@@ -74,72 +51,6 @@ abstract class AbstractController
     public function getMethod()
     {
         return $this->method;
-    }
-
-    /**
-     * Returns the mode of visualization
-     *
-     * @return boolean
-     */
-    public function getTerminal()
-    {
-        return $this->terminal;
-    }
-
-    /**
-     * Returns the mode of viewing
-     *
-     * @return boolean
-     */
-    public function getShowView()
-    {
-        return $this->showView;
-    }
-
-    /**
-     * Returns the current layout
-     *
-     * @return string
-     */
-    public function getLayout()
-    {
-        return $this->layout;
-    }
-
-    /**
-     * Sets the terminal mode
-     *
-     * @param boolean $terminal
-     *
-     * @return null
-     */
-    public function setTerminal($terminal = true)
-    {
-        $this->terminal = $terminal;
-    }
-
-    /**
-     * Sets the showView parameter
-     *
-     * @param boolean $show
-     *
-     * @return null
-     */
-    public function setShowView($show = true)
-    {
-        $this->showView = $show;
-    }
-
-    /**
-     * Sets layout name
-     *
-     * @param string $layout
-     *
-     * @return null
-     */
-    public function setLayout($layout)
-    {
-        $this->layout = $layout;
     }
 
     /**
@@ -169,7 +80,7 @@ abstract class AbstractController
     /**
      * Executes the controller
      *
-     * @return null
+     * @return mixed
      */
     public function execute()
     {
@@ -192,20 +103,7 @@ abstract class AbstractController
                 if (!$reflection->isPublic())
                     throw new Exception\PrivateMethodExecutionException("The method '$method' is not public in the control class '$class'");
 
-                # Get the returned value of the method to send to the view
-                $this->params = $this->$method();
-
-                # The only way to manage views is through an AbstractModule
-                if (!is_null($this->module))
-                {
-                    $params = $this->getParams();
-
-                    $layout_params = (count($params) && array_key_exists('::Layout', $params)) ? $params["::Layout"] : [];
-
-                    $layout = new Layout;
-                    $layout->setParams($layout_params);
-                    $layout->fromController($this);
-                }
+                return $this->$method();
             }
             else
             {

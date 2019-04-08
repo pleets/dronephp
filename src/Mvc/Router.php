@@ -34,6 +34,13 @@ class Router
     private $identifiers;
 
     /**
+     * Default identifiers
+     *
+     * @var array
+     */
+    private $defaults;
+
+    /**
      * Controller instance
      *
      * @var AbstractController
@@ -72,6 +79,16 @@ class Router
     public function getIdentifiers()
     {
         return $this->identifiers;
+    }
+
+    /**
+     * Returns default identifiers
+     *
+     * @return array
+     */
+    public function getDefaults()
+    {
+        return $this->defaults;
     }
 
     /**
@@ -120,7 +137,41 @@ class Router
      */
     public function setIdentifiers($module, $controller, $view)
     {
+        $identifiers = ["module" => $module, "controller" => $controller, "view" => $view];
+
+        foreach ($identifiers as $key => $identifier)
+        {
+            if (!is_string($identifier))
+                throw new \InvalidArgumentException("Invalid type given for '$key'. String expected.");
+        }
+
         $this->identifiers = [
+            "module"     => $module,
+            "controller" => $controller,
+            "view"       => $view
+        ];
+    }
+
+    /**
+     * Sets default identifiers
+     *
+     * @param string $module
+     * @param string $controller
+     * @param string $view
+     *
+     * @return null
+     */
+    public function setDefaults($module, $controller, $view)
+    {
+        $identifiers = ["module" => $module, "controller" => $controller, "view" => $view];
+
+        foreach ($identifiers as $key => $identifier)
+        {
+            if (!is_string($identifier))
+                throw new \InvalidArgumentException("Invalid type given for '$key'. String expected.");
+        }
+
+        $this->defaults = [
             "module"     => $module,
             "controller" => $controller,
             "view"       => $view
@@ -154,6 +205,19 @@ class Router
             }
         }
 
+        # schema for identifiers
+        $this->identifiers = [
+            "module"     => '',
+            "controller" => '',
+            "view"       => ''
+        ];
+
+        $this->defaults = [
+            "module"     => '',
+            "controller" => '',
+            "view"       => ''
+        ];
+
         # default class name builder
         $this->setClassNameBuilder(function($module, $class) {
             return "\\$module\\$class";
@@ -166,6 +230,7 @@ class Router
      * Builds the current route and calls the controller
      *
      * @throws Exception\PageNotFoundException
+     * @throws Exception\RouteNotFoundException
      * @throws \LogicException
      *
      * @return  null
@@ -192,17 +257,48 @@ class Router
          *  www.example.com/module/controller/view
          */
 
-        $module = (is_null($this->identifiers["module"]) || empty($this->identifiers["module"]))
-                    ? $this->routes["defaults"]["module"] : $this->identifiers["module"];
+        $match = false;
 
-        if (!array_key_exists($module, $this->routes))
-            throw new Exception\ModuleNotFoundException("The key '$module' does not exists in routes!");
+        if (count($this->routes))
+        {
+            foreach ($this->routes as $key => $route)
+            {
+                if
+                (
+                    $route["module"]     == $this->identifiers["module"]     &&
+                    $route["controller"] == $this->identifiers["controller"] &&
+                    $route["view"]       == $this->identifiers["view"]
+                )
+                {
+                    $module     = $route["module"];
+                    $controller = $route["controller"];
+                    $view       = $route["view"];
 
-        $controller = (is_null($this->identifiers["controller"]) || empty($this->identifiers["controller"]))
-                    ? $this->routes[$module]["controller"] : $this->identifiers["controller"];
+                    $match = true;
+                    break;
+                }
+            }
+        }
 
-        $view = (is_null($this->identifiers["view"]) || empty($this->identifiers["view"]))
-                    ? $this->routes[$module]["view"] : $this->identifiers["view"];
+        if (count($this->defaults) && !$match)
+        {
+            if
+            (
+                !empty($this->defaults["module"])     &&
+                !empty($this->defaults["controller"]) &&
+                !empty($this->defaults["view"])
+            )
+            {
+                $module     = $this->defaults["module"];
+                $controller = $this->defaults["controller"];
+                $view       = $this->defaults["view"];
+
+                $match = true;
+            }
+        }
+
+        if (!$match)
+            throw new Exception\RouteNotFoundException("The route has not been matched");
 
         $fqn_controller = call_user_func($this->classNameBuilder, $module, $controller);
 
@@ -232,11 +328,11 @@ class Router
     /**
      * Execute the method matched in the controller
      *
-     * @return  null
+     * @return mixed
      */
     public function run()
     {
-        $this->controller->execute();
+        return $this->controller->execute();
     }
 
     /**
@@ -251,10 +347,25 @@ class Router
     public function addRoute(array $route)
     {
         $key = array_keys($route);
+
+        if (count($key) > 1)
+            throw new \InvalidArgumentException("So many keys in a simple route");
+
         $key = array_shift($key);
 
+        $identifiers = ["module", "controller", "view"];
+
+        foreach ($identifiers as $identifier)
+        {
+            if (!array_key_exists($identifier, $route[$key]))
+                throw new \InvalidArgumentException("The identifier '$identifier' does not exists in the route");
+
+            if (!is_string($route[$key][$identifier]))
+                throw new \InvalidArgumentException("Invalid type given for '$identifier'. String expected.");
+        }
+
         if (array_key_exists($key, $this->routes))
-            throw new \LogicException("The key '$key' was already defined as route");
+            throw new \LogicException("The key '$key' was already defined as a route");
 
         $this->routes = array_merge($this->routes, $route);
     }

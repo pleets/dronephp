@@ -11,10 +11,10 @@
 namespace Drone\Mvc\Exception;
 
 /**
- * ViewNotFoundException Class
+ * ViewGetContentsErrorException Class
  *
- * This exception is throwm when the view does not exists
+ * This exception is thrown when has been impossible getting contents from an existing file
  */
-class ViewNotFoundException extends PageNotFoundException
+class ViewGetContentsErrorException extends Exception
 {
 }

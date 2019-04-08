@@ -11,10 +11,10 @@
 namespace Drone\Mvc\Exception;
 
 /**
- * ViewNotFoundException Class
+ * RouteNotFoundException Class
  *
- * This exception is throwm when the view does not exists
+ * This exception is thrown when the router does not match a route
  */
-class ViewNotFoundException extends PageNotFoundException
+class RouteNotFoundException extends PageNotFoundException
 {
 }
