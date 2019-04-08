@@ -73,9 +73,5 @@ class SimpleMvcApplicationTest extends TestCase
         $result->setPath("test-skeleton/module/Master/source/view/Admin");
 
         $this->assertSame("<h1>Hello world!</h1>", $result->getContents());
-
-        /*$result->setPath('test-skeleton/module/source/view');
-        $result->setView($ctrl->getMethod());
-        $result->render();*/
     }
 }
