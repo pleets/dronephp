@@ -11,12 +11,8 @@
 namespace DroneTest\Util;
 
 use Drone\Db\Entity;
-use Drone\Db\Driver\MySQL;
 use Drone\Db\TableGateway\EntityAdapter;
 use Drone\Db\TableGateway\TableGateway;
-use Drone\Db\TableGateway\AbstractTableGateway;
-use Drone\Db\Driver\Exception\ConnectionException;
-use Drone\Db\Driver\Exception\InvalidQueryException;
 use PHPUnit\Framework\TestCase;
 
 class EntityAdapterTest extends TestCase
@@ -37,7 +33,7 @@ class EntityAdapterTest extends TestCase
 
     /*
     |--------------------------------------------------------------------------
-    | Stablishing connections
+    | Establishing connections
     |--------------------------------------------------------------------------
     |
     | The following tests are related to the connection mechanisms and its

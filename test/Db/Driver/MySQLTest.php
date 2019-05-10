@@ -11,7 +11,6 @@
 namespace DroneTest\Util;
 
 use Drone\Db\Driver\MySQL;
-use Drone\Db\Driver\Exception\ConnectionException;
 use Drone\Db\Driver\Exception\InvalidQueryException;
 use PHPUnit\Framework\TestCase;
 
@@ -32,7 +31,7 @@ class MySQLTest extends TestCase
 
     /*
     |--------------------------------------------------------------------------
-    | Stablishing connections
+    | Establishing connections
     |--------------------------------------------------------------------------
     |
     | The following tests are related to the connection methods and its
@@ -45,7 +44,7 @@ class MySQLTest extends TestCase
      *
      * @return null
      */
-    public function testCanStablishConnection()
+    public function testCanEstablishConnection()
     {
         $conn = new MySQL($this->options);
 
@@ -72,27 +71,21 @@ class MySQLTest extends TestCase
     }
 
     /**
-     * Tests if we can disconnect from server when there is not a connection stablished
+     * Tests if we can disconnect from server when there is not a connection established
      *
-     * @return null
+     * @expectedException LogicException
      */
-    public function testCannotDisconectWhenNotConnected()
+    public function testCannotDisconnectWhenNotConnected()
     {
         $conn = new MySQL($this->options);
-
-        $errorObject = null;
 
         try {
             $conn->disconnect();
         }
         catch (\Exception $e)
         {
-            $errorObject = ($e instanceof \LogicException);
-        }
-        finally
-        {
             $this->assertNotTrue($conn->isConnected());
-            $this->assertTrue($errorObject, $e->getMessage());
+            throw $e;
         }
     }
 
@@ -101,7 +94,7 @@ class MySQLTest extends TestCase
      *
      * @return null
      */
-    public function testCanStablishConnectionAgain()
+    public function testCanEstablishConnectionAgain()
     {
         $conn = new MySQL($this->options);
 
@@ -113,45 +106,35 @@ class MySQLTest extends TestCase
     }
 
     /**
-     * Tests if we can reconnect to the database server when there is not a connection stablished
+     * Tests if we can reconnect to the database server when there is not a connection established
      *
-     * @return null
+     * @expectedException LogicException
      */
-    public function testCannotStablishReconnection()
+    public function testCannotEstablishReconnection()
     {
         $conn = new MySQL($this->options);
-
-        $errorObject = null;
 
         try {
             $conn->reconnect();
         }
         catch (\Exception $e)
         {
-            $errorObject = ($e instanceof \LogicException);
-        }
-        finally
-        {
-            $this->assertTrue($errorObject, $e->getMessage());
             $this->assertNotTrue($conn->isConnected());
+            throw $e;
         }
     }
 
     /**
      * Tests if a failed connection throws a ConnectionException
      *
-     * @return null
+     * @expectedException Drone\Db\Driver\Exception\ConnectionException
      */
-    public function testCannotStablishConnection()
+    public function testCannotEstablishConnection()
     {
         $options = $this->options;
         $options["dbhost"] = 'myserver';   // this server does not exists
 
         $conn = new MySQL($options);
-
-        $errorObject = null;
-
-        $message = "No exception";
 
         try
         {
@@ -159,19 +142,14 @@ class MySQLTest extends TestCase
         }
         catch (\Exception $e)
         {
-            $errorObject = ($e instanceof ConnectionException);
-            $message = $e->getMessage();
-        }
-        finally
-        {
-            $this->assertTrue($errorObject, $message);
             $this->assertNotTrue($conn->isConnected());
+            throw $e;
         }
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Quering and Transactions
+    | Querying and Transactions
     |--------------------------------------------------------------------------
     |
     | The following tests are related to query and transaction operations and its
@@ -249,7 +227,7 @@ class MySQLTest extends TestCase
     /**
      * Tests if a wrong query execution throws an InvalidQueryException
      *
-     * @return null
+     * @expectedException Drone\Db\Driver\Exception\InvalidQueryException
      */
     public function testGettingInvalidQueryException()
     {
@@ -258,23 +236,8 @@ class MySQLTest extends TestCase
 
         $conn = new MySQL($options);
 
-        $errorObject = null;
-        $message = "No exception";
-
-        try
-        {
-            $sql = "INSERT INTO MYTABLE (DESCRIPTION, WRONG) VALUES ('Hello world!')";
-            $conn->execute($sql);
-        }
-        catch (\Exception $e)
-        {
-            $errorObject = ($e instanceof InvalidQueryException);
-            $message = $e->getMessage();
-        }
-        finally
-        {
-            $this->assertTrue($errorObject, $message);
-        }
+        $sql = "INSERT INTO MYTABLE (DESCRIPTION, WRONG) VALUES ('Hello world!')";
+        $conn->execute($sql);
     }
 
     /**
@@ -467,6 +430,7 @@ class MySQLTest extends TestCase
         $rowcount = count($conn->getArrayResult());
 
         $this->assertNotTrue(($rowcount === 4));    # the rows are not available
+        $this->assertTrue(($rowcount === 0));
     }
 
     /**
@@ -539,16 +503,15 @@ class MySQLTest extends TestCase
             $conn->execute($sql);
 
             $sql = "INSERT INTO MYTABLE (DESCRIPTION, WRONG) VALUES ('TRANS_SHORTCUT_2')";
-            $conn->execute($sql);
+            $conn->execute($sql);    # this throws the exception
         }
         catch (InvalidQueryException $e)
         {
-            $message = $e->getMessage();
             #·not necessary!
             # $this->assertTrue($conn->rollback());
         }
 
-        # starts the transaction
+        # ends the transaction
         $conn->endTransaction();
 
         # now let's to verify if the record exists after endTransaction()

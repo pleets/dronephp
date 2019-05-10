@@ -14,8 +14,6 @@ use Drone\Db\Entity;
 use Drone\Db\Driver\MySQL;
 use Drone\Db\TableGateway\TableGateway;
 use Drone\Db\TableGateway\AbstractTableGateway;
-use Drone\Db\Driver\Exception\ConnectionException;
-use Drone\Db\Driver\Exception\InvalidQueryException;
 use PHPUnit\Framework\TestCase;
 
 class TableGatewayTest extends TestCase
@@ -36,7 +34,7 @@ class TableGatewayTest extends TestCase
 
     /*
     |--------------------------------------------------------------------------
-    | Stablishing connections
+    | Establishing connections
     |--------------------------------------------------------------------------
     |
     | The following tests are related to the connection mechanisms and its
@@ -49,7 +47,7 @@ class TableGatewayTest extends TestCase
      *
      * @return null
      */
-    public function testCanStablishConnection()
+    public function testCanEstablishConnection()
     {
         $entity = new MyEntity();
         $gateway = new TableGateway($entity, ["default" => $this->options]);
@@ -63,39 +61,23 @@ class TableGatewayTest extends TestCase
     /**
      * Tests if a failed connection throws a RuntimeException when connection exists
      *
-     * @return null
+     * @expectedException RuntimeException
      */
-    public function testCannotStablishConnectionWhenExists()
+    public function testCannotEstablishConnectionWhenExists()
     {
         $options = $this->options;
         $options["dbhost"] = 'myserver';   // this server does not exists
 
-        $errorObject = null;
-
-        $message = "No exception";
-
-        try
-        {
-            $entity = new MyEntity();
-            $gateway = new TableGateway($entity, ["default" => $options]);
-        }
-        catch (\Exception $e)
-        {
-            $errorObject = ($e instanceof \RuntimeException);
-            $message = $e->getMessage();
-        }
-        finally
-        {
-            $this->assertTrue($errorObject, $message);
-        }
+        $entity = new MyEntity();
+        new TableGateway($entity, ["default" => $options]);
     }
 
     /**
      * Tests if a failed connection throws a ConnectionException
      *
-     * @return null
+     * @expectedException Drone\Db\Driver\Exception\ConnectionException
      */
-    public function testCannotStablishConnection()
+    public function testCannotEstablishConnection()
     {
         $options = $this->options;
         $options["dbhost"] = 'myserver';   // this server does not exists
@@ -103,30 +85,21 @@ class TableGatewayTest extends TestCase
         $entity = new MyEntity();
         $gateway = new TableGateway($entity, ["other" => $options]);
 
-        $errorObject = null;
-
-        $message = "No exception";
-
         try
         {
             $gateway->getDb()->connect();
         }
         catch (\Exception $e)
         {
-            $errorObject = ($e instanceof ConnectionException);
-            $message = $e->getMessage();
-        }
-        finally
-        {
-            $this->assertTrue($errorObject, $message);
             $this->assertNotTrue($gateway->getDb()->isConnected());
+            throw $e;
         }
     }
 
     /**
      * Tests if we get created and not created connections
      *
-     * @return null
+     * @expectedException RuntimeException
      */
     public function testGettingConnections()
     {
@@ -138,23 +111,7 @@ class TableGatewayTest extends TestCase
         $this->assertTrue(($db instanceof MySQL));
         $this->assertNotTrue($db->isConnected());
 
-        $errorObject = null;
-
-        $message = "No exception";
-
-        try
-        {
-            AbstractTableGateway::getDriver('other3');
-        }
-        catch (\Exception $e)
-        {
-            $errorObject = ($e instanceof \RuntimeException);
-            $message = $e->getMessage();
-        }
-        finally
-        {
-            $this->assertTrue($errorObject, $message);
-        }
+        AbstractTableGateway::getDriver('other3');
     }
 
     /**
@@ -175,7 +132,7 @@ class TableGatewayTest extends TestCase
 
     /*
     |--------------------------------------------------------------------------
-    | Quering and Transactions
+    | Querying and Transactions
     |--------------------------------------------------------------------------
     |
     | The following tests are related to query and transaction operations and its
@@ -234,7 +191,7 @@ class TableGatewayTest extends TestCase
     /**
      * Tests if a wrong query execution throws an InvalidQueryException
      *
-     * @return null
+     * @expectedException Drone\Db\Driver\Exception\InvalidQueryException
      */
     public function testGettingInvalidQueryException()
     {
@@ -244,22 +201,7 @@ class TableGatewayTest extends TestCase
         $entity = new MyEntity();
         $gateway = new MyEntityGateway($entity, "default");
 
-        $errorObject = null;
-        $message = "No exception";
-
-        try
-        {
-            $gateway->wrongDML();
-        }
-        catch (\Exception $e)
-        {
-            $errorObject = ($e instanceof InvalidQueryException);
-            $message = $e->getMessage();
-        }
-        finally
-        {
-            $this->assertTrue($errorObject, $message);
-        }
+        $gateway->wrongDML();
     }
 
     /**
@@ -314,7 +256,7 @@ class TableGatewayTest extends TestCase
 
         $entity = new MyEntity();
 
-        # Here we can use the generic table gatway or ours
+        # Here we can use the generic table gateway or ours
         $gateway = new TableGateway($entity, "default");
 
         $result = $gateway->insert(["ID" => 500, "DESCRIPTION" => "NEW ELEMENT ONE"]);
@@ -342,7 +284,7 @@ class TableGatewayTest extends TestCase
 
         $entity = new MyEntity();
 
-        # Here we can use the generic table gatway or ours
+        # Here we can use the generic table gateway or ours
         $gateway = new TableGateway($entity, "default");
 
         $result = $gateway->update(["DESCRIPTION" => "NEW ELEMENT MODIFIED"], ["ID" => 500]);
@@ -367,7 +309,7 @@ class TableGatewayTest extends TestCase
 
         $entity = new MyEntity();
 
-        # Here we can use the generic table gatway or ours
+        # Here we can use the generic table gateway or ours
         $gateway = new TableGateway($entity, "default");
 
         $result = $gateway->delete(["ID" => 500]);
@@ -392,7 +334,7 @@ class TableGatewayTest extends TestCase
 
         $entity = new MyEntity();
 
-        # Here we can use the generic table gatway or ours
+        # Here we can use the generic table gateway or ours
         $gateway = new TableGateway($entity, "default");
 
         $rows = $gateway->select(["ID" => 501]);
