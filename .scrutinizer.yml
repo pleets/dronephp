@@ -1,0 +1,36 @@
+build:
+  environment:
+    php: 7.2
+    mysql: 5.7
+  project_setup:
+    before:
+      - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
+  nodes:
+    coverage:
+      tests:
+        override:
+          - command: vendor/bin/phpunit --coverage-clover coverage.xml
+            coverage:
+              file: coverage.xml
+              format: clover
+    analysis:
+      project_setup:
+        override:
+          - 'true'
+      tests:
+        override:
+          - php-scrutinizer-run
+          -
+            command: phpcs-run
+            use_website_config: true
+checks:
+  php: true
+coding_style:
+  php:
+    spaces:
+      around_operators:
+        concatenation: true
+tools:
+  php_code_coverage:
+    enabled: true
+filter: {  }
