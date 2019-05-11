@@ -25,11 +25,6 @@ build:
             use_website_config: true
 checks:
   php: true
-coding_style:
-  php:
-    spaces:
-      around_operators:
-        concatenation: true
 tools:
   php_code_coverage:
     enabled: true
