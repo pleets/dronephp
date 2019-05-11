@@ -22,7 +22,7 @@ build:
           - php-scrutinizer-run
           -
             command: phpcs-run
-            use_website_config: true
+            use_website_config: false
 checks:
   php: true
 tools:
