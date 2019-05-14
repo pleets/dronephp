@@ -24,6 +24,8 @@ class SQLFunctionTest extends TestCase
     {
         $sql = new SQLFunction('ltrim', ['column_name']);
         $this->assertEquals('ltrim(\'column_name\')', $sql->getStatement());
+        $this->assertSame('ltrim', $sql->getFunction());
+        $this->assertSame(['column_name'], $sql->getArguments());
     }
 
     /**

@@ -273,6 +273,22 @@ class TableGatewayTest extends TestCase
     }
 
     /**
+     * Tests if no data to insert throws a LogicException
+     *
+     * @expectedException LogicException
+     */
+    public function testGettingLogicExceptionInEmptyInsertStatement()
+    {
+        $options = $this->options;
+        $options["auto_connect"] = true;
+
+        $entity = new MyEntity();
+        $gateway = new MyEntityGateway($entity, "default");
+
+        $gateway->insert([]);
+    }
+
+    /**
      * Tests if we can execute UPDATE statements through the TableGateway
      *
      * @return null
@@ -298,6 +314,38 @@ class TableGatewayTest extends TestCase
     }
 
     /**
+     * Tests if no SET clause throws a LogicException in update statements
+     *
+     * @expectedException LogicException
+     */
+    public function testGettingLogicExceptionWhenUpdatingWithoutSETClause()
+    {
+        $options = $this->options;
+        $options["auto_connect"] = true;
+
+        $entity = new MyEntity();
+        $gateway = new MyEntityGateway($entity, "default");
+
+        $gateway->update([], ["ID" => 500]);
+    }
+
+    /**
+     * Tests if no WHERE clause throws a SecurityException in update statements
+     *
+     * @expectedException Drone\Exception\SecurityException
+     */
+    public function testGettingSecurityExceptionWhenUpdatingWithoutWHEREClause()
+    {
+        $options = $this->options;
+        $options["auto_connect"] = true;
+
+        $entity = new MyEntity();
+        $gateway = new MyEntityGateway($entity, "default");
+
+        $gateway->update(["DESCRIPTION" => "NEW ELEMENT MODIFIED"], []);
+    }
+
+    /**
      * Tests if we can execute DELETE statements through the TableGateway
      *
      * @return null
@@ -320,6 +368,22 @@ class TableGatewayTest extends TestCase
         $this->assertEquals(0, $gateway->getDb()->getNumRows());
         $this->assertEquals(0, $gateway->getDb()->getNumFields());
         $this->assertEquals(1, $gateway->getDb()->getRowsAffected());
+    }
+
+    /**
+     * Tests if no WHERE clause throws a SecurityException in delete statements
+     *
+     * @expectedException Drone\Exception\SecurityException
+     */
+    public function testGettingSecurityExceptionWhenDeletingWithoutWHEREClause()
+    {
+        $options = $this->options;
+        $options["auto_connect"] = true;
+
+        $entity = new MyEntity();
+        $gateway = new MyEntityGateway($entity, "default");
+
+        $gateway->delete([]);
     }
 
     /**

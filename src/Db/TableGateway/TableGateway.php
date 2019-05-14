@@ -10,7 +10,6 @@
 
 namespace Drone\Db\TableGateway;
 
-use Drone\Db\Entity;
 use Drone\Db\SQLFunction;
 use Drone\Exception;
 
@@ -228,7 +227,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      *
      * @throws RuntimeException from internal execute()
      * @throws LogicException
-     * @throws SecurityException
+     * @throws Exception\SecurityException
      *
      * @return resource|object
      */
@@ -240,7 +239,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             throw new \LogicException("You cannot update rows without SET clause");
 
         if (!count($where))
-            throw new SecurityException("You cannot update rows without WHERE clause!");
+            throw new Exception\SecurityException("You cannot update rows without WHERE clause!");
 
         $bind_values = [];
 
@@ -372,7 +371,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      * @param array $where
      *
      * @throws RuntimeException from internal execute()
-     * @throws SecurityException
+     * @throws Exception\SecurityException
      *
      * @return resource|object
      */
@@ -440,7 +439,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             $where = "\r\nWHERE \r\n\t" . implode(" AND\r\n\t", $parsed_where);
         }
         else
-            throw new SecurityException("You cannot delete rows without WHERE clause!. Use TRUNCATE statement instead.");
+            throw new Exception\SecurityException("You cannot delete rows without WHERE clause!. Use TRUNCATE statement instead.");
 
         $table = $this->entity->getTableName();
 

@@ -36,7 +36,26 @@ class DriverFactoryTest extends TestCase
         $this->assertEquals('localhost', $driver->getDbhost());
         $this->assertEquals('root', $driver->getDbuser());
         $this->assertEquals('test', $driver->getDbname());
+        $this->assertEquals('utf8', $driver->getDbchar());
         $this->assertEquals('3306', $driver->getDbport());
+    }
+
+    /**
+     * Tests handling when driver has not been declared
+     *
+     * @expectedException RuntimeException
+     */
+    public function testRuntimeExceptionWhenDriverIsNotDefined()
+    {
+        $driver = DriverFactory::create([
+            "dbhost"       => "localhost",
+            "dbuser"       => "root",
+            "dbpass"       => "",
+            "dbname"       => "test",
+            "dbchar"       => "utf8",
+            "dbport"       => "3306",
+            "auto_connect" => false
+        ]);
     }
 
     /**
@@ -44,7 +63,7 @@ class DriverFactoryTest extends TestCase
      *
      * @expectedException RuntimeException
      */
-    public function testWrongDriverCreation()
+    public function testRuntimeExceptionWhenDriverDoesNotExists()
     {
         $driver = DriverFactory::create([
             "dbhost"       => "localhost",
