@@ -32,13 +32,6 @@ abstract class Entity
     private $changedFields = [];
 
     /**
-     * The connection parameters
-     *
-     * @var array
-     */
-    private $connectionParams = [];
-
-    /**
      * Returns the tableName property
      *
      * @return string
@@ -56,16 +49,6 @@ abstract class Entity
     public function getChangedFields()
     {
         return $this->changedFields;
-    }
-
-    /**
-     * Returns the connectionParams property
-     *
-     * @return array
-     */
-    public function getConnectionParams()
-    {
-        return $this->connectionParams;
     }
 
     /**
