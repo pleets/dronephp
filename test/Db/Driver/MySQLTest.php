@@ -241,9 +241,9 @@ class MySQLTest extends TestCase
     }
 
     /**
-     * Tests getting results
+     * Tests getting results without a query execution
      *
-     * @return null
+     * @expectedException LogicException
      */
     public function testGettingResults()
     {
@@ -251,20 +251,14 @@ class MySQLTest extends TestCase
         $options["auto_connect"] = true;
 
         $conn = new MySQL($options);
-        $sql = "SELECT * FROM MYTABLE LIMIT 2";
-        $conn->execute($sql);
-
-        # properties modified by execute() method
-        $this->assertEquals(1, $conn->getNumRows());
-        $this->assertEquals(2, $conn->getNumFields());
-        $this->assertEquals(0, $conn->getRowsAffected());
-
-        $rowset = $conn->getArrayResult();    # array with results
-        $row = array_shift($rowset);
-
-        $this->assertArrayHasKey("ID", $row);
-        $this->assertArrayHasKey("DESCRIPTION", $row);
+        $conn->getArrayResult();
     }
+
+    /**
+     * Tests getting results
+     *
+     * @return null
+     */
 
     /**
      * Tests if we can commit transactions
