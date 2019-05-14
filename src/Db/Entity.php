@@ -62,19 +62,7 @@ abstract class Entity
     {
         $this->tableName = $tableName;
     }
-
-    /**
-     * Sets the connectionParams property
-     *
-     * @param array $connectionParams
-     *
-     * @return null
-     */
-    public function setConnectionParams($connectionParams)
-    {
-        $this->connectionParams = $connectionParams;
-    }
-
+    
     /**
      * Sets all entity properties passed in the array
      *
