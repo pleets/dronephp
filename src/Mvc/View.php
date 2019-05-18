@@ -98,12 +98,6 @@ class View
      */
     public function getContents()
     {
-        $_view = $this->path . DIRECTORY_SEPARATOR . $this->name . '.phtml';
-
-        if (!file_exists($_view)) {
-            throw new Exception\ViewNotFoundException("The view '" .$this->name. "' does not exists");
-        }
-
         $contents = file_get_contents($_view);
 
         if ($contents === false) {
@@ -124,6 +118,22 @@ class View
             extract($this->getParams(), EXTR_SKIP);
         }
 
-        include $this->getContents();
+        include $this->getFile();
+    }
+
+    /**
+     * Gets the file path
+     *
+     * @return  string
+     */
+    private function getFile()
+    {
+        $_view = $this->path . DIRECTORY_SEPARATOR . $this->name . '.phtml';
+
+        if (!file_exists($_view)) {
+            throw new Exception\ViewNotFoundException("The view '" .$this->name. "' does not exists");
+        }
+
+        return $_view;
     }
 }
