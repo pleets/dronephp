@@ -128,7 +128,8 @@ class View
      */
     private function getFile()
     {
-        $_view = $this->path . DIRECTORY_SEPARATOR . $this->name . '.phtml';
+        $_view = $this->path . DIRECTORY_SEPARATOR .
+            str_replace('.', DIRECTORY_SEPARATOR, $this->name) . '.phtml';
 
         if (!file_exists($_view)) {
             throw new Exception\ViewNotFoundException("The view '" .$this->name. "' does not exists");
