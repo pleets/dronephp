@@ -58,10 +58,8 @@ class Errno
 
         $constName = null;
 
-        foreach ($constants as $name => $value)
-        {
-            if ($value == $code)
-            {
+        foreach ($constants as $name => $value) {
+            if ($value == $code) {
                 $constName = $name;
                 break;
             }

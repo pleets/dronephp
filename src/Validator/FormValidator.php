@@ -69,9 +69,10 @@ class FormValidator
      */
     public function isValid()
     {
-        if (is_null($this->valid))
+        if (is_null($this->valid)) {
             # This error is thrown because of 'setValid' method has not been executed.
             throw new \LogicException('No validation has been executed!');
+        }
 
         return $this->valid;
     }
@@ -98,8 +99,9 @@ class FormValidator
     {
         $this->form = $form;
 
-        if (is_null($locale))
+        if (is_null($locale)) {
             $locale = 'en';
+        }
 
         $i18nTranslator = \Zend\I18n\Translator\Translator::factory(
             [
@@ -131,24 +133,22 @@ class FormValidator
         $this->setValid(true);
         $elements = $this->form->getChildren();
 
-        foreach ($elements as $label => $element)
-        {
-            if (!$element->isFormControl())
+        foreach ($elements as $label => $element) {
+            if (!$element->isFormControl()) {
                 continue;
+            }
 
             $attribs = $element->getAttributes();
 
             $all_attribs = [];
 
-            foreach ($attribs as $attr)
-            {
+            foreach ($attribs as $attr) {
                 $all_attribs[$attr->getName()] = $attr->getValue();
             }
 
             $required = array_key_exists('required', $all_attribs) ? $all_attribs["required"] : false;
 
-            foreach ($attribs as $attr)
-            {
+            foreach ($attribs as $attr) {
                 $name  = $attr->getName();
                 $value = $attr->getValue();
 
@@ -157,44 +157,34 @@ class FormValidator
 
                 $validator = null;
 
-                switch ($name)
-                {
+                switch ($name) {
                     case 'required':
-
                         $validator = new NotEmpty();
                         break;
 
                     case 'minlength':
-
                         $validator = new StringLength(['min' => $value]);
                         break;
 
                     case 'maxlength':
-
                         $validator = new StringLength(['max' => $value]);
                         break;
 
                     case 'type':
-
-                        switch ($value)
-                        {
+                        switch ($value) {
                             case 'number':
-
                                 $validator = new Digits();
                                 break;
 
                             case 'email':
-
                                 $validator = new EmailAddress();
                                 break;
 
                             case 'date':
-
                                 $validator = new Date();
                                 break;
 
                             case 'url':
-
                                 $validator = new Uri();
                                 break;
                         }
@@ -202,67 +192,73 @@ class FormValidator
                         break;
 
                     case 'min':
-
-                        if (array_key_exists('type', $all_attribs) && in_array($all_attribs['type'], ['number', 'range']))
+                        if (array_key_exists('type', $all_attribs) &&
+                            in_array($all_attribs['type'], ['number', 'range'])
+                        ) {
                             $validator = new GreaterThan(['min' => $value, 'inclusive' => true]);
-                        else
+                        } else {
                             throw new \LogicException("The input type must be 'range' or 'number'");
+                        }
 
                         break;
 
                     case 'max':
-
-                        if (array_key_exists('type', $all_attribs) && in_array($all_attribs['type'], ['number', 'range']))
+                        if (array_key_exists('type', $all_attribs) &&
+                            in_array($all_attribs['type'], ['number', 'range'])
+                        ) {
                             $validator = new LessThan(['max' => $value, 'inclusive' => true]);
-                        else
+                        } else {
                             throw new \LogicException("The input type must be 'range' or 'number'");
+                        }
 
                         break;
 
                     case 'step':
-
                         $baseValue = (array_key_exists('min', $all_attribs)) ? $all_attribs['min'] : 0;
 
-                        if (array_key_exists('type', $all_attribs) && in_array($all_attribs['type'], ['range']))
+                        if (array_key_exists('type', $all_attribs) && in_array($all_attribs['type'], ['range'])) {
                             $validator = new Step(['baseValue' => $baseValue, 'step' => $value]);
-                        else
+                        } else {
                             throw new \LogicException("The input type must be 'range'");
+                        }
 
                         break;
 
                     case 'data-validators':
+                        if (!is_array($value)) {
+                            throw new \InvalidArgumentException(
+                                "Invalid type given. Array expected in 'data-validators' attribute."
+                            );
+                        }
 
-                        if (!is_array($value))
-                            throw new \InvalidArgumentException("Invalid type given. Array expected in 'data-validators' attribute.");
-
-                        foreach ($value as $class => $params)
-                        {
+                        foreach ($value as $class => $params) {
                             $className = "\Zend\Validator\\" . $class;
 
-                            if (!class_exists($className))
-                            {
+                            if (!class_exists($className)) {
                                 $className = "\Zend\I18n\Validator\\" . $class;
 
-                                if (!class_exists($className))
-                                    throw new \RuntimeException("The class '$userInputClass' or '$className' does not exists");
+                                if (!class_exists($className)) {
+                                    throw new \RuntimeException(
+                                        "The class '$userInputClass' or '$className' does not exists"
+                                    );
+                                }
                             }
 
                             $validator = new $className($params);
 
                             $validator->setTranslator($this->translator);
-                            $this->_validate($validator, $form_value, $label, $required);
+                            $this->validation($validator, $form_value, $label, $required);
                         }
 
                         break;
                 }
 
                 if (in_array(
-                        $name,
-                        ['required', 'digits', 'minlength', 'maxlength', 'type', 'min', 'max', 'date', 'step']
-                    ) && !is_null($validator))
-                {
+                    $name,
+                    ['required', 'digits', 'minlength', 'maxlength', 'type', 'min', 'max', 'date', 'step']
+                ) && !is_null($validator)) {
                     $validator->setTranslator($this->translator);
-                    $this->_validate($validator, $form_value, $label, $required);
+                    $this->validation($validator, $form_value, $label, $required);
                 }
             }
         }
@@ -280,10 +276,9 @@ class FormValidator
      *
      * @return null
      */
-    private function _validate($validator, $form_value, $label, $required)
+    private function validation($validator, $form_value, $label, $required)
     {
-        if (gettype($form_value) != 'array')
-        {
+        if (gettype($form_value) != 'array') {
             $val = $form_value;
 
             # Check if the value is required. If it is, check the other rules.
@@ -291,25 +286,21 @@ class FormValidator
             $v->setTranslator($this->translator);
             $notEmpty = $v->isValid($val);
 
-            if (!$required && !$notEmpty)
+            if (!$required && !$notEmpty) {
                 return null;
+            }
 
             $valid = $validator->isValid($val);
             $this->setValid($valid);
 
-            if (!$valid)
-            {
-                foreach ($validator->getMessages() as $message)
-                {
+            if (!$valid) {
+                foreach ($validator->getMessages() as $message) {
                     $this->error($label ."-~-". (count($this->getErrors()) + 1), $message);
                 }
             }
-        }
-        else
-        {
-            foreach ($form_value as $val)
-            {
-                $this->_validate($validator, $val, $label, $required);
+        } else {
+            foreach ($form_value as $val) {
+                $this->validation($validator, $val, $label, $required);
             }
         }
     }
@@ -323,15 +314,14 @@ class FormValidator
     {
         $errors = [];
 
-        if (count($this->errors))
-        {
-            foreach ($this->errors as $key => $value)
-            {
+        if (count($this->errors)) {
+            foreach ($this->errors as $key => $value) {
                 $errorLbl = explode("-~-", $key);
                 $label = array_shift($errorLbl);
 
-                if (!array_key_exists($label, $errors))
+                if (!array_key_exists($label, $errors)) {
                     $errors[$label] = [];
+                }
 
                 $errors[$label][] = $value;
             }

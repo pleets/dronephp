@@ -106,14 +106,13 @@ abstract class AbstractSocket
      */
     public function __construct($options)
     {
-        foreach ($options as $option => $value)
-        {
-            if (property_exists(__CLASS__, strtolower($option)) && method_exists($this, 'set'.$option))
-            $this->{'set'.$option}($value);
+        foreach ($options as $option => $value) {
+            if (property_exists(__CLASS__, strtolower($option)) && method_exists($this, 'set'.$option)) {
+                $this->{'set'.$option}($value);
+            }
         }
 
-        if (!($socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP)))
-        {
+        if (!($socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP))) {
             $errno = socket_last_error();
             $this->error($errno, socket_strerror($errno));
 
@@ -130,8 +129,7 @@ abstract class AbstractSocket
      */
     public function bind()
     {
-        if (!($bind = @socket_bind($this->socket, $this->host, $this->port)))
-        {
+        if (!($bind = @socket_bind($this->socket, $this->host, $this->port))) {
             $errno = socket_last_error();
             $this->error($errno, socket_strerror($errno));
             return false;

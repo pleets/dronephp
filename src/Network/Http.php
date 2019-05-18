@@ -127,8 +127,9 @@ class Http
     {
         $codes = $this->httpStatusCodes;
 
-        if (!in_array($code, array_keys($codes)))
+        if (!in_array($code, array_keys($codes))) {
             throw new \RuntimeException("Status code not supported");
+        }
 
         return $this->httpStatusCodes[$code];
     }

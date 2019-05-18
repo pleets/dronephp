@@ -70,8 +70,9 @@ trait ParamTrait
     {
         $parameters = $this->getParams();
 
-        if (array_key_exists($param, $parameters))
+        if (array_key_exists($param, $parameters)) {
             return true;
+        }
 
         return false;
     }

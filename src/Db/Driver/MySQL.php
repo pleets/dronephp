@@ -33,15 +33,17 @@ class MySQL extends AbstractDriver implements DriverInterface
     {
         $this->driverName = 'Mysqli';
 
-        if (!array_key_exists("dbchar", $options))
+        if (!array_key_exists("dbchar", $options)) {
             $options["dbchar"] = "utf8";
+        }
 
         parent::__construct($options);
 
         $auto_connect = array_key_exists('auto_connect', $options) ? $options["auto_connect"] : true;
 
-        if ($auto_connect)
+        if ($auto_connect) {
             $this->connect();
+        }
     }
 
     /**
@@ -54,25 +56,24 @@ class MySQL extends AbstractDriver implements DriverInterface
      */
     public function connect()
     {
-        if (!extension_loaded('mysqli'))
+        if (!extension_loaded('mysqli')) {
             throw new \RuntimeException("The Mysqli extension is not loaded");
+        }
 
-        if (!is_null($this->dbport) && !empty($this->dbport))
+        if (!is_null($this->dbport) && !empty($this->dbport)) {
             $conn = @new \mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname, $this->dbport);
-        else
+        } else {
             $conn = @new \mysqli($this->dbhost, $this->dbuser, $this->dbpass, $this->dbname);
+        }
 
-        if ($conn->connect_errno)
-        {
+        if ($conn->connect_errno) {
             /*
              * Use ever mysqli_connect_errno() and mysqli_connect_error()
              * over $this->dbconn->errno and $this->dbconn->error to prevent
              * the warning message "Property access is not allowed yet".
              */
             throw new Exception\ConnectionException(mysqli_connect_error(), mysqli_connect_errno());
-        }
-        else
-        {
+        } else {
             $this->dbconn = $conn;
             $this->dbconn->set_charset($this->dbchar);
         }
@@ -100,12 +101,10 @@ class MySQL extends AbstractDriver implements DriverInterface
         $this->arrayResult = null;
 
         # Bound variables
-        if (count($params))
-        {
+        if (count($params)) {
             $this->result = $stmt = @$this->dbconn->prepare($sql);
 
-            if (!$stmt)
-            {
+            if (!$stmt) {
                 $this->error($this->dbconn->errno, $this->dbconn->error);
                 throw new Exception\InvalidQueryException($this->dbconn->error, $this->dbconn->errno);
             }
@@ -116,15 +115,15 @@ class MySQL extends AbstractDriver implements DriverInterface
             $bind_values = [];
             $bind_types = "";
 
-            for ($i = 0; $i < $n_params; $i++)
-            {
-                if (is_string($param_values[$i]))
+            for ($i = 0; $i < $n_params; $i++) {
+                if (is_string($param_values[$i])) {
                     $bind_types .= 's';
-                else if(is_float($param_values[$i]))
+                } elseif (is_float($param_values[$i])) {
                     $bind_types .= 'd';
-                # [POSSIBLE BUG] - To Future revision (What about non-string and non-decimal types ?)
-                else
+                } else {
+                    # [POSSIBLE BUG] - To Future revision (What about non-string and non-decimal types ?)
                     $bind_types .= 's';
+                }
 
                 $bind_values[] = '$param_values[' . $i . ']';
             }
@@ -133,9 +132,7 @@ class MySQL extends AbstractDriver implements DriverInterface
             eval('$stmt->bind_param(\'' . $bind_types . '\', ' . $values . ');');
 
             $r = $stmt->execute();
-        }
-        else
-        {
+        } else {
             $prev_error_handler = set_error_handler(['\Drone\Error\ErrorHandler', 'errorControlOperator'], E_ALL);
 
             // may be throw a Fatal error (Ex: Maximum execution time)
@@ -144,16 +141,14 @@ class MySQL extends AbstractDriver implements DriverInterface
             set_error_handler($prev_error_handler);
         }
 
-        if (!$r)
-        {
+        if (!$r) {
             $this->error($this->dbconn->errno, $this->dbconn->error);
             throw new Exception\InvalidQueryException($this->dbconn->error, $this->dbconn->errno);
         }
 
         $is_stmt_result = is_object($this->result) && get_class($this->result) == 'mysqli_stmt';
 
-        if ($is_stmt_result)
-        {
+        if ($is_stmt_result) {
             $this->rowsAffected = $this->result->affected_rows;
 
             $res = $this->result->get_result();
@@ -163,31 +158,38 @@ class MySQL extends AbstractDriver implements DriverInterface
              * It is useful to prevent rollback transactions on insert statements because
              * insert statement do not free results.
              */
-            if ($res)
+            if ($res) {
                 $this->result = $res;
+            }
         }
 
         # identify SELECT, SHOW, DESCRIBE or EXPLAIN queries
-        if (is_object($this->result) && property_exists($this->result, 'num_rows'))
+        if (is_object($this->result) && property_exists($this->result, 'num_rows')) {
             $this->numRows = $this->result->num_rows;
-        else
-        {
-            if (property_exists($this->dbconn, 'affected_rows') && !$is_stmt_result)
+        } else {
+            if (property_exists($this->dbconn, 'affected_rows') && !$is_stmt_result) {
                 $this->rowsAffected = $this->dbconn->affected_rows;
+            }
         }
 
         # affected_rows return the same of num_rows on select statements!
-        if ($this->numRows > 0)
+        if ($this->numRows > 0) {
             $this->rowsAffected = 0;
+        }
 
-        if (property_exists($this->dbconn, 'field_count'))
+        if (property_exists($this->dbconn, 'field_count')) {
             $this->numFields = $this->dbconn->field_count;
+        }
 
-        if ($this->transac_mode)
-            $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
+        if ($this->transac_mode) {
+            $this->transac_result = is_null($this->transac_result)
+                ? $this->result
+                : $this->transac_result && $this->result;
+        }
         /*
-         * Because mysqli_query() returns FALSE on failure, a mysqli_result object for SELECT, SHOW, DESCRIBE or EXPLAIN queries,
-         * and TRUE for other successful queries, it should be handled to return only objects or resources.
+         * Because mysqli_query() returns FALSE on failure, a mysqli_result object for
+         * SELECT, SHOW, DESCRIBE or EXPLAIN queries, and TRUE for other successful queries,
+         * it should be handled to return only objects or resources.
          *
          * Ref: http://php.net/manual/en/mysqli.query.php
          */
@@ -217,8 +219,7 @@ class MySQL extends AbstractDriver implements DriverInterface
     {
         parent::disconnect();
 
-        if ($this->dbconn->close())
-        {
+        if ($this->dbconn->close()) {
             $this->dbconn = null;
             return true;
         }
@@ -246,16 +247,13 @@ class MySQL extends AbstractDriver implements DriverInterface
     {
         $data = [];
 
-        if ($this->result && !is_bool($this->result))
-        {
-            while ($row = $this->result->fetch_array(MYSQLI_BOTH))
-            {
+        if ($this->result && !is_bool($this->result)) {
+            while ($row = $this->result->fetch_array(MYSQLI_BOTH)) {
                 $data[] = $row;
             }
-        }
-        else
-            # This error is thrown because of 'execute' method has not been executed.
+        } else {             # This error is thrown because of 'execute' method has not been executed.
             throw new \LogicException('There are not data in the buffer!');
+        }
 
         $this->arrayResult = $data;
 
@@ -270,7 +268,8 @@ class MySQL extends AbstractDriver implements DriverInterface
     public function __destruct()
     {
         # prevent "Property access is not allowed yet" with @ on failure connections
-        if ($this->dbconn !== false && !is_null($this->dbconn))
+        if ($this->dbconn !== false && !is_null($this->dbconn)) {
             @$this->dbconn->close();
+        }
     }
 }

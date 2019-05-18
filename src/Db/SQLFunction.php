@@ -75,10 +75,10 @@ class SQLFunction
     {
         $arguments = $this->arguments;
 
-        foreach ($arguments as $key => $arg)
-        {
-            if (is_string($arg))
+        foreach ($arguments as $key => $arg) {
+            if (is_string($arg)) {
                 $arguments[$key] = "'$arg'";
+            }
         }
 
         $arguments = implode(", ", array_values($arguments));

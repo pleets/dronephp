@@ -83,28 +83,27 @@ abstract class AbstractTableGateway
     {
         $this->entity = $entity;
 
-        if (is_string($connection))
-        {
+        if (is_string($connection)) {
             $this->currentConnection = $connection;
             $this->getDriver($connection);
-        }
-        else if (is_array($connection))
-        {
+        } elseif (is_array($connection)) {
             $identifier = key($connection);
             $connection_options = $connection[$identifier];
 
             $this->currentConnection = $identifier;
 
-            if (!array_key_exists('driver', $connection_options))
+            if (!array_key_exists('driver', $connection_options)) {
                 throw new \RuntimeException("The database driver key has not been declared");
+            }
 
-            if (!isset(self::$drivers[$identifier]))
+            if (!isset(self::$drivers[$identifier])) {
                 self::$drivers[$identifier] = DriverFactory::create($connection_options);
-            else
+            } else {
                 throw new \RuntimeException("The database connection already exists");
-        }
-        else
+            }
+        } else {
             throw new \InvalidArgumentException("Invalid type given. Array or string expected");
+        }
     }
 
     /**
@@ -118,8 +117,9 @@ abstract class AbstractTableGateway
      */
     public static function getDriver($identifier)
     {
-        if (!array_key_exists($identifier, self::$drivers))
+        if (!array_key_exists($identifier, self::$drivers)) {
             throw new \RuntimeException("The database connection does not exists");
+        }
 
         return self::$drivers[$identifier];
     }
@@ -135,8 +135,9 @@ abstract class AbstractTableGateway
      */
     public static function hasDriver($identifier)
     {
-        if (!array_key_exists($identifier, self::$drivers))
+        if (!array_key_exists($identifier, self::$drivers)) {
             return false;
+        }
 
         return true;
     }

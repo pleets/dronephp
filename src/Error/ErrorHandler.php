@@ -31,14 +31,15 @@ class ErrorHandler
      */
     public static function toException($errno, $errstr, $errfile, $errline)
     {
-        if (!(error_reporting() & $errno))
-        {
+        if (!(error_reporting() & $errno)) {
             // This error code is not included in error_reporting, so let it fall
             // through to the standard PHP error handler
             return false;
         }
 
-        throw new \RuntimeException("<strong>Error:</strong> $errstr in <strong>$errfile</strong> on line <strong>$errline</strong>");
+        throw new \RuntimeException(
+            "<strong>Error:</strong> $errstr in <strong>$errfile</strong> on line <strong>$errline</strong>"
+        );
     }
 
     /**
@@ -57,8 +58,7 @@ class ErrorHandler
      */
     public static function errorControlOperator($errno, $errstr, $errfile, $errline)
     {
-        if (!(error_reporting() & $errno))
-        {
+        if (!(error_reporting() & $errno)) {
             // This error code is not included in error_reporting, so let it fall
             // through to the standard PHP error handler
             return false;

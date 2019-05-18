@@ -90,24 +90,25 @@ trait ErrorTrait
      *
      * @return null
      */
-    protected function _error($code, $message = null)
+    private function errorCall($code, $message = null)
     {
-        if (!is_null($code) && !is_integer($code) && !is_string($code))
+        if (!is_null($code) && !is_integer($code) && !is_string($code)) {
             throw new \InvalidArgumentException("Invalid type given. Integer or string expected");
+        }
 
-        if (is_null($code))
+        if (is_null($code)) {
             $code = preg_replace('/=|\/|\+/', "", base64_encode($message));
-        else
-        {
-            if (!array_key_exists($code, $this->standardErrors) && empty($message))
+        } else {
+            if (!array_key_exists($code, $this->standardErrors) && empty($message)) {
                 /*
                  * Non-standard errors must have a message to describe the error, make sure
                  * you execute the error() method with a message as the second parameter.
                  */
                 throw new \LogicException('The message does not be empty in non-standard errors!');
+            }
         }
 
-        if (!array_key_exists($code, $this->errors))
+        if (!array_key_exists($code, $this->errors)) {
             $this->errors[$code] = (array_key_exists($code, $this->standardErrors))
                 ?
                     is_null($message)
@@ -115,22 +116,22 @@ trait ErrorTrait
                         # if $message is not null it will replace the %file% wildcard
                         : preg_replace('/%[a-zA-Z]*%/', $message, $this->standardErrors[$code])
                 : $message;
+        }
     }
 
-    function __call($method, $arguments)
+    public function __call($method, $arguments)
     {
-        if ($method == 'error')
-        {
-            switch (count($arguments))
-            {
+        if ($method == 'error') {
+            switch (count($arguments)) {
                 case 1:
-                    if (is_integer($arguments[0]))
-                        return call_user_func([$this, '_error'], array_shift($arguments));
-                    else
-                        return call_user_func([$this, '_error'], null, array_shift($arguments));
+                    if (is_integer($arguments[0])) {
+                        return call_user_func([$this, 'errorCall'], array_shift($arguments));
+                    } else {
+                        return call_user_func([$this, 'errorCall'], null, array_shift($arguments));
+                    }
                     break;
                 case 2:
-                    return call_user_func([$this, '_error'], $arguments[0], $arguments[1]);
+                    return call_user_func([$this, 'errorCall'], $arguments[0], $arguments[1]);
                     break;
             }
         }

@@ -67,7 +67,7 @@ class ErrorTraitTest extends TestCase
     public function testGettingNonStandardErrorsFromClass()
     {
         $ctrl = new MyController();
-        $ctrl->getContentsFromUrl('http://a34DvatgaAat4675sfASGag53665yaghaff546ghsfhSDF6767ssfGy.fdassdFSG');
+        $ctrl->getContentsFromUrl('http://a34Dvasdhs.fdassdFSG');
 
         # non-standard error (i.e. not exists in Errno class)
         $errors = $ctrl->getErrors();
@@ -123,13 +123,13 @@ class MyController
             $this->error(Errno::FILE_NOT_FOUND);
     }
 
-    public function getContentsFromUrl($filename)
+    public function getContentsFromUrl($url)
     {
-        $headers = get_headers($url);
+        $headers = @get_headers($url) || "";
         $exists = stripos($headers[0],"200 OK") ? true : false;
 
         if ($exists)
-            return file_get_contents($filename);
+            return file_get_contents($url);
         else
             $this->error("URL not found");
     }

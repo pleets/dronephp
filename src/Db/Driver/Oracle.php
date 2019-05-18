@@ -33,15 +33,17 @@ class Oracle extends AbstractDriver implements DriverInterface
     {
         $this->driverName = 'Oci8';
 
-        if (!array_key_exists("dbchar", $options))
+        if (!array_key_exists("dbchar", $options)) {
             $options["dbchar"] = "AL32UTF8";
+        }
 
         parent::__construct($options);
 
         $auto_connect = array_key_exists('auto_connect', $options) ? $options["auto_connect"] : true;
 
-        if ($auto_connect)
+        if ($auto_connect) {
             $this->connect();
+        }
     }
 
     /**
@@ -54,8 +56,9 @@ class Oracle extends AbstractDriver implements DriverInterface
      */
     public function connect()
     {
-        if (!extension_loaded('oci8'))
+        if (!extension_loaded('oci8')) {
             throw new \RuntimeException("The Oci8 extension is not loaded");
+        }
 
         $connection_string = (is_null($this->dbhost) || empty($this->dbhost))
             ? $this->dbname
@@ -64,10 +67,9 @@ class Oracle extends AbstractDriver implements DriverInterface
                     ? $this->dbhost .":". $this->dbport ."/". $this->dbname
                     : $this->dbhost ."/". $this->dbname;
 
-        $conn = @oci_connect($this->dbuser,  $this->dbpass, $connection_string, $this->dbchar);
+        $conn = @oci_connect($this->dbuser, $this->dbpass, $connection_string, $this->dbchar);
 
-        if ($conn === false)
-        {
+        if ($conn === false) {
             $error = oci_error();
             throw new Exception\ConnectionException($error["message"], $error["code"]);
         }
@@ -97,37 +99,34 @@ class Oracle extends AbstractDriver implements DriverInterface
 
         $this->result = $stid = @oci_parse($this->dbconn, $sql);
 
-        if (!$stid)
-        {
+        if (!$stid) {
             $error = $stid ? oci_error($stid) : oci_error();
 
-            if (!empty($error))
-            {
+            if (!empty($error)) {
                 $error = [
                     "message" => "Could not prepare statement!"
                 ];
 
                 $this->error($error["message"]);
-            }
-            else
+            } else {
                 $this->error($error["code"], $error["message"]);
+            }
 
-            if (array_key_exists("code", $error))
+            if (array_key_exists("code", $error)) {
                 throw new Exception\InvalidQueryException($error["message"], $error["code"]);
-            else
+            } else {
                 throw new Exception\InvalidQueryException($error["message"]);
+            }
         }
 
         # Bound variables
-        if (count($params))
-        {
+        if (count($params)) {
             $param_keys   = array_keys($params);
             $param_values = array_values($params);
 
             $param_count = count($params);
 
-            for ($i = 0; $i < $param_count; $i++)
-            {
+            for ($i = 0; $i < $param_count; $i++) {
                 oci_bind_by_name($stid, $param_keys[$i], $param_values[$i], -1);
             }
         }
@@ -135,12 +134,11 @@ class Oracle extends AbstractDriver implements DriverInterface
         $prev_error_handler = set_error_handler(['\Drone\Error\ErrorHandler', 'errorControlOperator'], E_ALL);
 
         // may be throw a Fatal error (Ex: Maximum execution time)
-        $r = ($this->transac_mode) ? oci_execute($stid, OCI_NO_AUTO_COMMIT) : oci_execute($stid,  OCI_COMMIT_ON_SUCCESS);
+        $r = ($this->transac_mode) ? oci_execute($stid, OCI_NO_AUTO_COMMIT) : oci_execute($stid, OCI_COMMIT_ON_SUCCESS);
 
         set_error_handler($prev_error_handler);
 
-        if (!$r)
-        {
+        if (!$r) {
             $error = oci_error($stid);
             $this->error($error["code"], $error["message"]);
 
@@ -155,8 +153,9 @@ class Oracle extends AbstractDriver implements DriverInterface
         $this->numRows = count($rows);
         $this->numFields = oci_num_fields($stid);
 
-        if ($this->transac_mode)
+        if ($this->transac_mode) {
             $this->transac_result = is_null($this->transac_result) ? $stid: $this->transac_result && $stid;
+        }
 
         $this->result = $stid;
 
@@ -199,16 +198,13 @@ class Oracle extends AbstractDriver implements DriverInterface
     {
         $data = [];
 
-        if ($this->result)
-        {
-            while ( ($row = @oci_fetch_array($this->result, OCI_BOTH + OCI_RETURN_NULLS)) !== false )
-            {
+        if ($this->result) {
+            while (($row = @oci_fetch_array($this->result, OCI_BOTH + OCI_RETURN_NULLS)) !== false) {
                 $data[] = $row;
             }
-        }
-        else
-            # This error is thrown because of 'execute' method has not been executed.
+        } else {             # This error is thrown because of 'execute' method has not been executed.
             throw new \LogicException('There are not data in the buffer!');
+        }
 
         $this->arrayResult = $data;
 
@@ -222,7 +218,8 @@ class Oracle extends AbstractDriver implements DriverInterface
      */
     public function __destruct()
     {
-        if ($this->dbconn)
+        if ($this->dbconn) {
             oci_close($this->dbconn);
+        }
     }
 }

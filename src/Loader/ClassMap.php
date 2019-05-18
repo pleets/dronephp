@@ -41,7 +41,8 @@ class ClassMap
 
         $class = $path . implode(DIRECTORY_SEPARATOR, $nm) . ".php";
 
-        if (file_exists($class))
+        if (file_exists($class)) {
             include $class;
+        }
     }
 }

@@ -110,8 +110,9 @@ abstract class AbstractElement
      */
     public function hasChild($label)
     {
-        if (array_key_exists($label, $this->children))
+        if (array_key_exists($label, $this->children)) {
             return true;
+        }
 
         return false;
     }
@@ -125,8 +126,9 @@ abstract class AbstractElement
      */
     public function getChild($label)
     {
-        if (array_key_exists($label, $this->children))
+        if (array_key_exists($label, $this->children)) {
             return $this->children[$label];
+        }
 
         return null;
     }
@@ -155,10 +157,11 @@ abstract class AbstractElement
      */
     public function removeChild($label)
     {
-        if (array_key_exists($label, $this->children))
+        if (array_key_exists($label, $this->children)) {
             unset($this->children[$label]);
-        else
+        } else {
             throw new Exception\ChildNotFoundException("The child to remove does not exists");
+        }
     }
 
     /**
@@ -170,12 +173,11 @@ abstract class AbstractElement
      */
     public function hasAttribute($name)
     {
-        if (count($this->attributes))
-        {
-            foreach ($this->attributes as $attrib)
-            {
-                if ($attrib->getName() == $name)
+        if (count($this->attributes)) {
+            foreach ($this->attributes as $attrib) {
+                if ($attrib->getName() == $name) {
                     return true;
+                }
             }
         }
 
@@ -191,12 +193,11 @@ abstract class AbstractElement
      */
     public function getAttribute($name)
     {
-        if (count($this->attributes))
-        {
-            foreach ($this->attributes as $attrib)
-            {
-                if ($attrib->getName() == $name)
+        if (count($this->attributes)) {
+            foreach ($this->attributes as $attrib) {
+                if ($attrib->getName() == $name) {
                     return $attrib;
+                }
             }
         }
 
@@ -214,16 +215,15 @@ abstract class AbstractElement
     {
         $attrib = $this->getAttribute($attribute->getName());
 
-        if (!is_null($attrib))
-        {
-            foreach ($this->attributes as $key => $_attrib)
-            {
-                if ($_attrib->getName() == $attrib->getName())
+        if (!is_null($attrib)) {
+            foreach ($this->attributes as $key => $_attrib) {
+                if ($_attrib->getName() == $attrib->getName()) {
                     $this->attributes[$key] = $attribute;
+                }
             }
-        }
-        else
+        } else {
             $this->attributes[] = $attribute;
+        }
     }
 
     /**
@@ -237,12 +237,11 @@ abstract class AbstractElement
      */
     public function removeAttribute($name)
     {
-        if (count($this->attributes))
-        {
-            foreach ($this->attributes as $key => $attrib)
-            {
-                if ($attrib->getName() == $name)
+        if (count($this->attributes)) {
+            foreach ($this->attributes as $key => $attrib) {
+                if ($attrib->getName() == $name) {
                     unset($this->attributes[$key]);
+                }
             }
         }
 
@@ -256,13 +255,10 @@ abstract class AbstractElement
      */
     public function __construct()
     {
-        if (static::HAS_END_TAG)
-        {
+        if (static::HAS_END_TAG) {
             $this->startTag = "<" .strtolower(static::NODE_NAME). ">";
             $this->endTag   = "</" .strtolower(static::NODE_NAME). ">";
-        }
-        else
-        {
+        } else {
             $this->startTag = "<" .strtolower(static::NODE_NAME);
             $this->endTag   = "/>";
         }
@@ -275,8 +271,9 @@ abstract class AbstractElement
      */
     public function isFormControl()
     {
-        if (in_array(static::NODE_NAME, ['INPUT']))
+        if (in_array(static::NODE_NAME, ['INPUT'])) {
             return true;
+        }
 
         return false;
     }

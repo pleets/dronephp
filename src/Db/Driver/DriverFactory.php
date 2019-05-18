@@ -34,14 +34,16 @@ class DriverFactory
             "Sqlsrv" => "Drone\Db\Driver\SQLServer",
         ];
 
-        if (!array_key_exists('driver', $connection_options))
+        if (!array_key_exists('driver', $connection_options)) {
             throw new \RuntimeException("The database driver key has not been declared");
+        }
 
         $drv = $connection_options["driver"];
 
-        if (array_key_exists($drv, $drivers))
+        if (array_key_exists($drv, $drivers)) {
             return new $drivers[$drv]($connection_options);
-        else
+        } else {
             throw new \RuntimeException("The database driver does not exists");
+        }
     }
 }

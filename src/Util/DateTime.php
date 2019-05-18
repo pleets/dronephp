@@ -63,8 +63,9 @@ class DateTime
      */
     public static function getMonth($month_number)
     {
-        if (!array_key_exists($month_number, self::MONTHS))
+        if (!array_key_exists($month_number, self::MONTHS)) {
             throw new Exception\MonthOutOfRange("Invalid Month");
+        }
 
         return self::MONTHS[$month_number];
     }
@@ -78,17 +79,19 @@ class DateTime
      */
     public static function create(array $date = [])
     {
-        if (!array_key_exists('day', $date))
+        if (!array_key_exists('day', $date)) {
             $date["day"] = self::TODAY;
+        }
 
-        if (!array_key_exists('month', $date))
+        if (!array_key_exists('month', $date)) {
             $date["month"] = self::THIS_MONTH;
+        }
 
-        if (!array_key_exists('year', $date))
+        if (!array_key_exists('year', $date)) {
             $date["year"] = self::THIS_YEAR;
+        }
 
-        switch ($date['year'])
-        {
+        switch ($date['year']) {
             case self::THIS_YEAR:
                 $year = (int) date('Y');
                 break;
@@ -111,8 +114,7 @@ class DateTime
             )
         ;
 
-        switch ($date['day'])
-        {
+        switch ($date['day']) {
             case self::TODAY:
                 $day = (int) date('d');
                 break;
@@ -130,14 +132,12 @@ class DateTime
                 break;
         }
 
-        if (is_string($day))
+        if (is_string($day)) {
             $d = new \DateTime("$day $month $year");
-        else
-        {
-            if (in_array($month, self::MONTHS))
+        } else {
+            if (in_array($month, self::MONTHS)) {
                 $d = new \DateTime("first day of $month $year");
-            else
-            {
+            } else {
                 $d = new \DateTime("first day of $month");
                 $d->setDate($year, (int) $d->format('m'), (int) $d->format('d'));
             }

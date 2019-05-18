@@ -233,8 +233,9 @@ abstract class AbstractDriver
      */
     public function getArrayResult()
     {
-        if (!empty($this->arrayResult))
+        if (!empty($this->arrayResult)) {
             return $this->arrayResult;
+        }
 
         return $this->toArray();
     }
@@ -330,8 +331,9 @@ abstract class AbstractDriver
      */
     public function autocommit($value)
     {
-        if ($this->transac_mode)
+        if ($this->transac_mode) {
             throw new \LogicException("You cannot change autocommit behavior during a transaction");
+        }
 
         $this->autocommit = $value;
     }
@@ -345,10 +347,10 @@ abstract class AbstractDriver
      */
     public function __construct($options)
     {
-        foreach ($options as $option => $value)
-        {
-            if (property_exists(__CLASS__, strtolower($option)) && method_exists($this, 'set'.$option))
+        foreach ($options as $option => $value) {
+            if (property_exists(__CLASS__, strtolower($option)) && method_exists($this, 'set'.$option)) {
                 $this->{'set'.$option}($value);
+            }
         }
     }
 
@@ -369,7 +371,7 @@ abstract class AbstractDriver
      *
      * @return resource|object
      */
-    public abstract function connect();
+    abstract public function connect();
 
     /**
      * Abstract execute
@@ -381,7 +383,7 @@ abstract class AbstractDriver
      *
      * @return resource|object
      */
-    public abstract function execute($sql, Array $params = []);
+    abstract public function execute($sql, Array $params = []);
 
     /**
      * Reconnects to the database
@@ -392,8 +394,9 @@ abstract class AbstractDriver
      */
     public function reconnect()
     {
-        if (!$this->isConnected())
+        if (!$this->isConnected()) {
             throw new \LogicException("Connection was not established");
+        }
 
         $this->disconnect();
         return $this->connect();
@@ -404,14 +407,14 @@ abstract class AbstractDriver
      *
      * @return boolean
      */
-    public abstract function commit();
+    abstract public function commit();
 
     /**
      * Rollback definition
      *
      * @return boolean
      */
-    public abstract function rollback();
+    abstract public function rollback();
 
     /**
      * Closes the connection
@@ -422,8 +425,9 @@ abstract class AbstractDriver
      */
     public function disconnect()
     {
-        if (!$this->isConnected())
+        if (!$this->isConnected()) {
             throw new \LogicException("Connection was not established");
+        }
     }
 
     /**
@@ -435,11 +439,13 @@ abstract class AbstractDriver
      */
     public function beginTransaction()
     {
-        if (!$this->isConnected())
+        if (!$this->isConnected()) {
             $this->connect();
+        }
 
-        if ($this->transac_mode)
+        if ($this->transac_mode) {
             throw new \LogicException($this->standardErrors[Errno::DB_TRANSACTION_STARTED]);
+        }
 
         $this->transac_mode = true;
     }
@@ -453,16 +459,19 @@ abstract class AbstractDriver
      */
     public function endTransaction()
     {
-        if (!$this->transac_mode)
+        if (!$this->transac_mode) {
             throw new \LogicException($this->standardErrors[Errno::DB_TRANSACTION_NOT_STARTED]);
+        }
 
-        if (is_null($this->transac_result))
+        if (is_null($this->transac_result)) {
             throw new \LogicException($this->standardErrors[Errno::DB_TRANSACTION_EMPTY]);
+        }
 
-        if ($this->transac_result)
+        if ($this->transac_result) {
             $this->commit();
-        else
+        } else {
             $this->rollback();
+        }
 
         $this->result = $this->transac_result;
 
@@ -481,7 +490,7 @@ abstract class AbstractDriver
      *
      * @return array
      */
-    protected abstract function toArray();
+    abstract protected function toArray();
 
     /**
      * Excecutes multiple statements as transaction
@@ -494,8 +503,7 @@ abstract class AbstractDriver
     {
         $this->beginTransaction();
 
-        foreach ($querys as $sql)
-        {
+        foreach ($querys as $sql) {
             $this->execute($sql);
         }
 

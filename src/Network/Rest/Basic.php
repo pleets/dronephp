@@ -24,8 +24,7 @@ class Basic extends AbstractRest
      */
     public function request()
     {
-        if (empty($_SERVER['PHP_AUTH_USER']))
-        {
+        if (empty($_SERVER['PHP_AUTH_USER'])) {
             $ht = $this->http;
 
             $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
@@ -43,22 +42,19 @@ class Basic extends AbstractRest
     {
         $ht = $this->http;
 
-        if (!isset($_SERVER['PHP_AUTH_USER']))
-        {
+        if (!isset($_SERVER['PHP_AUTH_USER'])) {
             $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
             return false;
         }
 
         $username = $_SERVER['PHP_AUTH_USER'];
 
-        if (!isset($this->whiteList[$username]))
-        {
+        if (!isset($this->whiteList[$username])) {
             $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
             return false;
         }
 
-        if ($this->whiteList[$username] !== $_SERVER['PHP_AUTH_PW'])
-        {
+        if ($this->whiteList[$username] !== $_SERVER['PHP_AUTH_PW']) {
             $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
             return false;
         }

@@ -67,28 +67,23 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $driver = $this->getDb()->getDriverName();
 
-        if (count($where))
-        {
+        if (count($where)) {
             $parsed_where = [];
 
             $k = 0;
 
-            foreach ($where as $key => $value)
-            {
+            foreach ($where as $key => $value) {
                 $k++;
 
-                if (is_null($value))
+                if (is_null($value)) {
                     $parsed_where[] = "$key IS NULL";
-                elseif ($value instanceof SQLFunction)
+                } elseif ($value instanceof SQLFunction) {
                     $parsed_where[] = "$key = " . $value->getStatement();
-                elseif (is_array($value))
-                {
+                } elseif (is_array($value)) {
                     $parsed_in = [];
 
-                    foreach ($value as $in_value)
-                    {
-                        switch ($driver)
-                        {
+                    foreach ($value as $in_value) {
+                        switch ($driver) {
                             case 'Oci8':
                                 $parsed_in[] = ":$k";
                                 $bind_values[":$k"] = $in_value;
@@ -104,11 +99,8 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                     }
 
                     $parsed_where[] = "$key IN (" . implode(", ", $parsed_in) . ")";
-                }
-                else
-                {
-                    switch ($driver)
-                    {
+                } else {
+                    switch ($driver) {
                         case 'Oci8':
                             $parsed_where[] = "$key = :$k";
                             $bind_values[":$k"] = $value;
@@ -123,9 +115,9 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             }
 
             $where = "WHERE \r\n\t" . implode(" AND\r\n\t", $parsed_where);
-        }
-        else
+        } else {
             $where = "";
+        }
 
         $table = $this->entity->getTableName();
 
@@ -134,10 +126,11 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
         $this->lastQuery = $sql;
         $this->lastValues = $bind_values;
 
-        if (count($bind_values))
+        if (count($bind_values)) {
             $this->getDb()->execute($sql, $bind_values);
-        else
+        } else {
             $this->getDb()->execute($sql);
+        }
 
         return $this->getDb()->getArrayResult();
     }
@@ -154,8 +147,9 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      */
     public function insert(Array $data)
     {
-        if (!count($data))
+        if (!count($data)) {
             throw new \LogicException("Missing values for INSERT statement!");
+        }
 
         $bind_values = [];
 
@@ -165,27 +159,23 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $null_keys = [];
 
-        foreach ($data as $key => $value)
-        {
+        foreach ($data as $key => $value) {
             $k++;
 
             # insert NULL values cause problems when BEFORE INSERT triggers are
             # defined to assigns values over fields. For SQLServer is better not
             # pass NULL values
-            if ($driver == 'Sqlsrv' && is_null($value))
-            {
+            if ($driver == 'Sqlsrv' && is_null($value)) {
                 $null_keys[] = $key;
                 continue;
             }
 
-            if (is_null($value))
+            if (is_null($value)) {
                 $value = "NULL";
-            elseif ($value instanceof SQLFunction)
+            } elseif ($value instanceof SQLFunction) {
                 $value = $value->getStatement();
-            else {
-
-                switch ($driver)
-                {
+            } else {
+                switch ($driver) {
                     case 'Oci8':
                         $bind_values[":$k"] = $value;
                         $value = ":$k";
@@ -201,8 +191,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             $data[$key] = $value;
         }
 
-        foreach ($null_keys as $key)
-        {
+        foreach ($null_keys as $key) {
             unset($data[$key]);
         }
 
@@ -235,11 +224,13 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
     {
         $parsed_set = [];
 
-        if (!count($set))
+        if (!count($set)) {
             throw new \LogicException("You cannot update rows without SET clause");
+        }
 
-        if (!count($where))
+        if (!count($where)) {
             throw new Exception\SecurityException("You cannot update rows without WHERE clause!");
+        }
 
         $bind_values = [];
 
@@ -247,27 +238,23 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $k = 0;
 
-        foreach ($set as $key => $value)
-        {
+        foreach ($set as $key => $value) {
             $k++;
 
-            if (is_null($value))
+            if (is_null($value)) {
                 $parsed_set[] = "$key = NULL";
-            elseif ($value instanceof SQLFunction)
+            } elseif ($value instanceof SQLFunction) {
                 $parsed_set[] = "$key = " . $value->getStatement();
-            elseif (is_array($value))
-            {
+            } elseif (is_array($value)) {
                 $parsed_in = [];
 
-                foreach ($value as $in_value)
-                {
-                    switch ($driver)
-                    {
+                foreach ($value as $in_value) {
+                    switch ($driver) {
                         case 'Oci8':
-
                             # [POSSIBLE BUG] - To Future revision (What about non-string values ?)
-                            if (is_string($in_value))
+                            if (is_string($in_value)) {
                                 $parsed_in[] = ":$k";
+                            }
 
                             $bind_values[":$k"] = $in_value;
                             break;
@@ -282,11 +269,8 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                 }
 
                 $parsed_set[] = "$key IN (" . implode(", ", $parsed_in) . ")";
-            }
-            else
-            {
-                switch ($driver)
-                {
+            } else {
+                switch ($driver) {
                     case 'Oci8':
                         $parsed_set[] = "$key = :$k";
                         $bind_values[":$k"] = $value;
@@ -304,22 +288,18 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
         $parsed_where = [];
 
-        foreach ($where as $key => $value)
-        {
+        foreach ($where as $key => $value) {
             $k++;
 
-            if (is_null($value))
+            if (is_null($value)) {
                 $parsed_where[] = "$key IS NULL";
-            elseif ($value instanceof SQLFunction)
+            } elseif ($value instanceof SQLFunction) {
                 $parsed_where[] = "$key = " . $value->getStatement();
-            elseif (is_array($value))
-            {
+            } elseif (is_array($value)) {
                 $parsed_in = [];
 
-                foreach ($value as $in_value)
-                {
-                    switch ($driver)
-                    {
+                foreach ($value as $in_value) {
+                    switch ($driver) {
                         case 'Oci8':
                             $parsed_in[] = ":$k";
                             $bind_values[":$k"] = $in_value;
@@ -335,11 +315,8 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                 }
 
                 $parsed_where[] = "$key IN (" . implode(", ", $parsed_in) . ")";
-            }
-            else
-            {
-                switch ($driver)
-                {
+            } else {
+                switch ($driver) {
                     case 'Oci8':
                         $parsed_where[] = "$key = :$k";
                         $bind_values[":$k"] = $value;
@@ -377,8 +354,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      */
     public function delete(Array $where)
     {
-        if (count($where))
-        {
+        if (count($where)) {
             $parsed_where = [];
 
             $bind_values = [];
@@ -387,22 +363,18 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
 
             $k = 0;
 
-            foreach ($where as $key => $value)
-            {
+            foreach ($where as $key => $value) {
                 $k++;
 
-                if (is_null($value))
+                if (is_null($value)) {
                     $parsed_where[] = "$key IS NULL";
-                elseif ($value instanceof SQLFunction)
+                } elseif ($value instanceof SQLFunction) {
                     $parsed_where[] = "$key = " . $value->getStatement();
-                elseif (is_array($value))
-                {
+                } elseif (is_array($value)) {
                     $parsed_in = [];
 
-                    foreach ($value as $in_value)
-                    {
-                        switch ($driver)
-                        {
+                    foreach ($value as $in_value) {
+                        switch ($driver) {
                             case 'Oci8':
                                 $parsed_in[] = ":$k";
                                 $bind_values[":$k"] = $in_value;
@@ -418,11 +390,8 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
                     }
 
                     $parsed_where[] = "$key IN (" . implode(", ", $parsed_in) . ")";
-                }
-                else
-                {
-                    switch ($driver)
-                    {
+                } else {
+                    switch ($driver) {
                         case 'Oci8':
                             $parsed_where[] = "$key = :$k";
                             $bind_values[":$k"] = $value;
@@ -437,9 +406,11 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
             }
 
             $where = "\r\nWHERE \r\n\t" . implode(" AND\r\n\t", $parsed_where);
+        } else {
+            throw new Exception\SecurityException(
+                "You cannot delete rows without WHERE clause!. Use TRUNCATE statement instead."
+            );
         }
-        else
-            throw new Exception\SecurityException("You cannot delete rows without WHERE clause!. Use TRUNCATE statement instead.");
 
         $table = $this->entity->getTableName();
 

@@ -29,11 +29,13 @@ class ModuleFactory
      */
     public static function create($module, Array $module_settings = [])
     {
-        if (empty($module))
+        if (empty($module)) {
             throw new \RuntimeException("The module name must be specified");
+        }
 
-        if (!is_string($module))
+        if (!is_string($module)) {
             throw new \InvalidArgumentException("Invalid type given. string expected");
+        }
 
         /*
          * Module class instantiation
@@ -44,13 +46,15 @@ class ModuleFactory
          */
         $fqn_module = "\\" . $module . "\\Module";
 
-        if (!class_exists($fqn_module))
+        if (!class_exists($fqn_module)) {
             throw new Exception\ModuleNotFoundException("The module class '$fqn_module' does not exists!");
+        }
 
         $module = new $fqn_module($module);
 
-        if (array_key_exists('config', $module_settings) && !is_null($module_settings["config"]))
+        if (array_key_exists('config', $module_settings) && !is_null($module_settings["config"])) {
             $module->setConfigFile($module_settings["config"]);
+        }
 
         return $module;
     }

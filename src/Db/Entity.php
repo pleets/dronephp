@@ -62,7 +62,7 @@ abstract class Entity
     {
         $this->tableName = $tableName;
     }
-    
+
     /**
      * Sets all entity properties passed in the array
      *
@@ -72,17 +72,18 @@ abstract class Entity
      */
     public function exchangeArray($data)
     {
-        foreach ($data as $prop => $value)
-        {
-            if (property_exists($this, $prop))
-            {
+        foreach ($data as $prop => $value) {
+            if (property_exists($this, $prop)) {
                 $this->$prop = $value;
 
-                if (!in_array($prop, $this->changedFields))
+                if (!in_array($prop, $this->changedFields)) {
                     $this->changedFields[] = $prop;
+                }
+            } else {
+                throw new \LogicException(
+                    "The property '$prop' does not exists in the class ' " . get_class($this) . " '"
+                );
             }
-            else
-                throw new \LogicException("The property '$prop' does not exists in the class ' " . get_class($this) . " '");
         }
     }
 
@@ -95,8 +96,7 @@ abstract class Entity
      */
     public function __construct($data)
     {
-        foreach ($data as $prop => $value)
-        {
+        foreach ($data as $prop => $value) {
             $this->$prop = $value;
         }
     }

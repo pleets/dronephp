@@ -85,31 +85,24 @@ class Shell implements ShellInterface
     {
         $contents = $allContents = [];
 
-        if (is_dir($directory))
-        {
-            foreach ($this->ls($directory) as $item)
-            {
-                if ($item != '.' && $item != '..')
+        if (is_dir($directory)) {
+            foreach ($this->ls($directory) as $item) {
+                if ($item != '.' && $item != '..') {
                     $contents[] = $item;
+                }
             }
 
-            if (count($contents) > 0)
-            {
-                foreach ($contents as $i)
-                {
-                    if (is_file($directory.'/'.$i))
-                    {
+            if (count($contents) > 0) {
+                foreach ($contents as $i) {
+                    if (is_file($directory.'/'.$i)) {
                         $allContents[] = $i;
 
                         $this->buffer = $directory.'/'.$i;
                         call_user_func($fileCallback, $this);
-                    }
-                    else if (is_dir($directory.'/'.$i))
-                    {
+                    } elseif (is_dir($directory.'/'.$i)) {
                         $directory_name = basename($directory).'/'.$i;
 
-                        if (strpos($directory_name, './') === 0)
-                        {
+                        if (strpos($directory_name, './') === 0) {
                             $from = './';
                             $from = '/'.preg_quote($from, '/').'/';
                             $directory_name = preg_replace($from, "", $directory_name, 1);
@@ -123,14 +116,15 @@ class Shell implements ShellInterface
                     }
                 }
             }
-        }
-        else if (is_file($directory))
+        } elseif (is_file($directory)) {
             throw new \InvalidArgumentException("'$directory' is actually a file");
-        else
+        } else {
             throw new \InvalidArgumentException("The directory '$directory' does not exists");
+        }
 
-        if (!is_null($callback))
+        if (!is_null($callback)) {
             call_user_func($callback, $this);
+        }
 
         return $allContents;
     }
@@ -142,10 +136,11 @@ class Shell implements ShellInterface
      */
     public function pwd()
     {
-        if (getcwd())
+        if (getcwd()) {
             $this->buffer = getcwd();
-        else
+        } else {
             return false;
+        }
 
         return $this->buffer;
     }
@@ -164,36 +159,34 @@ class Shell implements ShellInterface
 
         $path = (is_null($path) || empty($path)) ? '.' : $path;
 
-        if (is_file($path))
+        if (is_file($path)) {
             $filesToReturn = array($path);
-        else if (is_dir($path))
-        {
+        } elseif (is_dir($path)) {
             $pathIns = dir($path);
 
-            if ($recursive)
+            if ($recursive) {
                 $filesToReturn = $this->getContents($path);
-            else
-            {
-                while (($item = $pathIns->read()) !== false)
-                {
-                    if ($item != '.' && $item != '..')
+            } else {
+                while (($item = $pathIns->read()) !== false) {
+                    if ($item != '.' && $item != '..') {
                         $filesToReturn[] = $item;
+                    }
                 }
 
                 $pathIns->close();
             }
-        }
-        else {
-
+        } else {
             $contents = $this->ls();
 
-            foreach ($contents as $item)
-            {
-                if (!empty($path))
-                    if (!strlen(stristr($item, $path)) > 0)
+            foreach ($contents as $item) {
+                if (!empty($path)) {
+                    if (!strlen(stristr($item, $path)) > 0) {
                         continue;
-                if (strstr($item,'~') === false && $item != '.' && $item != '..')
+                    }
+                }
+                if (strstr($item, '~') === false && $item != '.' && $item != '..') {
                     $filesToReturn[] = $item;
+                }
             }
         }
 
@@ -211,10 +204,10 @@ class Shell implements ShellInterface
     {
         $path = (is_null($path) || empty($path)) ? $this->home : $path;
 
-        if (is_dir($path))
-        {
-            if (chdir($path))
+        if (is_dir($path)) {
+            if (chdir($path)) {
                 return true;
+            }
         }
 
         return false;
@@ -233,8 +226,7 @@ class Shell implements ShellInterface
 
         $hd = @fopen($file, "w+");
 
-        if (!$hd || @fwrite($hd, $contents) === false)
-        {
+        if (!$hd || @fwrite($hd, $contents) === false) {
             $this->error(Errno::FILE_PERMISSION_DENIED, $file);
             return false;
         }
@@ -254,29 +246,27 @@ class Shell implements ShellInterface
      */
     public function rm($file, $recursive = false)
     {
-        if (is_null($file))
+        if (is_null($file)) {
             throw new \InvalidArgumentException("Missing first parameter");
+        }
 
-        if (file_exists($file) && !$recursive)
+        if (file_exists($file) && !$recursive) {
             unlink($file);
-        elseif (is_dir($file) && $recursive)
-        {
+        } elseif (is_dir($file) && $recursive) {
             $that = $this;
 
-            $this->getContents($file,
+            $this->getContents(
+                $file,
                 # file's callback
-                function() use ($that)
-                {
+                function () use ($that) {
                     unlink($that->getBuffer());
                 },
                 # folder's callback
-                function() use ($that)
-                {
+                function () use ($that) {
                     rmdir($that->getBuffer());
                 },
                 # final callback
-                function() use ($file)
-                {
+                function () use ($file) {
                     @rmdir($file);
                 }
             );
@@ -296,16 +286,17 @@ class Shell implements ShellInterface
      */
     public function cp($file, $dest, $recursive = false)
     {
-        if (empty($file) || empty($dest))
+        if (empty($file) || empty($dest)) {
             throw new \InvalidArgumentException("Missing parameters");
+        }
 
-        if (is_dir($file) && !$recursive)
+        if (is_dir($file) && !$recursive) {
             throw new \RuntimeException("Ommiting directory <<$foo>>");
+        }
 
         $dest_exists = file_exists($dest);
 
-        if (is_dir($file) && (is_dir($dest) || !$dest_exists))
-        {
+        if (is_dir($file) && (is_dir($dest) || !$dest_exists)) {
             $files = [
                 "files"   => [],
                 "folders" => []
@@ -313,81 +304,72 @@ class Shell implements ShellInterface
 
             $files["folders"][] = is_dir($dest) ? basename($file) : $dest;
 
-            if (!$dest_exists)
+            if (!$dest_exists) {
                 mkdir($dest);
+            }
 
             $that = $this;
 
-            $this->getContents($file,
+            $this->getContents(
+                $file,
                 # file's callback
-                function() use($that, &$files)
-                {
+                function () use ($that, &$files) {
                     $files["files"][] = $that->getBuffer();
                 },
                 # folder's callback
-                function() use($that, &$files)
-                {
+                function () use ($that, &$files) {
                     $files["folders"][] = $that->getBuffer();
                 },
                 # final callback
-                function() use (&$files, $file, $dest, $dest_exists)
-                {
-                    if ($dest_exists)
-                    {
-                        foreach ($files["folders"] as $folder)
-                        {
-                            if (!file_exists($dest.'/'.$folder))
+                function () use (&$files, $file, $dest, $dest_exists) {
+                    if ($dest_exists) {
+                        foreach ($files["folders"] as $folder) {
+                            if (!file_exists($dest.'/'.$folder)) {
                                 mkdir("$dest/$folder", 0777, true);
-                        }
-
-                        if (count($files["files"]))
-                        {
-                            foreach ($files["files"] as $item)
-                            {
-                                if (!file_exists("$dest/$item"))
-                                    copy($item, $dest.'/'.$item);
                             }
                         }
-                    }
-                    else
-                    {
+
+                        if (count($files["files"])) {
+                            foreach ($files["files"] as $item) {
+                                if (!file_exists("$dest/$item")) {
+                                    copy($item, $dest.'/'.$item);
+                                }
+                            }
+                        }
+                    } else {
                         # directory previoulsy created
                         array_shift($files["folders"]);
 
                         $from = "$file/";
                         $from = '/'.preg_quote($from, '/').'/';
 
-                        if (count($files["folders"]))
-                        {
-                            foreach ($files["folders"] as $folder)
-                            {
+                        if (count($files["folders"])) {
+                            foreach ($files["folders"] as $folder) {
                                 $_folder = preg_replace($from, "", $folder, 1);
 
-                                if (!file_exists($dest.'/'.$_folder))
+                                if (!file_exists($dest.'/'.$_folder)) {
                                     mkdir("$dest/$_folder", 0777, true);
+                                }
                             }
                         }
 
-                        if (count($files["files"]))
-                        {
-                            foreach ($files["files"] as $item)
-                            {
+                        if (count($files["files"])) {
+                            foreach ($files["files"] as $item) {
                                 $_item = preg_replace($from, "", $item, 1);
 
-                                if (!file_exists("$dest/$_item"))
+                                if (!file_exists("$dest/$_item")) {
                                     copy($item, $dest.'/'.$_item);
+                                }
                             }
                         }
                     }
                 }
             );
-
-
-        }
-        else if (is_dir($dest))
+        } elseif (is_dir($dest)) {
             copy($file, $dest.'/'.$file);
-        else
+        } else {
             copy($file, $dest);
+        }
 
         return true;
     }
@@ -402,17 +384,21 @@ class Shell implements ShellInterface
      */
     public function mv($oldfile, $newfile)
     {
-        if (empty($oldfile) || empty($newfile))
+        if (empty($oldfile) || empty($newfile)) {
             throw new \InvalidArgumentException("Missing parameters");
+        }
 
-        if (is_dir($newfile))
+        if (is_dir($newfile)) {
             $newfile .= '/'.basename($oldfile);
+        }
 
-        if ($oldfile == $newfile)
+        if ($oldfile == $newfile) {
             throw new \Exception("'$oldfile' and '$newfile' are the same file");
+        }
 
-        if(!rename($oldfile, $newfile))
+        if (!rename($oldfile, $newfile)) {
             return false;
+        }
 
         return true;
     }
@@ -428,21 +414,23 @@ class Shell implements ShellInterface
      */
     public function mkdir($dir, $dest = null, $recursive = null)
     {
-        if (empty($dir))
+        if (empty($dir)) {
             throw new \InvalidArgumentException("Missing first parameter");
+        }
 
-        if (empty($dest))
+        if (empty($dest)) {
             $dest = '.';
+        }
 
         $recursive = (is_null($recursive)) ? false : $recursive;
 
-        if ($recursive)
+        if ($recursive) {
             mkdir("$dest/$dir", 0777, true);
-        else {
-            if (!is_dir($dir))
-            {
-                if(!mkdir("$dir", 0777))
+        } else {
+            if (!is_dir($dir)) {
+                if (!mkdir("$dir", 0777)) {
                     return false;
+                }
             }
         }
         return true;
@@ -457,12 +445,14 @@ class Shell implements ShellInterface
      */
     public function rmdir($dir)
     {
-        if (is_null($dir) || empty($dir))
+        if (is_null($dir) || empty($dir)) {
             throw new \RuntimeException("Missing first parameter");
+        }
 
-        if (rmdir($dir))
+        if (rmdir($dir)) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 }

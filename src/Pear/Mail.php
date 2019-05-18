@@ -74,18 +74,21 @@ class Mail
     {
         @include_once 'System.php';
 
-        if (!class_exists('System', false))
+        if (!class_exists('System', false)) {
             throw new \RuntimeException("PEAR is not installed in your system!");
+        }
 
         include_once 'Net/SMTP.php';
 
-        if (!class_exists('\Net_SMTP', false))
+        if (!class_exists('\Net_SMTP', false)) {
             throw new \RuntimeException("PEAR::Net_SMTP is not installed!");
+        }
 
         @include_once 'Mail.php';
 
-        if (!class_exists('\Mail', false))
+        if (!class_exists('\Mail', false)) {
             throw new \RuntimeException("PEAR::Mail is not installed!");
+        }
     }
 
     /**
@@ -98,8 +101,12 @@ class Mail
      */
     protected function error($code, $message = null)
     {
-        if (!array_key_exists($code, $this->errors))
-            $this->errors[$message] = (is_null($message) && array_key_exists($code, $this->errors)) ? $this->errors[$code] : $message;
+        if (!array_key_exists($code, $this->errors)) {
+            $this->errors[$message] =
+                (is_null($message) && array_key_exists($code, $this->errors))
+                    ? $this->errors[$code]
+                    : $message;
+        }
     }
 
     /**
@@ -128,10 +135,10 @@ class Mail
 
         $mail = $smtp->send($to, $headers, $body);
 
-        if (\PEAR::isError($mail))
-        {
+        if (\PEAR::isError($mail)) {
             $this->error(
-            	$mail->getCode(), $mail->getMessage()
+                $mail->getCode(),
+                $mail->getMessage()
             );
 
             return false;

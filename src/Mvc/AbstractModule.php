@@ -100,7 +100,7 @@ abstract class AbstractModule
      *
      * @param AbstractController
      */
-    public abstract function init();
+    abstract public function init();
 
     /**
      * Checks if executionAllowed is true
@@ -141,8 +141,9 @@ abstract class AbstractModule
     {
         $_file = $this->configFile;
 
-        if (!file_exists($_file))
+        if (!file_exists($_file)) {
             throw new \RuntimeException("The config file '$_file' does not exists");
+        }
 
         return (array) include $this->configFile;
     }

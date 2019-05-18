@@ -30,18 +30,15 @@ class ArrayDimension
         $new_config = [];
         $again = false;
 
-        foreach ($array as $param => $configure)
-        {
-            if (is_array($configure))
-            {
-                foreach ($configure as $key => $value)
-                {
+        foreach ($array as $param => $configure) {
+            if (is_array($configure)) {
+                foreach ($configure as $key => $value) {
                     $again = true;
                     $new_config[$param . $glue . $key] = $value;
                 }
-            }
-            else
+            } else {
                 $new_config[$param] = $configure;
+            }
         }
 
         return (!$again) ? $new_config : self::toUnidimensional($new_config, $glue);
@@ -62,18 +59,18 @@ class ArrayDimension
     {
         $key = array_shift($needle);
 
-        do
-        {
-            if (array_key_exists($key, $haystack))
+        do {
+            if (array_key_exists($key, $haystack)) {
                 $haystack = $haystack[$key];
-            else
+            } else {
                 return $value;
+            }
 
-            $key = count($needle) ? array_shift($needle) : NULL;
+            $key = count($needle) ? array_shift($needle) : null;
 
-            if (is_null($key))
+            if (is_null($key)) {
                 return $haystack;
-
+            }
         } while (!is_null($key));
     }
 
@@ -86,20 +83,19 @@ class ArrayDimension
      */
     public static function objectToArray($obj)
     {
-        if (is_object($obj))
+        if (is_object($obj)) {
             $obj = (array) $obj;
+        }
 
-        if (is_array($obj))
-        {
+        if (is_array($obj)) {
             $new = array();
 
-            foreach($obj as $key => $val)
-            {
+            foreach ($obj as $key => $val) {
                 $new[$key] = self::objectToArray($val);
             }
-        }
-        else
+        } else {
             $new = $obj;
+        }
 
         return $new;
     }

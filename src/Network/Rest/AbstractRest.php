@@ -127,8 +127,9 @@ abstract class AbstractRest
      */
     public function setWhiteList(array $whiteList)
     {
-        if (empty($whiteList))
+        if (empty($whiteList)) {
             throw new \RuntimeException("Empty whitelist!");
+        }
 
         $this->whiteList = $whiteList;
     }
@@ -154,10 +155,10 @@ abstract class AbstractRest
      */
     public function __construct($options)
     {
-        foreach ($options as $option => $value)
-        {
-            if (property_exists(__CLASS__, strtolower($option)) && method_exists($this, 'set'.$option))
-            $this->{'set'.$option}($value);
+        foreach ($options as $option => $value) {
+            if (property_exists(__CLASS__, strtolower($option)) && method_exists($this, 'set'.$option)) {
+                $this->{'set'.$option}($value);
+            }
         }
 
         # HTTP instance
@@ -169,19 +170,19 @@ abstract class AbstractRest
      *
      * @return boolean
      */
-    abstract function request();
+    abstract public function request();
 
     /**
      * Checks credentials
      *
      * @return boolean
      */
-    abstract function authenticate();
+    abstract public function authenticate();
 
     /**
      * Writes the response
      *
      * @return boolean
      */
-    abstract function response();
+    abstract public function response();
 }

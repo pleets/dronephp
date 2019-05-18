@@ -64,12 +64,10 @@ trait StorableTrait
 
         $st = $storage->store($this);
 
-        if (!$st)
-        {
+        if (!$st) {
             $_errors = $st->getErrors();
 
-            foreach ($_errors as $errno => $error)
-            {
+            foreach ($_errors as $errno => $error) {
                 $this->error($errno, $error);
             }
         }

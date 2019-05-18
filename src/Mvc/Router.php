@@ -100,8 +100,9 @@ class Router
      */
     public function getController()
     {
-        if (is_null($this->controller))
+        if (is_null($this->controller)) {
             throw new \RuntimeException("No controller matched, try to match first.");
+        }
 
         return $this->controller;
     }
@@ -139,10 +140,10 @@ class Router
     {
         $identifiers = ["module" => $module, "controller" => $controller, "view" => $view];
 
-        foreach ($identifiers as $key => $identifier)
-        {
-            if (!is_string($identifier))
+        foreach ($identifiers as $key => $identifier) {
+            if (!is_string($identifier)) {
                 throw new \InvalidArgumentException("Invalid type given for '$key'. String expected.");
+            }
         }
 
         $this->identifiers = [
@@ -165,10 +166,10 @@ class Router
     {
         $identifiers = ["module" => $module, "controller" => $controller, "view" => $view];
 
-        foreach ($identifiers as $key => $identifier)
-        {
-            if (!is_string($identifier))
+        foreach ($identifiers as $key => $identifier) {
+            if (!is_string($identifier)) {
                 throw new \InvalidArgumentException("Invalid type given for '$key'. String expected.");
+            }
         }
 
         $this->defaults = [
@@ -197,10 +198,8 @@ class Router
      */
     public function __construct(Array $routes = [])
     {
-        if (count($routes))
-        {
-            foreach ($routes as $route)
-            {
+        if (count($routes)) {
+            foreach ($routes as $route) {
                 $this->addRoute($route);
             }
         }
@@ -219,7 +218,7 @@ class Router
         ];
 
         # default class name builder
-        $this->setClassNameBuilder(function($module, $class) {
+        $this->setClassNameBuilder(function ($module, $class) {
             return "\\$module\\$class";
         });
 
@@ -237,15 +236,15 @@ class Router
      */
     public function match()
     {
-        if (!is_callable($this->classNameBuilder))
+        if (!is_callable($this->classNameBuilder)) {
             throw \LogicException("No class name builder found");
+        }
 
         /*
          *  Key value pairs builder:
          *  Searches for the pattern /var1/value1/var2/value2 and converts it to  var1 => value1, var2 => value2
          */
-        if (array_key_exists('params', $_GET))
-        {
+        if (array_key_exists('params', $_GET)) {
             $keypairs = $this->parseRequestParameters($_GET["params"]);
             unset($_GET["params"]);
             $_GET = array_merge($_GET, $keypairs);
@@ -259,17 +258,12 @@ class Router
 
         $match = false;
 
-        if (count($this->routes))
-        {
-            foreach ($this->routes as $key => $route)
-            {
-                if
-                (
-                    $route["module"]     == $this->identifiers["module"]     &&
+        if (count($this->routes)) {
+            foreach ($this->routes as $key => $route) {
+                if ($route["module"]     == $this->identifiers["module"]     &&
                     $route["controller"] == $this->identifiers["controller"] &&
                     $route["view"]       == $this->identifiers["view"]
-                )
-                {
+                ) {
                     $module     = $route["module"];
                     $controller = $route["controller"];
                     $view       = $route["view"];
@@ -280,15 +274,11 @@ class Router
             }
         }
 
-        if (count($this->defaults) && !$match)
-        {
-            if
-            (
-                !empty($this->defaults["module"])     &&
+        if (count($this->defaults) && !$match) {
+            if (!empty($this->defaults["module"])     &&
                 !empty($this->defaults["controller"]) &&
                 !empty($this->defaults["view"])
-            )
-            {
+            ) {
                 $module     = $this->defaults["module"];
                 $controller = $this->defaults["controller"];
                 $view       = $this->defaults["view"];
@@ -297,32 +287,28 @@ class Router
             }
         }
 
-        if (!$match)
+        if (!$match) {
             throw new Exception\RouteNotFoundException("The route has not been matched");
+        }
 
         $fqn_controller = call_user_func($this->classNameBuilder, $module, $controller);
 
-        if (class_exists($fqn_controller))
-        {
+        if (class_exists($fqn_controller)) {
             try {
                 $this->controller = new $fqn_controller;
-            }
-            # change context, in terms of Router MethodNotFoundException or
-            # PrivateMethodExecutionException is a PageNotfoundException
-            catch (Exception\MethodNotFoundException $e)
-            {
+            } catch (Exception\MethodNotFoundException $e) {
+                # change context, in terms of Router MethodNotFoundException or
+                # PrivateMethodExecutionException is a PageNotfoundException
                 throw new Exception\PageNotFoundException($e->getMessage(), $e->getCode(), $e);
-            }
-            catch (Exception\PrivateMethodExecutionException $e)
-            {
+            } catch (Exception\PrivateMethodExecutionException $e) {
                 throw new Exception\PageNotFoundException($e->getMessage(), $e->getCode(), $e);
             }
 
             # in controller terms, a view is a method
             $this->controller->setMethod($view);
-        }
-        else
+        } else {
             throw new Exception\ControllerNotFoundException("The control class '$fqn_controller' does not exists!");
+        }
     }
 
     /**
@@ -348,24 +334,27 @@ class Router
     {
         $key = array_keys($route);
 
-        if (count($key) > 1)
+        if (count($key) > 1) {
             throw new \InvalidArgumentException("So many keys in a simple route");
+        }
 
         $key = array_shift($key);
 
         $identifiers = ["module", "controller", "view"];
 
-        foreach ($identifiers as $identifier)
-        {
-            if (!array_key_exists($identifier, $route[$key]))
+        foreach ($identifiers as $identifier) {
+            if (!array_key_exists($identifier, $route[$key])) {
                 throw new \InvalidArgumentException("The identifier '$identifier' does not exists in the route");
+            }
 
-            if (!is_string($route[$key][$identifier]))
+            if (!is_string($route[$key][$identifier])) {
                 throw new \InvalidArgumentException("Invalid type given for '$identifier'. String expected.");
+            }
         }
 
-        if (array_key_exists($key, $this->routes))
+        if (array_key_exists($key, $this->routes)) {
             throw new \LogicException("The key '$key' was already defined as a route");
+        }
 
         $this->routes = array_merge($this->routes, $route);
     }
@@ -404,12 +393,12 @@ class Router
         $vars = $values = [];
 
         $i = 1;
-        foreach ($params as $item)
-        {
-            if ($i % 2 != 0)
+        foreach ($params as $item) {
+            if ($i % 2 != 0) {
                 $vars[] = $item;
-            else
+            } else {
                 $values[] = $item;
+            }
             $i++;
         }
 
@@ -417,12 +406,12 @@ class Router
 
         $result = [];
 
-        for ($i = 0; $i < $vars_count; $i++)
-        {
-            if (array_key_exists($i, $values))
+        for ($i = 0; $i < $vars_count; $i++) {
+            if (array_key_exists($i, $values)) {
                 $result[$vars[$i]] = $values[$i];
-            else
+            } else {
                 $result[$vars[$i]] = '';
+            }
         }
 
         return $result;

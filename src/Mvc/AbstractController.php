@@ -86,29 +86,31 @@ abstract class AbstractController
     {
         $method = $this->method;
 
-        if (is_null($method))
+        if (is_null($method)) {
             # This error is thrown because of 'setMethod' method has not been executed
             throw new \LogicException("No method has been setted to execute!");
+        }
 
-        if (!is_null($this->module) && !$this->module->executionIsAllowed())
+        if (!is_null($this->module) && !$this->module->executionIsAllowed()) {
             throw new Exception\MethodExecutionNotAllowedException("Method execution is not allowed");
-        else
-        {
-            if (method_exists($this, $method))
-            {
+        } else {
+            if (method_exists($this, $method)) {
                 $class = __CLASS__;
 
                 $reflection = new \ReflectionMethod($this, $method);
 
-                if (!$reflection->isPublic())
-                    throw new Exception\PrivateMethodExecutionException("The method '$method' is not public in the control class '$class'");
+                if (!$reflection->isPublic()) {
+                    throw new Exception\PrivateMethodExecutionException(
+                        "The method '$method' is not public in the control class '$class'"
+                    );
+                }
 
                 return $this->$method();
-            }
-            else
-            {
+            } else {
                 $class = __CLASS__;
-                throw new Exception\MethodNotFoundException("The method '$method' doesn't exists in the control class '$class'");
+                throw new Exception\MethodNotFoundException(
+                    "The method '$method' doesn't exists in the control class '$class'"
+                );
             }
         }
     }
@@ -130,8 +132,9 @@ abstract class AbstractController
      */
     public function getPost()
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST))
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST)) {
             $_POST = json_decode(file_get_contents('php://input'), true);
+        }
 
         return (array) $_POST;
     }
@@ -145,16 +148,16 @@ abstract class AbstractController
      */
     public function getJson()
     {
-        if ($_SERVER['REQUEST_METHOD'] != 'JSON')
+        if ($_SERVER['REQUEST_METHOD'] != 'JSON') {
             throw new \LogicException("Request method is not JSON");
+        }
 
         $input =  file_get_contents('php://input');
         $array = explode("&", $input);
 
         $result = [];
 
-        foreach ($array as $value)
-        {
+        foreach ($array as $value) {
             $io = explode("=", $value);
             $result[$io[0]] = $io[1];
         }
@@ -170,8 +173,9 @@ abstract class AbstractController
     public function isXmlHttpRequest()
     {
         # non standard (HTTP_X_REQUESTED_WITH is not a part of PHP)
-        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']))
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             return true;
+        }
         return false;
     }
 
@@ -182,8 +186,9 @@ abstract class AbstractController
      */
     public function isPost()
     {
-        if ($_SERVER["REQUEST_METHOD"] == "POST")
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
             return true;
+        }
         return false;
     }
 
@@ -194,8 +199,9 @@ abstract class AbstractController
      */
     public function isGet()
     {
-        if ($_SERVER["REQUEST_METHOD"] == "GET")
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
             return true;
+        }
         return false;
     }
 }

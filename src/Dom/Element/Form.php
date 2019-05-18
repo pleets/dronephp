@@ -44,15 +44,20 @@ class Form extends AbstractElement
      */
     public function fill(Array $values)
     {
-        foreach ($values as $label => $value)
-        {
+        foreach ($values as $label => $value) {
             $child = $this->getChild($label);
 
-            if (is_null($child))
-                throw new Exception\ChildNotFoundException("The child '$label' does not exists inside the form element");
+            if (is_null($child)) {
+                throw new Exception\ChildNotFoundException(
+                    "The child '$label' does not exists inside the form element"
+                );
+            }
 
-            if (!$child->isFormControl())
-                throw new Exception\NotFormControlException("The child '$label' is not a form control");
+            if (!$child->isFormControl()) {
+                throw new Exception\NotFormControlException(
+                    "The child '$label' is not a form control"
+                );
+            }
 
             $child->setAttribute(new Attribute("value", $value));
         }

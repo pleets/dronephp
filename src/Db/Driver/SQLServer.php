@@ -33,15 +33,17 @@ class SQLServer extends AbstractDriver implements DriverInterface
     {
         $this->driverName = 'Sqlsrv';
 
-        if (!array_key_exists("dbchar", $options))
+        if (!array_key_exists("dbchar", $options)) {
             $options["dbchar"] = "UTF-8";
+        }
 
         parent::__construct($options);
 
         $auto_connect = array_key_exists('auto_connect', $options) ? $options["auto_connect"] : true;
 
-        if ($auto_connect)
+        if ($auto_connect) {
             $this->connect();
+        }
     }
 
     /**
@@ -54,24 +56,30 @@ class SQLServer extends AbstractDriver implements DriverInterface
      */
     public function connect()
     {
-        if (!extension_loaded('sqlsrv'))
+        if (!extension_loaded('sqlsrv')) {
             throw new \RuntimeException("The Sqlsrv extension is not loaded");
+        }
 
-        if (!is_null($this->dbport) && !empty($this->dbport))
+        if (!is_null($this->dbport) && !empty($this->dbport)) {
             $this->dbhost .= ', ' . $this->dbport;
+        }
 
-        $db_info = array("Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar);
+        $db_info = array(
+            "Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar
+        );
         $conn = sqlsrv_connect($this->dbhost, $db_info);
 
-        if ($conn === false)
-        {
+        if ($conn === false) {
             $errors = sqlsrv_errors();
 
             $previousException = null;
 
-            foreach ($errors as $error)
-            {
-                $previousException = new Exception\ConnectionException($error["message"], $error["code"], $previousException);
+            foreach ($errors as $error) {
+                $previousException = new Exception\ConnectionException(
+                    $error["message"],
+                    $error["code"],
+                    $previousException
+                );
             }
 
             throw $previousException;
@@ -122,16 +130,13 @@ class SQLServer extends AbstractDriver implements DriverInterface
         $isDeleteStm = (preg_match('/^DELETE/i', $clean_code));
 
         # Bound variables
-        if (count($params))
-        {
+        if (count($params)) {
             $stmt = sqlsrv_prepare($this->dbconn, $sql, $params);
 
-            if (!$stmt)
-            {
+            if (!$stmt) {
                 $errors = sqlsrv_errors();
 
-                foreach ($errors as $error)
-                {
+                foreach ($errors as $error) {
                     $this->error($error["code"], $error["message"]);
                 }
 
@@ -139,21 +144,23 @@ class SQLServer extends AbstractDriver implements DriverInterface
             }
 
             $exec = sqlsrv_execute($stmt);
-        }
-        else
-        {
-            if ($isSelectStm)
-                $exec = $this->result = sqlsrv_query($this->dbconn, $sql, $params, array( "Scrollable" => SQLSRV_CURSOR_KEYSET ));
-            else
+        } else {
+            if ($isSelectStm) {
+                $exec = $this->result = sqlsrv_query(
+                    $this->dbconn,
+                    $sql,
+                    $params,
+                    array( "Scrollable" => SQLSRV_CURSOR_KEYSET )
+                );
+            } else {
                 $exec = $this->result = sqlsrv_query($this->dbconn, $sql, $params);
+            }
         }
 
-        if ($exec === false)
-        {
+        if ($exec === false) {
             $errors = sqlsrv_errors();
 
-            foreach ($errors as $error)
-            {
+            foreach ($errors as $error) {
                 $this->error($error["code"], $error["message"]);
             }
 
@@ -165,11 +172,15 @@ class SQLServer extends AbstractDriver implements DriverInterface
         $this->numRows = sqlsrv_has_rows($this->result) ? sqlsrv_num_rows($this->result) : $this->numRows;
         $this->numFields = sqlsrv_num_fields($this->result);
 
-        if ($isInsertStm || $isUpdateStm || $isDeleteStm)
+        if ($isInsertStm || $isUpdateStm || $isDeleteStm) {
             $this->rowsAffected = sqlsrv_rows_affected($this->result);
+        }
 
-        if ($this->transac_mode)
-            $this->transac_result = is_null($this->transac_result) ? $this->result: $this->transac_result && $this->result;
+        if ($this->transac_mode) {
+            $this->transac_result = is_null($this->transac_result)
+                ? $this->result
+                : $this->transac_result && $this->result;
+        }
 
         return $this->result;
     }
@@ -204,12 +215,10 @@ class SQLServer extends AbstractDriver implements DriverInterface
      */
     public function beginTransaction()
     {
-        if (sqlsrv_begin_transaction($this->dbconn) === false)
-        {
+        if (sqlsrv_begin_transaction($this->dbconn) === false) {
             $errors = sqlsrv_errors();
 
-            foreach ($errors as $error)
-            {
+            foreach ($errors as $error) {
                 $this->error($error["code"], $error["message"]);
             }
 
@@ -230,16 +239,13 @@ class SQLServer extends AbstractDriver implements DriverInterface
     {
         $data = [];
 
-        if ($this->result)
-        {
-            while ($row = sqlsrv_fetch_array($this->result))
-            {
+        if ($this->result) {
+            while ($row = sqlsrv_fetch_array($this->result)) {
                 $data[] = $row;
             }
-        }
-        else
-            # This error is thrown because of 'execute' method has not been executed.
+        } else {             # This error is thrown because of 'execute' method has not been executed.
             throw new \LogicException('There are not data in the buffer!');
+        }
 
         $this->arrayResult = $data;
 
@@ -253,7 +259,8 @@ class SQLServer extends AbstractDriver implements DriverInterface
      */
     public function __destruct()
     {
-        if ($this->dbconn)
+        if ($this->dbconn) {
             sqlsrv_close($this->dbconn);
+        }
     }
 }

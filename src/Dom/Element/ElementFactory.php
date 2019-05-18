@@ -34,23 +34,19 @@ class ElementFactory extends AbstractElement
         $className = "\Drone\Dom\Element\\" . $element;
         $instance = new $className;
 
-        if (count($attributes))
-        {
-            foreach ($attributes as $name => $value)
-            {
-                if (!is_string($name))
+        if (count($attributes)) {
+            foreach ($attributes as $name => $value) {
+                if (!is_string($name)) {
                     throw new \InvalidArgumentException("Attribute only accepts strings as names");
+                }
 
                 $instance->setAttribute(new Attribute($name, $value));
             }
         }
 
-        if (count($elements))
-        {
-            foreach ($elements as $_node_name => $element)
-            {
-                foreach ($element as $label => $_attributes)
-                {
+        if (count($elements)) {
+            foreach ($elements as $_node_name => $element) {
+                foreach ($element as $label => $_attributes) {
                     $instance->setChild($label, self::create($_node_name, $_attributes));
                 }
             }

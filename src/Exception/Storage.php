@@ -54,28 +54,22 @@ class Storage
 
         $data = [];
 
-        if (file_exists($this->outputFile))
-        {
+        if (file_exists($this->outputFile)) {
             $string = file_get_contents($this->outputFile);
 
-            if (!empty($string))
-            {
+            if (!empty($string)) {
                 $data   = json_decode($string, true);
 
                 # json_encode can return TRUE, FALSE or NULL (http://php.net/manual/en/function.json-decode.php)
-                if (is_null($data) || $data === false)
-                {
+                if (is_null($data) || $data === false) {
                     $this->error(Errno::JSON_DECODE_ERROR, $this->outputFile);
                     return false;
                 }
             }
-        }
-        else
-        {
+        } else {
             $directory = strstr($this->outputFile, basename($this->outputFile), true);
 
-            if (!file_exists($directory))
-            {
+            if (!file_exists($directory)) {
                 $this->error(Errno::FILE_NOT_FOUND, $directory);
                 return false;
             }
@@ -86,28 +80,29 @@ class Storage
             "object"  => serialize($exception)
         ];
 
-        if (!function_exists('mb_detect_encoding'))
+        if (!function_exists('mb_detect_encoding')) {
             throw new \RuntimeException("mbstring library is not installed!");
+        }
 
         /*
          * Encodes to UTF8 all messages. It ensures JSON encoding.
          */
-        if (!mb_detect_encoding($data[$id]["message"], 'UTF-8', true))
+        if (!mb_detect_encoding($data[$id]["message"], 'UTF-8', true)) {
             $data[$id]["message"] = utf8_encode($data[$id]["message"]);
+        }
 
-        if (!mb_detect_encoding($data[$id]["object"], 'UTF-8', true))
+        if (!mb_detect_encoding($data[$id]["object"], 'UTF-8', true)) {
             $data[$id]["object"] = utf8_decode($data[$id]["object"]);
+        }
 
-        if (($encoded_data = json_encode($data)) === false)
-        {
+        if (($encoded_data = json_encode($data)) === false) {
             $this->error(Errno::JSON_ENCODE_ERROR, $this->outputFile);
             return false;
         }
 
         $hd = @fopen($this->outputFile, "w+");
 
-        if (!$hd || !@fwrite($hd, $encoded_data))
-        {
+        if (!$hd || !@fwrite($hd, $encoded_data)) {
             $this->error(Errno::FILE_PERMISSION_DENIED, $this->outputFile);
             return false;
         }

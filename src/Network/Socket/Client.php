@@ -24,8 +24,7 @@ class Client extends AbstractSocket
      */
     public function connect()
     {
-        if (!($connected = @socket_connect($this->socket, $this->host, $this->port)))
-        {
+        if (!($connected = @socket_connect($this->socket, $this->host, $this->port))) {
             $errno = socket_last_error();
             $this->error(socket_last_error(), socket_strerror($errno));
             return false;
@@ -41,8 +40,7 @@ class Client extends AbstractSocket
      */
     public function read()
     {
-        if (($message = @socket_read($this->socket, 1024)) === false)
-        {
+        if (($message = @socket_read($this->socket, 1024)) === false) {
             $errno = socket_last_error();
             $this->error(socket_last_error(), socket_strerror($errno));
             return false;
@@ -60,8 +58,7 @@ class Client extends AbstractSocket
      */
     public function send($message)
     {
-        if (($bytes = @socket_write($this->socket, $message, strlen($message))) === false)
-        {
+        if (($bytes = @socket_write($this->socket, $message, strlen($message))) === false) {
             $errno = socket_last_error();
             $this->error(socket_last_error(), socket_strerror($errno));
             return false;
