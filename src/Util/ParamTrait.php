@@ -48,6 +48,19 @@ trait ParamTrait
     }
 
     /**
+     * Set a parameter
+     *
+     * @param string $name
+     * @param mixed $value
+     *
+     * @return null
+     */
+    public function setParam($name, $value)
+    {
+        $this->params[$name] = $value;
+    }
+
+    /**
      * Sets all parameters
      *
      * @param array $params
