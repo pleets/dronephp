@@ -10,8 +10,6 @@
 
 namespace Drone\Mvc;
 
-use Drone\Mvc\Exception;
-
 /**
  * ModuleFactory Class
  *
@@ -27,7 +25,7 @@ class ModuleFactory
      *
      * @return null
      */
-    public static function create($module, Array $module_settings = [])
+    public static function create($module, array $module_settings = [])
     {
         if (empty($module)) {
             throw new \RuntimeException("The module name must be specified");

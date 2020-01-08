@@ -160,7 +160,7 @@ class Shell implements ShellInterface
         $path = (is_null($path) || empty($path)) ? '.' : $path;
 
         if (is_file($path)) {
-            $filesToReturn = array($path);
+            $filesToReturn = [$path];
         } elseif (is_dir($path)) {
             $pathIns = dir($path);
 
@@ -217,6 +217,7 @@ class Shell implements ShellInterface
      * Changes the file's date
      *
      * @param string
+     * @param mixed $file
      *
      * @return boolean
      */
@@ -228,6 +229,7 @@ class Shell implements ShellInterface
 
         if (!$hd || @fwrite($hd, $contents) === false) {
             $this->error(Errno::FILE_PERMISSION_DENIED, $file);
+
             return false;
         }
 
@@ -299,7 +301,7 @@ class Shell implements ShellInterface
         if (is_dir($file) && (is_dir($dest) || !$dest_exists)) {
             $files = [
                 "files"   => [],
-                "folders" => []
+                "folders" => [],
             ];
 
             $files["folders"][] = is_dir($dest) ? basename($file) : $dest;
@@ -433,6 +435,7 @@ class Shell implements ShellInterface
                 }
             }
         }
+
         return true;
     }
 

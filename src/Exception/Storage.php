@@ -63,6 +63,7 @@ class Storage
                 # json_encode can return TRUE, FALSE or NULL (http://php.net/manual/en/function.json-decode.php)
                 if (is_null($data) || $data === false) {
                     $this->error(Errno::JSON_DECODE_ERROR, $this->outputFile);
+
                     return false;
                 }
             }
@@ -71,13 +72,14 @@ class Storage
 
             if (!file_exists($directory)) {
                 $this->error(Errno::FILE_NOT_FOUND, $directory);
+
                 return false;
             }
         }
 
         $data[$id] = [
             "message" => $exception->getMessage(),
-            "object"  => serialize($exception)
+            "object"  => serialize($exception),
         ];
 
         if (!function_exists('mb_detect_encoding')) {
@@ -97,6 +99,7 @@ class Storage
 
         if (($encoded_data = json_encode($data)) === false) {
             $this->error(Errno::JSON_ENCODE_ERROR, $this->outputFile);
+
             return false;
         }
 
@@ -104,6 +107,7 @@ class Storage
 
         if (!$hd || !@fwrite($hd, $encoded_data)) {
             $this->error(Errno::FILE_PERMISSION_DENIED, $this->outputFile);
+
             return false;
         }
 

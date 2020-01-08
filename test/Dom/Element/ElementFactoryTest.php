@@ -24,20 +24,20 @@ class ElementFactoryTest extends TestCase
     {
         $form = ElementFactory::create('FORM', [
             "action" => 'someurl',
-            "method" => 'post'
+            "method" => 'post',
         ], [
             "input" => [
                 "username" => [
                     "type"      => 'text',
                     "maxlength" => 15,
-                    "minlength" => 5
+                    "minlength" => 5,
                 ],
                 "password" => [
                     "type"      => 'password',
                     "maxlength" => 15,
-                    "minlength" => 5
-                ]
-            ]
+                    "minlength" => 5,
+                ],
+            ],
         ]);
 
         $this->assertEquals('<form>', $form->getStartTag());

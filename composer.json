@@ -35,7 +35,7 @@
     },
     "scripts": {
         "php-cs": "phpcs --standard=PSR2 --ignore=test/coverage src/ test/",
-        "php-cs-fixer": "vendor/bin/php-cs-fixer fix --config=.php_cs",
+        "php-cs-fixer": "php-cs-fixer fix --config=.php_cs",
         "php-cbf": "vendor/bin/phpcbf --sniffs= src/ test/",
         "phpunit": "phpunit --stop-on-error --stop-on-failure --testdox",
         "test": [

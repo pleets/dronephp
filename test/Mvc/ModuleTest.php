@@ -10,7 +10,6 @@
 
 namespace DroneTest\Util;
 
-use Drone\Mvc\Router;
 use Drone\Mvc\ModuleFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +25,7 @@ class ModuleTest extends TestCase
         include "test-skeleton/module/Master/Module.php";
 
         $module = ModuleFactory::create("Master", [
-            "config"  => 'test-skeleton/module/Master/config/config.php'
+            "config"  => 'test-skeleton/module/Master/config/config.php',
         ]);
 
         $this->assertSame(

@@ -10,10 +10,10 @@
 
 namespace DroneTest\Util;
 
-use Drone\Db\Entity;
 use Drone\Db\Driver\MySQL;
-use Drone\Db\TableGateway\TableGateway;
+use Drone\Db\Entity;
 use Drone\Db\TableGateway\AbstractTableGateway;
+use Drone\Db\TableGateway\TableGateway;
 use PHPUnit\Framework\TestCase;
 
 class TableGatewayTest extends TestCase
@@ -29,7 +29,7 @@ class TableGatewayTest extends TestCase
         "dbchar"       => "utf8",
         "dbport"       => "3306",
         "auto_connect" => false,
-        "driver"       => 'Mysqli'  # needed for the DriverFactory
+        "driver"       => 'Mysqli',  # needed for the DriverFactory
     ];
 
     /*
@@ -85,12 +85,9 @@ class TableGatewayTest extends TestCase
         $entity = new MyEntity();
         $gateway = new TableGateway($entity, ["other" => $options]);
 
-        try
-        {
+        try {
             $gateway->getDb()->connect();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->assertNotTrue($gateway->getDb()->isConnected());
             throw $e;
         }
@@ -446,7 +443,7 @@ class MyEntity extends Entity
     {
         parent::__construct($data);
         $this->setTableName("MYTABLE");
-   }
+    }
 }
 
 class MyEntityGateway extends TableGateway
@@ -454,24 +451,28 @@ class MyEntityGateway extends TableGateway
     public function create()
     {
         $sql = "CREATE TABLE MYTABLE (ID INTEGER(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, DESCRIPTION VARCHAR(100))";
+
         return $this->getDb()->execute($sql);
     }
 
     public function drop()
     {
         $sql = "DROP TABLE MYTABLE";
+
         return $this->getDb()->execute($sql);
     }
 
     public function customDML()
     {
         $sql = "INSERT INTO MYTABLE VALUES(1000, 'Some data')";
+
         return $this->getDb()->execute($sql);
     }
 
     public function wrongDML()
     {
         $sql = "INSERT INTO MYTABLE (DESCRIPTION, WRONG) VALUES ('Hello world!')";
+
         return $this->getDb()->execute($sql);
     }
 
@@ -479,6 +480,7 @@ class MyEntityGateway extends TableGateway
     {
         $sql = "SELECT * FROM MYTABLE WHERE ID = 1000";
         $this->getDb()->execute($sql);
+
         return $this->getDb()->getArrayResult();
     }
 }

@@ -66,9 +66,9 @@ class Mail
     /**
      * Constructor
      *
-     * @throws RuntimeException
      *
      * @param array $options
+     * @throws RuntimeException
      */
     public function __construct()
     {
@@ -121,16 +121,16 @@ class Mail
      */
     public function send($from, $to, $subject, $body)
     {
-        $headers = array (
+        $headers = [
             'From'         => $from,
             'To'           => $to,
             'Subject'      => $subject,
-            'Content-type' => 'text/html;charset=iso-8859-1'
-        );
+            'Content-type' => 'text/html;charset=iso-8859-1',
+        ];
 
         $smtp = \Mail::factory(
             'smtp',
-            array ('host' => $this->host, 'auth' => false)
+            ['host' => $this->host, 'auth' => false]
         );
 
         $mail = $smtp->send($to, $headers, $body);

@@ -18,14 +18,14 @@ namespace Drone\Db\Driver;
 class MySQL extends AbstractDriver implements DriverInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @var object
      */
     protected $dbconn;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @param array $options
      */
@@ -92,7 +92,7 @@ class MySQL extends AbstractDriver implements DriverInterface
      *
      * @return \mysqli_result
      */
-    public function execute($sql, Array $params = [])
+    public function execute($sql, array $params = [])
     {
         $this->numRows = 0;
         $this->numFields = 0;
@@ -197,7 +197,7 @@ class MySQL extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function commit()
     {
@@ -205,7 +205,7 @@ class MySQL extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function rollback()
     {
@@ -213,7 +213,7 @@ class MySQL extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function disconnect()
     {
@@ -221,6 +221,7 @@ class MySQL extends AbstractDriver implements DriverInterface
 
         if ($this->dbconn->close()) {
             $this->dbconn = null;
+
             return true;
         }
 
@@ -228,7 +229,7 @@ class MySQL extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function autocommit($value)
     {

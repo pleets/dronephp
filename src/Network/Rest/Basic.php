@@ -44,6 +44,7 @@ class Basic extends AbstractRest
 
         if (!isset($_SERVER['PHP_AUTH_USER'])) {
             $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
+
             return false;
         }
 
@@ -51,11 +52,13 @@ class Basic extends AbstractRest
 
         if (!isset($this->whiteList[$username])) {
             $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
+
             return false;
         }
 
         if ($this->whiteList[$username] !== $_SERVER['PHP_AUTH_PW']) {
             $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
+
             return false;
         }
 

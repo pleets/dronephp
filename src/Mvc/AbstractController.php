@@ -10,8 +10,6 @@
 
 namespace Drone\Mvc;
 
-use Drone\Mvc\Exception;
-
 /**
  * AbstractionController class
  *
@@ -176,6 +174,7 @@ abstract class AbstractController
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             return true;
         }
+
         return false;
     }
 
@@ -189,6 +188,7 @@ abstract class AbstractController
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             return true;
         }
+
         return false;
     }
 
@@ -202,6 +202,7 @@ abstract class AbstractController
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
             return true;
         }
+
         return false;
     }
 }

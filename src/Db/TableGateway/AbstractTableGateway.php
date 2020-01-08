@@ -110,10 +110,11 @@ abstract class AbstractTableGateway
      * Returns the a particular connection
      *
      * @param string
-     *
-     * @return AbstractDriver
+     * @param mixed $identifier
      *
      * @throws \RuntimeException
+     * @return AbstractDriver
+     *
      */
     public static function getDriver($identifier)
     {
@@ -128,10 +129,11 @@ abstract class AbstractTableGateway
      * Returns true if the connection exists
      *
      * @param string
-     *
-     * @return boolean
+     * @param mixed $identifier
      *
      * @throws \RuntimeException
+     * @return boolean
+     *
      */
     public static function hasDriver($identifier)
     {
@@ -145,9 +147,9 @@ abstract class AbstractTableGateway
     /**
      * Returns the current connection driver
      *
+     * @throws \RuntimeException
      * @return AbstractDriver
      *
-     * @throws \RuntimeException
      */
     public function getCurrentDriver()
     {
@@ -157,9 +159,9 @@ abstract class AbstractTableGateway
     /**
      * Alias for getCurrentDriver()
      *
+     * @throws \RuntimeException
      * @return AbstractDriver
      *
-     * @throws \RuntimeException
      */
     public function getDb()
     {

@@ -25,7 +25,7 @@ class ParamTraitTest extends TestCase
         $ctrl = new MyController();
         $ctrl->init([
             "user" => "fermius",
-            "date" => new \DateTime("now")
+            "date" => new \DateTime("now"),
         ]);
 
         $this->assertTrue($ctrl->isParam('date'));
@@ -46,7 +46,7 @@ class ParamTraitTest extends TestCase
 
         $params = [
             "user" => "fermius",
-            "age"  => 26
+            "age"  => 26,
         ];
 
         $ctrl->init($params);

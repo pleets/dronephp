@@ -42,16 +42,16 @@ class ArrayDimensionTest extends TestCase
         # two-dimensional array
         $multidimensional = [
             "foo" => [
-                "bar" => 87
+                "bar" => 87,
             ],
             "foo2" => [
-                "bar2" => "value"
-            ]
+                "bar2" => "value",
+            ],
         ];
 
         $expected = [
             "foo_bar"   => 87,
-            "foo2_bar2" => "value"
+            "foo2_bar2" => "value",
         ];
 
         $unidimensional = ArrayDimension::toUnidimensional($multidimensional, "_");
@@ -70,19 +70,19 @@ class ArrayDimensionTest extends TestCase
         $multidimensional = [
             "foo" => [
                 "bar" => [
-                    "abc" => false
-                ]
+                    "abc" => false,
+                ],
             ],
             "foo2" => [
                 "bar2" => [
-                    "def" => 7854
-                ]
-            ]
+                    "def" => 7854,
+                ],
+            ],
         ];
 
         $expected = [
             "foo_bar_abc"   => false,
-            "foo2_bar2_def" => 7854
+            "foo2_bar2_def" => 7854,
         ];
 
         $unidimensional = ArrayDimension::toUnidimensional($multidimensional, "_");
@@ -101,19 +101,19 @@ class ArrayDimensionTest extends TestCase
         $multidimensional = [
             "foo" => "value",
             "bar" => [
-                "abc" => false
+                "abc" => false,
             ],
             "foo2" => [
                 "bar2" => [
-                    "def" => 7854
-                ]
-            ]
+                    "def" => 7854,
+                ],
+            ],
         ];
 
         $expected = [
             "foo"           => "value",
             "bar_abc"       => false,
-            "foo2_bar2_def" => 7854
+            "foo2_bar2_def" => 7854,
         ];
 
         $unidimensional = ArrayDimension::toUnidimensional($multidimensional, "_");
@@ -138,8 +138,8 @@ class ArrayDimensionTest extends TestCase
             "id" => 34389,
             "prices" => [
                 "house" => 1200000,
-                "car"   =>  650000
-            ]
+                "car"   =>  650000,
+            ],
         ];
 
         $array = ArrayDimension::objectToArray($object);

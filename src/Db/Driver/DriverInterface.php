@@ -60,6 +60,7 @@ interface DriverInterface
 
     /**
      * Sets the autocommit behavior
+     * @param mixed $value
      */
     public function autocommit($value);
 

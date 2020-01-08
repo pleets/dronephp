@@ -22,14 +22,14 @@ interface TableGatewayInterface
      *
      * @param array $where
      */
-    public function select(Array $where);
+    public function select(array $where);
 
     /**
      * Insert statement
      *
      * @param array $data
      */
-    public function insert(Array $data);
+    public function insert(array $data);
 
     /**
      * Update statement
@@ -37,12 +37,12 @@ interface TableGatewayInterface
      * @param array $set
      * @param array $where
      */
-    public function update(Array $set, Array $where);
+    public function update(array $set, array $where);
 
     /**
      * Delete statement
      *
      * @param array $where
      */
-    public function delete(Array $where);
+    public function delete(array $where);
 }

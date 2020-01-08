@@ -51,6 +51,7 @@ class Digest extends AbstractRest
         if (!($data = $this->http_digest_parse($_SERVER['PHP_AUTH_DIGEST']))
             || !isset($this->whiteList[$data['username']])) {
             $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
+
             return false;
         }
 
@@ -60,6 +61,7 @@ class Digest extends AbstractRest
 
         if ($data['response'] != $valid_response) {
             $this->http->writeStatus($ht::HTTP_UNAUTHORIZED);
+
             return false;
         }
 
@@ -78,8 +80,8 @@ class Digest extends AbstractRest
     private function httpDigestParse($txt)
     {
         // protect against missing data
-        $needed_parts = array('nonce'=>1, 'nc'=>1, 'cnonce'=>1, 'qop'=>1, 'username'=>1, 'uri'=>1, 'response'=>1);
-        $data = array();
+        $needed_parts = ['nonce'=>1, 'nc'=>1, 'cnonce'=>1, 'qop'=>1, 'username'=>1, 'uri'=>1, 'response'=>1];
+        $data = [];
         $keys = implode('|', array_keys($needed_parts));
 
         preg_match_all('@(' . $keys . ')=(?:([\'"])([^\2]+?)\2|([^\s,]+))@', $txt, $matches, PREG_SET_ORDER);

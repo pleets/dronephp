@@ -22,12 +22,9 @@ class ExceptionTest extends TestCase
      */
     public function testExceptionStoring()
     {
-        try
-        {
+        try {
             throw new ExceptionException("This is an storable exception");
-        }
-        catch (ExceptionException $e)
-        {
+        } catch (ExceptionException $e) {
             mkdir('exceptions');
 
             $file = 'exceptions/exception-' . date('dmY') . '.json';
@@ -37,7 +34,7 @@ class ExceptionTest extends TestCase
 
             $this->assertTrue(is_string($errorCode));
 
-            $json_object  = (file_exists($file)) ? json_decode(file_get_contents($file)) : array();
+            $json_object  = (file_exists($file)) ? json_decode(file_get_contents($file)) : [];
             $array_object = \Drone\Util\ArrayDimension::objectToArray($json_object);
 
             $error_qty = array_keys($array_object);
@@ -61,12 +58,9 @@ class ExceptionTest extends TestCase
      */
     public function testExceptionStoringFail()
     {
-        try
-        {
+        try {
             throw new ExceptionException("This is an storable exception too");
-        }
-        catch (ExceptionException $e)
-        {
+        } catch (ExceptionException $e) {
             $date = date('dmY');
             $file = 'nofolder/exception-' . $date . '.json';
             $storage = new \Drone\Exception\Storage($file);
@@ -92,28 +86,22 @@ class ExceptionTest extends TestCase
         mkdir('exceptions');
         $date = date('dmY');
 
-        try
-        {
+        try {
             throw new ExceptionException("This is an storable exception");
-        }
-        catch (ExceptionException $e)
-        {
+        } catch (ExceptionException $e) {
             $file = 'exceptions/exception-' . $date . '.json';
             $storage = new \Drone\Exception\Storage($file);
             $storage->store($e);
         }
 
-        try
-        {
+        try {
             throw new ExceptionException("This is an storable exception too");
-        }
-        catch (ExceptionException $e)
-        {
+        } catch (ExceptionException $e) {
             $file = 'exceptions/exception-' . $date . '.json';
             $storage = new \Drone\Exception\Storage($file);
             $storage->store($e);
 
-            $json_object  = (file_exists($file)) ? json_decode(file_get_contents($file)) : array();
+            $json_object  = (file_exists($file)) ? json_decode(file_get_contents($file)) : [];
             $array_object = \Drone\Util\ArrayDimension::objectToArray($json_object);
 
             $error_qty = array_keys($array_object);

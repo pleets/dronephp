@@ -10,8 +10,8 @@
 
 namespace DroneTest\Util;
 
-use Drone\Db\Driver\MySQL;
 use Drone\Db\Driver\Exception\InvalidQueryException;
+use Drone\Db\Driver\MySQL;
 use PHPUnit\Framework\TestCase;
 
 class MySQLTest extends TestCase
@@ -26,7 +26,7 @@ class MySQLTest extends TestCase
         "dbname"       => "test",
         "dbchar"       => "utf8",
         "dbport"       => "3306",
-        "auto_connect" => false
+        "auto_connect" => false,
     ];
 
     /*
@@ -81,9 +81,7 @@ class MySQLTest extends TestCase
 
         try {
             $conn->disconnect();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->assertNotTrue($conn->isConnected());
             throw $e;
         }
@@ -116,9 +114,7 @@ class MySQLTest extends TestCase
 
         try {
             $conn->reconnect();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->assertNotTrue($conn->isConnected());
             throw $e;
         }
@@ -136,12 +132,9 @@ class MySQLTest extends TestCase
 
         $conn = new MySQL($options);
 
-        try
-        {
+        try {
             $conn->connect();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $this->assertNotTrue($conn->isConnected());
             throw $e;
         }
@@ -491,16 +484,13 @@ class MySQLTest extends TestCase
         # starts the transaction
         $conn->beginTransaction();
 
-        try
-        {
+        try {
             $sql = "INSERT INTO MYTABLE (DESCRIPTION) VALUES ('TRANS_SHORTCUT_1')";
             $conn->execute($sql);
 
             $sql = "INSERT INTO MYTABLE (DESCRIPTION, WRONG) VALUES ('TRANS_SHORTCUT_2')";
             $conn->execute($sql);    # this throws the exception
-        }
-        catch (InvalidQueryException $e)
-        {
+        } catch (InvalidQueryException $e) {
             #·not necessary!
             # $this->assertTrue($conn->rollback());
         }

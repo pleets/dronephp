@@ -10,8 +10,6 @@
 
 namespace Drone\Exception;
 
-use Drone\Error\Errno;
-
 /**
  * StorableTrait Trait
  *

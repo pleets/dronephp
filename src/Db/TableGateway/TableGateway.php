@@ -61,7 +61,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      *
      * @return array With all results
      */
-    public function select(Array $where = [])
+    public function select(array $where = [])
     {
         $bind_values = [];
 
@@ -145,7 +145,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      *
      * @return resource|object
      */
-    public function insert(Array $data)
+    public function insert(array $data)
     {
         if (!count($data)) {
             throw new \LogicException("Missing values for INSERT statement!");
@@ -220,7 +220,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      *
      * @return resource|object
      */
-    public function update(Array $set, Array $where)
+    public function update(array $set, array $where)
     {
         $parsed_set = [];
 
@@ -352,7 +352,7 @@ class TableGateway extends AbstractTableGateway implements TableGatewayInterface
      *
      * @return resource|object
      */
-    public function delete(Array $where)
+    public function delete(array $where)
     {
         if (count($where)) {
             $parsed_where = [];

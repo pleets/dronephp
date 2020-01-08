@@ -7,7 +7,7 @@ $finder = Finder::create()
     ->in(__DIR__.DIRECTORY_SEPARATOR.'src')
     ->in(__DIR__.DIRECTORY_SEPARATOR.'test')
 ;
-c
+
 return Config::create()
     ->setUsingCache(false)
     ->setRules([

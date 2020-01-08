@@ -10,9 +10,9 @@
 
 namespace DroneTest\Util;
 
+use Drone\Mvc\ModuleFactory;
 use Drone\Mvc\Router;
 use Drone\Mvc\View;
-use Drone\Mvc\ModuleFactory;
 use PHPUnit\Framework\TestCase;
 
 class SimpleMvcApplicationTest extends TestCase
@@ -30,14 +30,14 @@ class SimpleMvcApplicationTest extends TestCase
             'AppRoute' => [
                 'module'     => 'Master',
                 'controller' => 'Admin',
-                'view'       => 'index'
+                'view'       => 'index',
             ],
         ]);
 
         // you should code the request to match /Master/Admin/index
         $router->setIdentifiers('Master', 'Admin', 'index');
 
-        $router->setClassNameBuilder(function($module, $class) {
+        $router->setClassNameBuilder(function ($module, $class) {
             return "\\$module\Controller\\$class";
         });
 
@@ -49,7 +49,7 @@ class SimpleMvcApplicationTest extends TestCase
 
         # inject the module dependency to the controller
         $router->getController()->setModule(ModuleFactory::create("Master", [
-            "config"  => 'test-skeleton/module/Master/config/config.php'
+            "config"  => 'test-skeleton/module/Master/config/config.php',
         ]));
 
         $result = $router->run();
@@ -60,7 +60,7 @@ class SimpleMvcApplicationTest extends TestCase
             'AppRouteView' => [
                 'module'     => 'Master',
                 'controller' => 'Admin',
-                'view'       => 'withView'
+                'view'       => 'withView',
             ],
         ]);
 

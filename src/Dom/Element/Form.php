@@ -42,7 +42,7 @@ class Form extends AbstractElement
      *
      * @return null
      */
-    public function fill(Array $values)
+    public function fill(array $values)
     {
         foreach ($values as $label => $value) {
             $child = $this->getChild($label);

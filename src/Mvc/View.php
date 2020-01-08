@@ -81,6 +81,7 @@ class View
      * Sets the view name
      *
      * @param string
+     * @param mixed $name
      *
      * @return null
      */
@@ -93,6 +94,7 @@ class View
      * Sets the path
      *
      * @param string
+     * @param mixed $path
      *
      * @return string
      */
@@ -105,6 +107,7 @@ class View
      * Sets the cache path
      *
      * @param string
+     * @param mixed $cache
      *
      * @return string
      */
@@ -119,7 +122,7 @@ class View
      * @param string $name
      * @param array  $parameters
      */
-    public function __construct($name, Array $parameters = [])
+    public function __construct($name, array $parameters = [])
     {
         $this->name  = $name;
         $this->setParams($parameters);
@@ -128,8 +131,9 @@ class View
     /**
      * Gets the contents of view
      *
-     * @throws Exception\ViewNotFoundException
      *
+     * @param null|mixed $file
+     * @throws Exception\ViewNotFoundException
      * @return  string
      */
     public function getContents($file = null)

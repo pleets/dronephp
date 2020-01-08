@@ -87,17 +87,12 @@ class ErrorTraitTest extends TestCase
         $errorObject = null;
         $message = "No exception";
 
-        try
-        {
+        try {
             $ctrl->addNonExistingError();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $errorObject = ($e instanceof \LogicException);
             $message = $e->getMessage();
-        }
-        finally
-        {
+        } finally {
             $this->assertTrue($errorObject, $message);
         }
     }
@@ -109,29 +104,32 @@ class MyController
 
     public function getContentsFromFile($filename)
     {
-        if (file_exists($filename))
+        if (file_exists($filename)) {
             return file_get_contents($filename);
-        else
+        } else {
             $this->error(Errno::FILE_NOT_FOUND, $filename);
+        }
     }
 
     public function getContentsFromFileWithoutFilenameOnError($filename)
     {
-        if (file_exists($filename))
+        if (file_exists($filename)) {
             return file_get_contents($filename);
-        else
+        } else {
             $this->error(Errno::FILE_NOT_FOUND);
+        }
     }
 
     public function getContentsFromUrl($url)
     {
         $headers = @get_headers($url) || "";
-        $exists = stripos($headers[0],"200 OK") ? true : false;
+        $exists = stripos($headers[0], "200 OK") ? true : false;
 
-        if ($exists)
+        if ($exists) {
             return file_get_contents($url);
-        else
+        } else {
             $this->error("URL not found");
+        }
     }
 
     public function addNonExistingError()

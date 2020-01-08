@@ -25,31 +25,31 @@ class FormValidatorTest extends TestCase
     {
         $form = ElementFactory::create('FORM', [
             "action" => 'someurl',
-            "method" => 'post'
+            "method" => 'post',
         ], [
             "input" => [
                 "username" => [
                     "type"      => 'text',
                     "maxlength" => 15,
-                    "minlength" => 5
+                    "minlength" => 5,
                 ],
                 "email" => [
                     "type"      => 'email',
                     "maxlength" => 15,
-                    "minlength" => 5
+                    "minlength" => 5,
                 ],
                 "password" => [
                     "type"      => 'password',
                     "maxlength" => 15,
-                    "minlength" => 5
-                ]
-            ]
+                    "minlength" => 5,
+                ],
+            ],
         ]);
 
         $form->fill([
             "username" => 'jobs',       # wrong because of minlength attr
             "password" => 'jVi7Qp4X',
-            "email"    => 'j@'          # wrong because of type and minlength attr
+            "email"    => 'j@',          # wrong because of type and minlength attr
         ]);
 
         $validator = new FormValidator($form, 'fr');
@@ -81,31 +81,31 @@ class FormValidatorTest extends TestCase
     {
         $form = ElementFactory::create('FORM', [
             "action" => 'someurl',
-            "method" => 'post'
+            "method" => 'post',
         ], [
             "input" => [
                 "username" => [
                     "type"      => 'text',
                     "maxlength" => 15,
-                    "minlength" => 5
+                    "minlength" => 5,
                 ],
                 "email" => [
                     "type"      => 'email',
                     "maxlength" => 16,
-                    "minlength" => 5
+                    "minlength" => 5,
                 ],
                 "password" => [
                     "type"      => 'password',
                     "maxlength" => 15,
-                    "minlength" => 5
-                ]
-            ]
+                    "minlength" => 5,
+                ],
+            ],
         ]);
 
         $form->fill([
             "username" => 'steave.jobs',
             "password" => 'jVi7Qp4X',
-            "email"    => 'jobs@example.com'
+            "email"    => 'jobs@example.com',
         ]);
 
         $validator = new FormValidator($form, 'en');
@@ -131,16 +131,16 @@ class FormValidatorTest extends TestCase
 
         $form = ElementFactory::create('FORM', [
             "action" => 'someurl',
-            "method" => 'post'
+            "method" => 'post',
         ], [
             "input" => [
                 "username" => [
                     "type"      => 'text',
                     "maxlength" => 15,
                     "minlength" => 5,
-                    "required"  => false     # could be ommited, this is the default behaviour
+                    "required"  => false,     # could be ommited, this is the default behaviour
                 ],
-            ]
+            ],
         ]);
 
         $validator = new FormValidator($form, 'en');
@@ -158,16 +158,16 @@ class FormValidatorTest extends TestCase
 
         $form = ElementFactory::create('FORM', [
             "action" => 'someurl',
-            "method" => 'post'
+            "method" => 'post',
         ], [
             "input" => [
                 "username" => [
                     "type"      => 'text',
                     "maxlength" => 15,
                     "minlength" => 5,
-                    "required"  => true
+                    "required"  => true,
                 ],
-            ]
+            ],
         ]);
 
         $validator = new FormValidator($form, 'en');
@@ -185,16 +185,16 @@ class FormValidatorTest extends TestCase
 
         $form = ElementFactory::create('FORM', [
             "action" => 'someurl',
-            "method" => 'post'
+            "method" => 'post',
         ], [
             "input" => [
                 "username" => [
                     "type"      => 'text',
                     "maxlength" => 15,
                     "minlength" => 5,
-                    "required"  => false
+                    "required"  => false,
                 ],
-            ]
+            ],
         ]);
 
         $form->fill([
@@ -224,33 +224,33 @@ class FormValidatorTest extends TestCase
     {
         $form = ElementFactory::create('FORM', [
             "action" => 'someurl',
-            "method" => 'post'
+            "method" => 'post',
         ], [
             "input" => [
                 # in this case product name
                 "product" => [
                     "type"      => 'text',
                     "maxlength" => 15,
-                    "minlength" => 5
+                    "minlength" => 5,
                 ],
                 "price" => [
                     "type" => 'number',
                     "min"  => 1,
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $form->fill([
             "product" => [
                 "optical mouse",
                 "-",                # wrong name
-                "78"                # another wrong name
+                "78",                # another wrong name
             ],
             "price" => [
                 10,
                 0,   # wrong price
-                0    # another wrong price
-            ]
+                0,    # another wrong price
+            ],
         ]);
 
         $validator = new FormValidator($form, 'en');
@@ -279,7 +279,7 @@ class FormValidatorTest extends TestCase
     {
         $form = ElementFactory::create('FORM', [
             "action" => 'someurl',
-            "method" => 'post'
+            "method" => 'post',
         ], [
             "input" => [
                 "username" => [
@@ -287,27 +287,27 @@ class FormValidatorTest extends TestCase
                     "maxlength" => 15,
                     "minlength" => 5,
                     "data-validators" => [
-                        "Alnum"  => ["allowWhiteSpace" => false]
-                    ]
+                        "Alnum"  => ["allowWhiteSpace" => false],
+                    ],
                 ],
                 "type" => [
                     "type" => 'text',
                     "data-validators" => [
-                        "InArray"  => ["haystack" => ['admin', 'guest']]
-                    ]
+                        "InArray"  => ["haystack" => ['admin', 'guest']],
+                    ],
                 ],
                 "password" => [
                     "type"      => 'password',
                     "maxlength" => 15,
                     "minlength" => 5,
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $form->fill([
             "username" => 'steave jobs',       # wrong because of minlength attr
             "password" => 'jVi7Qp4X',
-            "type"     => 'moderator'          # wrong because moderator is not a valid needle
+            "type"     => 'moderator',          # wrong because moderator is not a valid needle
         ]);
 
         $validator = new FormValidator($form, 'en');

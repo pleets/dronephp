@@ -21,6 +21,7 @@ class Server extends AbstractSocket
      * Reads a message from client
      *
      * @param resource
+     * @param mixed $socket
      *
      * @throws RuntimeException
      *
@@ -69,7 +70,7 @@ class Server extends AbstractSocket
      *
      * @return boolean
      */
-    public function listen(Array $eventHandlers = array())
+    public function listen(array $eventHandlers = [])
     {
         $event = $eventHandlers;
         $clousure = function () {

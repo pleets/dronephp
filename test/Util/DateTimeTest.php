@@ -36,17 +36,12 @@ class DateTimeTest extends TestCase
         $errorObject = null;
         $message = "No exception";
 
-        try
-        {
+        try {
             $this->assertEquals('June', Dt::getMonth(13));
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $errorObject = ($e instanceof MonthOutOfRange);
             $message = $e->getMessage();
-        }
-        finally
-        {
+        } finally {
             $this->assertTrue($errorObject, $message);
         }
     }
@@ -59,7 +54,7 @@ class DateTimeTest extends TestCase
     public function testGettingDateTimeInstance()
     {
         $dateTime = Dt::create([
-            "day" => Dt::TODAY, "month" => dt::THIS_MONTH, "year" => dt::THIS_YEAR
+            "day" => Dt::TODAY, "month" => dt::THIS_MONTH, "year" => dt::THIS_YEAR,
         ]);
 
         $this->assertTrue($dateTime instanceof \DateTime);
@@ -75,67 +70,61 @@ class DateTimeTest extends TestCase
     {
         # First day of this month
         $dt = Dt::create([
-            "day" => Dt::FIRST_DAY, "month" => dt::THIS_MONTH, "year" => dt::THIS_YEAR
+            "day" => Dt::FIRST_DAY, "month" => dt::THIS_MONTH, "year" => dt::THIS_YEAR,
         ]);
 
         $dateTime = new \DateTime("first day of " . Dt::getMonth((int) date('m')) . " " . date('Y'));
 
         $this->assertEquals($dt->format('d/m/Y'), $dateTime->format('d/m/Y'));
 
-
         # Last day of this month
         $dt = Dt::create([
-            "day" => Dt::LAST_DAY, "month" => dt::THIS_MONTH, "year" => dt::THIS_YEAR
+            "day" => Dt::LAST_DAY, "month" => dt::THIS_MONTH, "year" => dt::THIS_YEAR,
         ]);
 
         $dateTime = new \DateTime("last day of " . Dt::getMonth((int) date('m')) . " " . date('Y'));
 
         $this->assertEquals($dt->format('d/m/Y'), $dateTime->format('d/m/Y'));
 
-
         # first day of last month
         $dt = Dt::create([
-            "day" => Dt::FIRST_DAY, "month" => dt::LAST_MONTH, "year" => dt::THIS_YEAR
+            "day" => Dt::FIRST_DAY, "month" => dt::LAST_MONTH, "year" => dt::THIS_YEAR,
         ]);
 
         $dateTime = new \DateTime("first day of -1 month");
 
         $this->assertEquals($dt->format('d/m/Y'), $dateTime->format('d/m/Y'));
 
-
         # last day of last month
         $dt = Dt::create([
-            "day" => Dt::LAST_DAY, "month" => dt::LAST_MONTH, "year" => dt::THIS_YEAR
+            "day" => Dt::LAST_DAY, "month" => dt::LAST_MONTH, "year" => dt::THIS_YEAR,
         ]);
 
         $dateTime = new \DateTime("last day of -1 month");
 
         $this->assertEquals($dt->format('d/m/Y'), $dateTime->format('d/m/Y'));
 
-
         # first day of June of last year
         $dt = Dt::create([
-            "day" => Dt::FIRST_DAY, "month" => 6, "year" => dt::LAST_YEAR
+            "day" => Dt::FIRST_DAY, "month" => 6, "year" => dt::LAST_YEAR,
         ]);
 
         $dateTime = new \DateTime("first day of June " . (date('Y') - 1));
 
         $this->assertEquals($dt->format('d/m/Y'), $dateTime->format('d/m/Y'));
 
-
         # last day of June of last year
         $dt = Dt::create([
-            "day" => Dt::LAST_DAY, "month" => 6, "year" => dt::LAST_YEAR
+            "day" => Dt::LAST_DAY, "month" => 6, "year" => dt::LAST_YEAR,
         ]);
 
         $dateTime = new \DateTime("last day of June " . (date('Y') - 1));
 
         $this->assertEquals($dt->format('d/m/Y'), $dateTime->format('d/m/Y'));
 
-
         # 10th day of June of last year
         $dt = Dt::create([
-            "day" => 10, "month" => 6, "year" => dt::LAST_YEAR
+            "day" => 10, "month" => 6, "year" => dt::LAST_YEAR,
         ]);
 
         $dateTime = new \DateTime("first day of June " . (date('Y') - 1));

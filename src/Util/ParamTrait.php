@@ -44,6 +44,7 @@ trait ParamTrait
     public function getParam($param)
     {
         $parameters = $this->getParams();
+
         return $parameters[$param];
     }
 
@@ -67,7 +68,7 @@ trait ParamTrait
      *
      * @return null
      */
-    public function setParams(Array $params)
+    public function setParams(array $params)
     {
         $this->params = $params;
     }

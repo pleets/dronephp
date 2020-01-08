@@ -25,7 +25,7 @@ class ArrayDimension
      *
      * @return array
      */
-    public static function toUnidimensional(Array $array, $glue)
+    public static function toUnidimensional(array $array, $glue)
     {
         $new_config = [];
         $again = false;
@@ -88,7 +88,7 @@ class ArrayDimension
         }
 
         if (is_array($obj)) {
-            $new = array();
+            $new = [];
 
             foreach ($obj as $key => $val) {
                 $new[$key] = self::objectToArray($val);

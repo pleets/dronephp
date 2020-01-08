@@ -22,9 +22,9 @@ class DriverFactory
      *
      * @param array $connection_options
      *
+     * @throws \RuntimeException
      * @return AbstractDriver
      *
-     * @throws \RuntimeException
      */
     public static function create($connection_options)
     {

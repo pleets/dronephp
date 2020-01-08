@@ -54,7 +54,7 @@ class EntityAdapter
      *
      * @return Entity[]
      */
-    public function select(Array $where)
+    public function select(array $where)
     {
         $result = $this->tableGateway->select($where);
 
@@ -168,7 +168,7 @@ class EntityAdapter
      *
      * @return array
      */
-    private function parseEntity(Array &$entity)
+    private function parseEntity(array &$entity)
     {
         $drv = $this->getTableGateway()->getDb()->getDriverName();
 

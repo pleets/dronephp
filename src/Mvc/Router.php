@@ -10,8 +10,6 @@
 
 namespace Drone\Mvc;
 
-use Drone\Mvc\Exception;
-
 /**
  * Router class
  *
@@ -149,7 +147,7 @@ class Router
         $this->identifiers = [
             "module"     => $module,
             "controller" => $controller,
-            "view"       => $view
+            "view"       => $view,
         ];
     }
 
@@ -175,7 +173,7 @@ class Router
         $this->defaults = [
             "module"     => $module,
             "controller" => $controller,
-            "view"       => $view
+            "view"       => $view,
         ];
     }
 
@@ -196,7 +194,7 @@ class Router
      *
      * @param array $routes
      */
-    public function __construct(Array $routes = [])
+    public function __construct(array $routes = [])
     {
         if (count($routes)) {
             foreach ($routes as $route) {
@@ -208,13 +206,13 @@ class Router
         $this->identifiers = [
             "module"     => '',
             "controller" => '',
-            "view"       => ''
+            "view"       => '',
         ];
 
         $this->defaults = [
             "module"     => '',
             "controller" => '',
-            "view"       => ''
+            "view"       => '',
         ];
 
         # default class name builder

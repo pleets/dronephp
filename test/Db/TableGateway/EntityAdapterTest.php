@@ -28,7 +28,7 @@ class EntityAdapterTest extends TestCase
         "dbchar"       => "utf8",
         "dbport"       => "3306",
         "auto_connect" => false,
-        "driver"       => 'Mysqli'  # needed for the DriverFactory
+        "driver"       => 'Mysqli',  # needed for the DriverFactory
     ];
 
     /*
@@ -108,12 +108,12 @@ class EntityAdapterTest extends TestCase
 
         $firstEntity = new User();
         $firstEntity->exchangeArray([
-            "ID" => 1, "USERNAME" => "Dennis.Ritchie"
+            "ID" => 1, "USERNAME" => "Dennis.Ritchie",
         ]);
 
         $secondEntity = new User();
         $secondEntity->exchangeArray([
-            "ID" => 2, "USERNAME" => "Bjarne.Stroustrup"
+            "ID" => 2, "USERNAME" => "Bjarne.Stroustrup",
         ]);
 
         $result = $entityAdapter->insert($firstEntity);
@@ -147,7 +147,7 @@ class EntityAdapterTest extends TestCase
 
         # tell to entity what changed
         $firstEntity->exchangeArray([
-            "USERNAME" => "Rasmus.Lerdorf"
+            "USERNAME" => "Rasmus.Lerdorf",
         ]);
 
         $result = $entityAdapter->update($firstEntity, ["ID" => 1]);
@@ -159,7 +159,6 @@ class EntityAdapterTest extends TestCase
         $this->assertEquals(0, $entityAdapter->getTableGateway()->getDb()->getNumFields());
         $this->assertEquals(1, $entityAdapter->getTableGateway()->getDb()->getRowsAffected());
     }
-
 
     /**
      * Tests if we can execute DELETE statements through the EntityAdapter
@@ -201,7 +200,7 @@ class EntityAdapterTest extends TestCase
         $entityAdapter = new EntityAdapter($gateway);
 
         $rows = $entityAdapter->select([
-            "ID" => 1
+            "ID" => 1,
         ]);
 
         $this->assertTrue(is_array($rows));
@@ -248,7 +247,7 @@ class User extends Entity
     {
         parent::__construct($data);
         $this->setTableName("USER");
-   }
+    }
 }
 
 class UserGateway extends TableGateway
@@ -256,12 +255,14 @@ class UserGateway extends TableGateway
     public function create()
     {
         $sql = "CREATE TABLE USER (ID INTEGER(11) NOT NULL PRIMARY KEY AUTO_INCREMENT, USERNAME VARCHAR(30))";
+
         return $this->getDb()->execute($sql);
     }
 
     public function drop()
     {
         $sql = "DROP TABLE USER";
+
         return $this->getDb()->execute($sql);
     }
 }

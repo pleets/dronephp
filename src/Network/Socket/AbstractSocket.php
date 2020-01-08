@@ -100,9 +100,9 @@ abstract class AbstractSocket
      *
      * All modifiable attributes (i.e. with setter method) can be passed as key
      *
-     * @throws RuntimeException
      *
      * @param array $options
+     * @throws RuntimeException
      */
     public function __construct($options)
     {
@@ -132,6 +132,7 @@ abstract class AbstractSocket
         if (!($bind = @socket_bind($this->socket, $this->host, $this->port))) {
             $errno = socket_last_error();
             $this->error($errno, socket_strerror($errno));
+
             return false;
         }
 

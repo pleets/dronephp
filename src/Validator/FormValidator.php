@@ -11,15 +11,14 @@
 namespace Drone\Validator;
 
 use Drone\Dom\Element\Form;
-use Drone\Dom\Element\ElementFactory;
-use Zend\Validator\NotEmpty;
-use Zend\Validator\Digits;
-use Zend\Validator\StringLength;
-use Zend\Validator\Step;
-use Zend\Validator\LessThan;
-use Zend\Validator\GreaterThan;
-use Zend\Validator\EmailAddress;
 use Zend\Validator\Date;
+use Zend\Validator\Digits;
+use Zend\Validator\EmailAddress;
+use Zend\Validator\GreaterThan;
+use Zend\Validator\LessThan;
+use Zend\Validator\NotEmpty;
+use Zend\Validator\Step;
+use Zend\Validator\StringLength;
 use Zend\Validator\Uri;
 
 /**
@@ -109,9 +108,9 @@ class FormValidator
                 'translation_files' => [
                     [
                         "type" => 'phparray',
-                        "filename" => "vendor/zendframework/zend-i18n-resources/languages/$locale/Zend_Validate.php"
-                    ]
-                ]
+                        "filename" => "vendor/zendframework/zend-i18n-resources/languages/$locale/Zend_Validate.php",
+                    ],
+                ],
             ]
         );
 
@@ -306,7 +305,7 @@ class FormValidator
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @return array
      */

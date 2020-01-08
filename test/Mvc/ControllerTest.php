@@ -11,9 +11,9 @@
 namespace DroneTest\Util;
 
 use Drone\Mvc\AbstractController;
-use PHPUnit\Framework\TestCase;
-use Drone\Mvc\Exception\PrivateMethodExecutionException;
 use Drone\Mvc\Exception\MethodNotFoundException;
+use Drone\Mvc\Exception\PrivateMethodExecutionException;
+use PHPUnit\Framework\TestCase;
 
 class ControllerTest extends TestCase
 {
@@ -60,13 +60,9 @@ class ControllerTest extends TestCase
         try {
             $ctrl->setMethod('doSomething');
             $ctrl->execute();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $errorObject = ($e instanceof PrivateMethodExecutionException);
-        }
-        finally
-        {
+        } finally {
             $this->assertTrue($errorObject, $e->getMessage());
         }
     }
@@ -85,13 +81,9 @@ class ControllerTest extends TestCase
         try {
             $ctrl->setMethod('notFound');
             $ctrl->execute();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $errorObject = ($e instanceof MethodNotFoundException);
-        }
-        finally
-        {
+        } finally {
             $this->assertTrue($errorObject, $e->getMessage());
         }
     }

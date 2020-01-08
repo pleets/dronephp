@@ -28,7 +28,7 @@ class ElementFactory extends AbstractElement
      *
      * @return AbstractElement
      */
-    public static function create($node_name, Array $attributes = null, Array $elements = null)
+    public static function create($node_name, array $attributes = null, array $elements = null)
     {
         $element = ucfirst(strtolower($node_name));
         $className = "\Drone\Dom\Element\\" . $element;

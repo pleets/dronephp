@@ -154,17 +154,12 @@ class ShellTest extends TestCase
 
         $errorObject = null;
 
-        try
-        {
+        try {
             $shell->cp('foo2', 'foo3');
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             # omitting directory
             $errorObject = ($e instanceof \RuntimeException);
-        }
-        finally
-        {
+        } finally {
             $this->assertTrue($errorObject, $e->getMessage());
         }
 
@@ -174,7 +169,8 @@ class ShellTest extends TestCase
         $shell->cp(
             'foo2', // directory
             'foo3', // directory
-        true);
+        true
+        );
 
         $this->assertTrue(file_exists('foo3'));
         $this->assertTrue(is_dir('foo3'));
@@ -186,7 +182,8 @@ class ShellTest extends TestCase
         $shell->cp(
             'foo3', // directory
             'foo4', // not a directory or file
-        true);
+        true
+        );
 
         $this->assertTrue(file_exists('foo4'));
         $this->assertTrue(is_dir('foo4'));
@@ -194,7 +191,7 @@ class ShellTest extends TestCase
         $this->assertTrue(is_dir('foo4/foo2'));
         $this->assertTrue(file_exists('foo4/foo2/new3.txt'));
         $this->assertTrue(file_exists('foo4/foo2/new4.txt'));
-   }
+    }
 
     /**
      * Tests removing files

@@ -18,14 +18,14 @@ namespace Drone\Db\Driver;
 class Oracle extends AbstractDriver implements DriverInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @var resource
      */
     protected $dbconn;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @param array $options
      */
@@ -89,7 +89,7 @@ class Oracle extends AbstractDriver implements DriverInterface
      *
      * @return resource
      */
-    public function execute($sql, Array $params = [])
+    public function execute($sql, array $params = [])
     {
         $this->numRows = 0;
         $this->numFields = 0;
@@ -104,7 +104,7 @@ class Oracle extends AbstractDriver implements DriverInterface
 
             if (!empty($error)) {
                 $error = [
-                    "message" => "Could not prepare statement!"
+                    "message" => "Could not prepare statement!",
                 ];
 
                 $this->error($error["message"]);
@@ -154,7 +154,7 @@ class Oracle extends AbstractDriver implements DriverInterface
         $this->numFields = oci_num_fields($stid);
 
         if ($this->transac_mode) {
-            $this->transac_result = is_null($this->transac_result) ? $stid: $this->transac_result && $stid;
+            $this->transac_result = is_null($this->transac_result) ? $stid : $this->transac_result && $stid;
         }
 
         $this->result = $stid;
@@ -163,7 +163,7 @@ class Oracle extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function commit()
     {
@@ -171,7 +171,7 @@ class Oracle extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function rollback()
     {
@@ -179,11 +179,12 @@ class Oracle extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function disconnect()
     {
         parent::disconnect();
+
         return oci_close($this->dbconn);
     }
 

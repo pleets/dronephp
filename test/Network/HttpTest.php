@@ -53,17 +53,12 @@ class HttpTest extends TestCase
         $errorObject = null;
         $message = "No exception";
 
-        try
-        {
+        try {
             $text = $http->getStatusText(65431);
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $errorObject = ($e instanceof \RuntimeException);
             $message = $e->getMessage();
-        }
-        finally
-        {
+        } finally {
             $this->assertTrue($errorObject, $message);
         }
     }

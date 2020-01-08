@@ -7,6 +7,7 @@
  * @license   http://www.dronephp.com/license
  * @author    Darío Rivera <fermius.us@gmail.com>
  */
+
 namespace DroneTest\Util;
 
 use Drone\Db\Driver\DriverFactory;
@@ -29,7 +30,7 @@ class DriverFactoryTest extends TestCase
             "dbchar"       => "utf8",
             "dbport"       => "3306",
             'driver'       => 'Mysqli',
-            "auto_connect" => false
+            "auto_connect" => false,
         ]);
 
         $this->assertInstanceOf('\Drone\Db\Driver\MySQL', $driver);
@@ -54,7 +55,7 @@ class DriverFactoryTest extends TestCase
             "dbname"       => "test",
             "dbchar"       => "utf8",
             "dbport"       => "3306",
-            "auto_connect" => false
+            "auto_connect" => false,
         ]);
     }
 
@@ -73,7 +74,7 @@ class DriverFactoryTest extends TestCase
             "dbchar"       => "utf8",
             "dbport"       => "3306",
             'driver'       => 'fooBarDriver',
-            "auto_connect" => false
+            "auto_connect" => false,
         ]);
     }
 }

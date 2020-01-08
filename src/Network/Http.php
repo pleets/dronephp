@@ -111,7 +111,7 @@ class Http
         self::HTTP_BAD_GATEWAY                     => 'Bad Gateway',
         self::HTTP_SERVICE_UNAVAILABLE             => 'Service Unavailable',
         self::HTTP_GATEWAY_TIMEOUT                 => 'Gateway Time-out',
-        self::HTTP_VERSION_NOT_SUPPORTED           => 'HTTP Version not supported'
+        self::HTTP_VERSION_NOT_SUPPORTED           => 'HTTP Version not supported',
     ];
 
     /**

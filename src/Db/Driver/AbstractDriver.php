@@ -383,7 +383,7 @@ abstract class AbstractDriver
      *
      * @return resource|object
      */
-    abstract public function execute($sql, Array $params = []);
+    abstract public function execute($sql, array $params = []);
 
     /**
      * Reconnects to the database
@@ -399,6 +399,7 @@ abstract class AbstractDriver
         }
 
         $this->disconnect();
+
         return $this->connect();
     }
 
@@ -486,7 +487,7 @@ abstract class AbstractDriver
      * The toArray() method must take the latest result from an execute statement
      * and convert it to an array. To get this array getArrayResult() has been implemented.
      *
-     * @throws LogicException if execute() was not executed before this.
+     * @throws LogicException if execute() was not executed before this
      *
      * @return array
      */
@@ -499,7 +500,7 @@ abstract class AbstractDriver
      *
      * @return null
      */
-    public function transaction(Array $querys)
+    public function transaction(array $querys)
     {
         $this->beginTransaction();
 

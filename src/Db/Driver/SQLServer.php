@@ -18,14 +18,14 @@ namespace Drone\Db\Driver;
 class SQLServer extends AbstractDriver implements DriverInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @var resource
      */
     protected $dbconn;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @param array $options
      */
@@ -64,9 +64,9 @@ class SQLServer extends AbstractDriver implements DriverInterface
             $this->dbhost .= ', ' . $this->dbport;
         }
 
-        $db_info = array(
-            "Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar
-        );
+        $db_info = [
+            "Database" => $this->dbname, "UID" => $this->dbuser, "PWD" => $this->dbpass, "CharacterSet" => $this->dbchar,
+        ];
         $conn = sqlsrv_connect($this->dbhost, $db_info);
 
         if ($conn === false) {
@@ -100,7 +100,7 @@ class SQLServer extends AbstractDriver implements DriverInterface
      *
      * @return mixed
      */
-    public function execute($sql, Array $params = [])
+    public function execute($sql, array $params = [])
     {
         $this->numRows = 0;
         $this->numFields = 0;
@@ -150,7 +150,7 @@ class SQLServer extends AbstractDriver implements DriverInterface
                     $this->dbconn,
                     $sql,
                     $params,
-                    array( "Scrollable" => SQLSRV_CURSOR_KEYSET )
+                    ["Scrollable" => SQLSRV_CURSOR_KEYSET]
                 );
             } else {
                 $exec = $this->result = sqlsrv_query($this->dbconn, $sql, $params);
@@ -186,7 +186,7 @@ class SQLServer extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function commit()
     {
@@ -194,7 +194,7 @@ class SQLServer extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function rollback()
     {
@@ -202,16 +202,17 @@ class SQLServer extends AbstractDriver implements DriverInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function disconnect()
     {
         parent::disconnect();
+
         return sqlsrv_close($this->dbconn);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function beginTransaction()
     {

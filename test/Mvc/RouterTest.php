@@ -10,12 +10,11 @@
 
 namespace DroneTest\Util;
 
-use Drone\Mvc\Router;
 use Drone\Mvc\AbstractController;
-use Drone\Mvc\AbstractModule;
-use Drone\Mvc\ModuleFactory;
 use Drone\Mvc\Exception\MethodExecutionNotAllowedException;
 use Drone\Mvc\Exception\RouteNotFoundException;
+use Drone\Mvc\ModuleFactory;
+use Drone\Mvc\Router;
 use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase
@@ -33,7 +32,7 @@ class RouterTest extends TestCase
             'App1' => [
                 'module'     => 'App',
                 'controller' => 'Index',
-                'view'       => 'home'
+                'view'       => 'home',
             ],
         ]);
 
@@ -58,7 +57,7 @@ class RouterTest extends TestCase
             'App1' => [
                 'module'     => 'MyApp',
                 'controller' => 'IndexController',
-                'view'       => 'home'
+                'view'       => 'home',
             ],
         ]);
 
@@ -68,13 +67,9 @@ class RouterTest extends TestCase
 
         try {
             $router->match();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $errorObject = ($e instanceof RouteNotFoundException);
-        }
-        finally
-        {
+        } finally {
             $this->assertTrue($errorObject, $e->getMessage());
         }
     }
@@ -92,16 +87,16 @@ class RouterTest extends TestCase
             'AppRoute1' => [
                 'module'     => 'App',
                 'controller' => 'Index',
-                'view'       => 'home'
-            ]
+                'view'       => 'home',
+            ],
         ]);
 
         $router->addRoute([
             'AppRoute2' => [
                 'module'     => 'App',
                 'controller' => 'Index2',
-                'view'       => 'home'
-            ]
+                'view'       => 'home',
+            ],
         ]);
 
         $router->setDefaults('App', 'Index', 'home');
@@ -130,13 +125,13 @@ class RouterTest extends TestCase
             'App3' => [
                 'module'     => 'App',
                 'controller' => 'Index',
-                'view'       => 'about'
+                'view'       => 'about',
             ],
         ]);
 
         $router->setIdentifiers('App', 'Index', 'about');
 
-        $router->setClassNameBuilder(function($module, $class) {
+        $router->setClassNameBuilder(function ($module, $class) {
             return "\\$module\Controller\\$class";
         });
 
@@ -160,13 +155,13 @@ class RouterTest extends TestCase
             'App4' => [
                 'module'     => 'App',
                 'controller' => 'Index',
-                'view'       => 'about'
+                'view'       => 'about',
             ],
         ]);
 
         $router->setIdentifiers('App', 'Index', 'about');
 
-        $router->setClassNameBuilder(function($module, $class) {
+        $router->setClassNameBuilder(function ($module, $class) {
             return "\\$module\Controller\\$class";
         });
 
@@ -181,13 +176,9 @@ class RouterTest extends TestCase
 
         try {
             $router->run();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $errorObject = ($e instanceof MethodExecutionNotAllowedException);
-        }
-        finally
-        {
+        } finally {
             $this->assertTrue($errorObject, $e->getMessage());
         }
 
@@ -264,7 +255,6 @@ class Index extends AbstractController
 
 namespace App;
 
-use Drone\Mvc\AbstractController;
 use Drone\Mvc\AbstractModule;
 
 class Module extends AbstractModule
