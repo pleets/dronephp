@@ -5,6 +5,7 @@
 <p align="center">
 <a href="https://travis-ci.org/Pleets/DronePHP"><img src="https://travis-ci.org/Pleets/DronePHP.svg?branch=master" alt="Build Status"></a>
 <a href="https://scrutinizer-ci.com/g/Pleets/DronePHP"><img src="https://img.shields.io/scrutinizer/g/pleets/dronephp.svg" alt="Code Quality"></a>
+<a href="https://sonarcloud.io/dashboard?id=pleets_dronephp"><img src="https://sonarcloud.io/api/project_badges/measure?project=pleets_dronephp&metric=alert_status" alt="Quality Gate Status"></a>
 <a href="https://scrutinizer-ci.com/g/Pleets/DronePHP/?branch=master"><img src="https://scrutinizer-ci.com/g/Pleets/DronePHP/badges/coverage.png?b=master" alt="Code Coverage"></a>
 </p>
 
@@ -13,6 +14,14 @@ This project is still in alpha version. However, all functionalities are done, w
 <a href="https://packagist.org/packages/pleets/dronephp"><img src="https://poser.pugx.org/pleets/dronephp/d/total.svg" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/pleets/dronephp"><img src="https://poser.pugx.org/pleets/dronephp/v/stable.svg" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/pleets/dronephp"><img src="https://poser.pugx.org/pleets/dronephp/license.svg" alt="License"></a>
+
+Check out some metrics
+
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=pleets_dronephp&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=pleets_dronephp)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=pleets_dronephp&metric=security_rating)](https://sonarcloud.io/dashboard?id=pleets_dronephp)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=pleets_dronephp&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=pleets_dronephp)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=pleets_dronephp&metric=ncloc)](https://sonarcloud.io/dashboard?id=pleets_dronephp)
+
 
 ## About DronePHP
 
