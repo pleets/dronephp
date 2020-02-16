@@ -21,10 +21,6 @@ class MySQLTest extends TestCase
      * Database parameters
      */
     private $options = [
-        "dbhost"       => "localhost",
-        "dbuser"       => "root",
-        "dbpass"       => "",
-        "dbname"       => "test",
         "dbchar"       => "utf8",
         "dbport"       => "3306",
         "auto_connect" => false,
