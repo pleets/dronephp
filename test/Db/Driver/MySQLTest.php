@@ -13,6 +13,7 @@ namespace DroneTest\Util;
 use Drone\Db\Driver\Exception\InvalidQueryException;
 use Drone\Db\Driver\MySQL;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Dotenv\Dotenv;
 
 class MySQLTest extends TestCase
 {
@@ -20,14 +21,23 @@ class MySQLTest extends TestCase
      * Database parameters
      */
     private $options = [
-        "dbhost"       => "localhost",
-        "dbuser"       => "root",
-        "dbpass"       => "",
-        "dbname"       => "test",
         "dbchar"       => "utf8",
         "dbport"       => "3306",
         "auto_connect" => false,
     ];
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $dotenv = new Dotenv();
+        $dotenv->load(__DIR__.'/../../../.env.testing');
+
+        $this->options['dbhost'] = $_ENV['DB_HOST'];
+        $this->options['dbuser'] = $_ENV['DB_USER'];
+        $this->options['dbpass'] = $_ENV['DB_PASS'];
+        $this->options['dbname'] = $_ENV['DB_NAME'];
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -81,6 +91,7 @@ class MySQLTest extends TestCase
 
         try {
             $conn->disconnect();
+            var_dump($conn);
         } catch (\Exception $e) {
             $this->assertNotTrue($conn->isConnected());
             throw $e;
