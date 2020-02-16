@@ -14,6 +14,7 @@ use Drone\Db\Entity;
 use Drone\Db\TableGateway\EntityAdapter;
 use Drone\Db\TableGateway\TableGateway;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Dotenv\Dotenv;
 
 class EntityAdapterTest extends TestCase
 {
@@ -30,6 +31,19 @@ class EntityAdapterTest extends TestCase
         "auto_connect" => false,
         "driver"       => 'Mysqli',  # needed for the DriverFactory
     ];
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $dotenv = new Dotenv();
+        $dotenv->load(__DIR__.'/../../../.env.testing');
+
+        $this->options['dbhost'] = $_ENV['DB_HOST'];
+        $this->options['dbuser'] = $_ENV['DB_USER'];
+        $this->options['dbpass'] = $_ENV['DB_PASS'];
+        $this->options['dbname'] = $_ENV['DB_NAME'];
+    }
 
     /*
     |--------------------------------------------------------------------------
