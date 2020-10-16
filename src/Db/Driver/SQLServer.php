@@ -65,10 +65,10 @@ class SQLServer extends AbstractDriver implements DriverInterface
         }
 
         $db_info = [
-	    "Database" => $this->dbname,
-	    "UID" => $this->dbuser,
-	    "PWD" => $this->dbpass,
-	    "CharacterSet" => $this->dbchar,
+            "Database" => $this->dbname,
+            "UID" => $this->dbuser,
+            "PWD" => $this->dbpass,
+            "CharacterSet" => $this->dbchar,
         ];
         $conn = sqlsrv_connect($this->dbhost, $db_info);
 
